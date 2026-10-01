@@ -28,6 +28,12 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_ensure_bus("Music")
 	_ensure_bus("SFX")
+	# Keep stacked SFX + music from clipping on phone speakers.
+	var master := AudioServer.get_bus_index("Master")
+	if AudioServer.get_bus_effect_count(master) == 0:
+		var lim := AudioEffectHardLimiter.new()
+		lim.ceiling_db = -1.0
+		AudioServer.add_bus_effect(master, lim)
 	for i in 2:
 		var p := AudioStreamPlayer.new()
 		p.bus = "Music"

@@ -178,19 +178,28 @@ static func _demo(main: Node) -> void:
 	await wait.call(1.2)
 	_press(main.screen, ["Ikut War"])
 	await wait.call(0.8)
-	for code in main.screen.rows:
-		var row: Control = main.screen.rows[code]
-		var b: Button = row.find_children("*", "Button", true, false)[0]
-		main.screen._take(code, b, row)
-		await wait.call(0.35)
-	await wait.call(1.5)
+	while main.screen.war_on:
+		for code in main.screen.rows:
+			if main.screen.cls.get(code, "") == "A" or not main.screen.war_on:
+				continue
+			var row: Control = main.screen.rows[code]
+			var b: Button = row.find_children("*", "Button", true, false)[0]
+			if not b.disabled:
+				main.screen._take(code, b, row)
+				await wait.call(0.3)
+		await wait.call(0.2)
+	await wait.call(1.8)
 	_press(main.screen, ["Mulai kuliah"])
 	await wait.call(1.5)
+	if not (main.screen is HudScreen):
+		push_error("demo: expected HUD")
+		tree.quit()
+		return
 	Game.s.coins = 1650
 	for i in 2:
 		main.screen._run_week()
 		var t := 0.0
-		while t < 14.0:
+		while t < 16.0:
 			await wait.call(0.25)
 			t += 0.25
 			if main.has_modal():
