@@ -1,0 +1,62 @@
+{
+ "summa": {
+  "tone": "gold",
+  "title": {"id": "Summa Cum Laude", "en": "Summa Cum Laude"},
+  "subtitle": {"id": "Lulus sempurna dalam {sem} semester", "en": "Flawless graduation in {sem} semesters"},
+  "text": {"id": "{name} berdiri di podium wisuda dengan IPK {ipk}. Rektor salah sebut nama, tapi tidak apa-apa. Dospem yang dulu cuma nge-read chat kini minta foto bareng. Kamu menaklukkan sistem dari dalam: tanpa joki, tanpa orang dalam, tanpa ngulang satu matkul pun.", "en": "{name} stands at the graduation podium with a {ipk} GPA. The rector mispronounces your name, but that's fine. The advisor who used to leave you on read now asks for a selfie. You beat the system from the inside: no ghostwriter, no connections, not a single retake."}
+ },
+ "balance": {
+  "tone": "gold",
+  "title": {"id": "Social Campus Balance", "en": "Social Campus Balance"},
+  "subtitle": {"id": "Ending Mahasigma sejati · {predikat}", "en": "The true Mahasigma ending · {predikat}"},
+  "text": {"id": "IPK {ipk}, teman di mana-mana, dan kamu masih waras. {name} membuktikan bahwa kuliah bukan cuma soal nilai: kamu tidur cukup, nongkrong secukupnya, dan tetap lulus dalam {sem} semester. Bestie, ibu kos, sampai Pak Darto di TU datang ke wisudamu. Ini yang namanya sigma.", "en": "A {ipk} GPA, friends everywhere, and you're still sane. {name} proved college isn't only about grades: you slept enough, hung out just enough, and still graduated in {sem} semesters. Your bestie, your landlady, even Pak Darto from the admin office came to your graduation. That's what sigma means."}
+ },
+ "cumlaude": {
+  "tone": "gold",
+  "title": {"id": "Cum Laude", "en": "Cum Laude"},
+  "subtitle": {"id": "Dengan pujian · IPK {ipk}", "en": "With honors · GPA {ipk}"},
+  "text": {"id": "Selempang cum laude melingkar di pundak {name}. Orang tuamu menangis di barisan belakang, setengah bangga, setengah lega UKT-nya selesai. Di foto wisuda kamu tersenyum, meski matamu bilang: \"tolong biarkan aku tidur seminggu.\"", "en": "The cum laude sash rests on {name}'s shoulders. Your parents cry in the back row, half proud, half relieved the tuition is over. You smile in the graduation photo, though your eyes say: \"please let me sleep for a week.\""}
+ },
+ "tepat": {
+  "tone": "good",
+  "title": {"id": "Lulus Tepat Waktu", "en": "Graduated On Time"},
+  "subtitle": {"id": "{predikat} · IPK {ipk}", "en": "{predikat} · GPA {ipk}"},
+  "text": {"id": "Delapan semester, ribuan gorengan, ratusan chat yang di-read. {name} akhirnya resmi menyandang gelar sarjana. Bukan yang paling bersinar, tapi kamu sampai di garis finish tepat waktu. Itu sudah lebih dari cukup.", "en": "Eight semesters, thousands of fritters, hundreds of read-but-unanswered chats. {name} is officially a graduate. Not the brightest star, but you crossed the finish line on time. That's more than enough."}
+ },
+ "telat": {
+  "tone": "neutral",
+  "title": {"id": "Lulus Juga Akhirnya", "en": "Graduated… Eventually"},
+  "subtitle": {"id": "Semester {sem} · IPK {ipk}", "en": "Semester {sem} · GPA {ipk}"},
+  "text": {"id": "Telat sedikit, tapi lulus tetap lulus. {name} keluar dari gerbang kampus di semester {sem}, membawa ijazah, utang budi ke ibu kos, dan cerita yang bisa diulang di setiap tongkrongan selamanya.", "en": "A little late, but a graduate is a graduate. {name} walks out of the campus gates in semester {sem}, with a diploma, a debt of gratitude to the landlady, and stories to retell at every hangout forever."}
+ },
+ "abadi": {
+  "tone": "neutral",
+  "title": {"id": "Mahasiswa Abadi", "en": "The Eternal Student"},
+  "subtitle": {"id": "Lulus karena dikasihani · Semester {sem}", "en": "Graduated out of pity · Semester {sem}"},
+  "text": {"id": "Semester {sem}. Adik tingkatmu sudah jadi dosen. Rapat fakultas akhirnya sepakat: \"Yang penting skripsinya selesai, luluskan saja.\" {name} wisuda bersama angkatan yang memanggilmu \"Bang/Kak Legend\". Bang Jarwo, kating semester 13 di awal ceritamu, datang memberi bunga. Lingkaran itu kini lengkap.", "en": "Semester {sem}. Your juniors are lecturers now. The faculty meeting finally agrees: \"The thesis is done, just let them graduate.\" {name} graduates with a cohort that calls you \"The Legend\". Bang Jarwo, the 13th-semester senior from the start of your story, brings you flowers. The circle is complete."}
+ },
+ "do": {
+  "tone": "bad",
+  "title": {"id": "Drop Out", "en": "Dropped Out"},
+  "subtitle": {"id": "{reason}", "en": "{reason}"},
+  "text": {"id": "Surat dari bagian akademik datang dengan kop resmi dan tiga cap basah. Status {name}: tidak aktif. Rasanya seperti dunia runtuh, tapi banyak orang hebat yang jalannya juga tidak lewat wisuda. Ini akhir dari satu cerita, bukan akhir dari kamu.", "en": "A letter from the academic office arrives with an official letterhead and three wet stamps. {name}'s status: inactive. It feels like the world is ending, but plenty of great people never walked a graduation stage. This is the end of one story, not the end of you."}
+ },
+ "pindah": {
+  "tone": "neutral",
+  "title": {"id": "Pindah Prodi", "en": "Switched Majors"},
+  "subtitle": {"id": "Dari {prodi} ke jalan yang baru", "en": "From {prodi} to a new path"},
+  "text": {"id": "Setelah berbulan-bulan merasa salah jurusan, {name} akhirnya berani bilang ke orang tua. Ibu diam lama, lalu bilang: \"Yang penting kamu bahagia, Nak.\" Kamu mengisi formulir pindah prodi (5 lembar, 2 materai) dan memulai lagi dari semester 1, kali ini dengan pilihanmu sendiri.", "en": "After months of feeling you picked the wrong major, {name} finally tells their parents. Mom is silent for a long time, then says: \"As long as you're happy, kid.\" You fill out the transfer form (5 pages, 2 duty stamps) and start over from semester 1, this time on your own terms."}
+ },
+ "rawat": {
+  "tone": "care",
+  "title": {"id": "Rehat: Rawat Inap di RSJ", "en": "Time Out: Admitted to a Psychiatric Hospital"},
+  "subtitle": {"id": "Pulih juga sebuah pencapaian", "en": "Recovery is an achievement too"},
+  "text": {"id": "Suatu malam semuanya terasa terlalu berat. Sari dan teman-temanmu menyadari ada yang tidak beres, lalu mengantarmu ke rumah sakit jiwa. Di sana {name} dirawat, tidur cukup untuk pertama kalinya dalam berbulan-bulan, dan belajar bahwa minta tolong bukan tanda lemah. Kampus bisa menunggu. Kamu lebih penting dari IPK.", "en": "One night everything felt too heavy. Sari and your friends noticed something was wrong and took you to a psychiatric hospital. There, {name} got treatment, slept properly for the first time in months, and learned that asking for help isn't weakness. Campus can wait. You matter more than your GPA."}
+ },
+ "padam": {
+  "tone": "sad",
+  "title": {"id": "Lampu Kamar yang Padam", "en": "The Light That Went Out"},
+  "subtitle": {"id": "Tidak ada yang sempat bertanya kabarmu", "en": "No one asked how you were doing in time"},
+  "text": {"id": "Lampu kamar kos {name} tidak menyala lagi. Grup kelas ramai menanyakan kabar, tapi tak ada balasan. Di wisuda angkatanmu, ada satu kursi yang dibiarkan kosong. Seandainya ada yang bertanya lebih awal. Seandainya kamu tahu kamu boleh bercerita.", "en": "The light in {name}'s boarding room never came on again. The class group chat kept asking how you were, but no reply came. At your cohort's graduation, one seat was left empty. If only someone had asked sooner. If only you'd known you were allowed to talk about it."}
+ }
+}

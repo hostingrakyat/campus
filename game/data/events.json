@@ -1,0 +1,2569 @@
+[
+ {
+  "id": "ospek",
+  "speaker": "senior",
+  "when": {
+   "sem_max": 1,
+   "week": 1
+  },
+  "text": {
+   "id": "Selamat datang, Maba! Gue Bang Jarwo, semester 13. Satu tips dari gue: jangan jadi kayak gue.",
+   "en": "Welcome, freshman! I'm Bang Jarwo, 13th semester. One tip from me: don't end up like me."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Siap, Bang!",
+     "en": "Yes, sir!"
+    },
+    "fx": {
+     "social": 5
+    },
+    "result": {
+     "id": "Bang Jarwo menepuk pundakmu. \"Semangat. Nanti juga ngerti.\"",
+     "en": "Bang Jarwo pats your shoulder. \"Hang in there. You'll get it eventually.\""
+    }
+   },
+   {
+    "label": {
+     "id": "Bang, kok bisa semester 13?",
+     "en": "How are you in semester 13?"
+    },
+    "fx": {
+     "mental": 3,
+     "social": 2
+    },
+    "result": {
+     "id": "\"Panjang ceritanya. Dospem gue dinas dari 2019.\"",
+     "en": "\"Long story. My advisor's been on a work trip since 2019.\""
+    }
+   }
+  ],
+  "force": true,
+  "priority": 50
+ },
+ {
+  "id": "bestie",
+  "speaker": "bestie",
+  "when": {
+   "sem_max": 1,
+   "week": 2
+  },
+  "text": {
+   "id": "Hai! Aku Sari, kita satu kelompok ospek kemarin. Mau gabung grup belajar bareng?",
+   "en": "Hi! I'm Sari, we were in the same orientation group. Want to join our study group?"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Gas, temenan!",
+     "en": "Let's be friends!"
+    },
+    "fx": {
+     "social": 8,
+     "mental": 4
+    },
+    "result": {
+     "id": "Kamu resmi punya bestie. Hidup terasa sedikit lebih ringan.",
+     "en": "You officially have a bestie. Life feels a little lighter."
+    },
+    "set": [
+     "bestie"
+    ]
+   },
+   {
+    "label": {
+     "id": "Aku agak introvert...",
+     "en": "I'm kind of an introvert..."
+    },
+    "fx": {
+     "social": 3,
+     "mental": 2
+    },
+    "result": {
+     "id": "Sari tetap memasukkanmu ke grup. \"Nggak usah aktif, yang penting ada.\"",
+     "en": "Sari adds you to the group anyway. \"You don't have to talk, just be there.\""
+    },
+    "set": [
+     "bestie"
+    ]
+   }
+  ],
+  "force": true,
+  "priority": 40
+ },
+ {
+  "id": "mental_warning",
+  "speaker": "bestie",
+  "when": {
+   "mental_max": 25,
+   "not_flags": [
+    "warned"
+   ]
+  },
+  "text": {
+   "id": "{name}, kamu kelihatan capek banget akhir-akhir ini. Mau cerita? UPT Konseling kampus gratis lho, aku temenin.",
+   "en": "{name}, you've looked really exhausted lately. Want to talk? The campus counseling unit is free, I'll come with you."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Iya... temenin aku ke konseling.",
+     "en": "Yeah... come with me to counseling."
+    },
+    "fx": {
+     "mental": 22
+    },
+    "result": {
+     "id": "Bu Laras mendengarkan tanpa menghakimi. Ternyata cerita itu melegakan. (Kamu bisa pilih aksi Konseling Kampus kapan saja di slot siang.)",
+     "en": "Bu Laras listens without judging. Talking actually helps. (You can pick Campus Counseling any time in the afternoon slot.)"
+    },
+    "set": [
+     "pernah_konseling"
+    ]
+   },
+   {
+    "label": {
+     "id": "Aku baik-baik aja kok.",
+     "en": "I'm fine, really."
+    },
+    "fx": {
+     "social": 3
+    },
+    "result": {
+     "id": "\"Oke... tapi aku di sini ya kalau kamu butuh.\" Tolong jaga energi & mentalmu.",
+     "en": "\"Okay... but I'm here if you need me.\" Please watch your energy and mental health."
+    }
+   }
+  ],
+  "force": true,
+  "priority": 100,
+  "once": false,
+  "sets_warned": true
+ },
+ {
+  "id": "dospem_assigned",
+  "speaker": "dekan",
+  "when": {
+   "skripsi": true,
+   "not_flags": [
+    "dospem_known"
+   ]
+  },
+  "text": {
+   "id": "SK Pembimbing keluar! Dosen pembimbing skripsimu: {dospem}. Semoga beruntung.",
+   "en": "The advisor decree is out! Your thesis advisor: {dospem}. Good luck."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Bismillah.",
+     "en": "Here goes nothing."
+    },
+    "fx": {
+     "mental": -2
+    },
+    "result": {
+     "id": "Mulai sekarang ada aksi Garap Skripsi dan Bimbingan Dospem (siang). Draf harus ditulis, lalu di-ACC.",
+     "en": "You can now pick Write Thesis and Advisor Meeting (afternoon). Write the draft, then get it approved."
+    },
+    "set": [
+     "dospem_known"
+    ]
+   }
+  ],
+  "force": true,
+  "priority": 60
+ },
+ {
+  "id": "sidang",
+  "speaker": "dekan",
+  "when": {
+   "flags": [
+    "sidang_ready"
+   ]
+  },
+  "text": {
+   "id": "SIDANG SKRIPSI. Penguji membolak-balik draftmu lalu bertanya: \"Kenapa kamu memilih metode ini?\"",
+   "en": "THESIS DEFENSE. The examiner flips through your draft and asks: \"Why did you choose this method?\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Jelaskan dengan tenang & runtut",
+     "en": "Explain calmly and clearly"
+    },
+    "fx": {
+     "mental": 5
+    },
+    "result": {
+     "id": "\"Baik. Selamat, Anda LULUS sidang!\" Kamu hampir pingsan karena lega.",
+     "en": "\"Very well. Congratulations, you PASSED!\" You nearly faint from relief."
+    },
+    "fail_result": {
+     "id": "\"Konsepnya belum matang. Revisi mayor, sidang ulang.\"",
+     "en": "\"The concept isn't ready. Major revisions, defend again.\""
+    },
+    "p": 0.65,
+    "p_bonus": {
+     "knowledge": 0.02,
+     "rel": 0.02
+    },
+    "fail_fx": {
+     "acc": -20,
+     "mental": -8
+    },
+    "unset": [
+     "sidang_ready"
+    ]
+   },
+   {
+    "label": {
+     "id": "Jurus pamungkas: \"Itu limitasi penelitian, Pak/Bu.\"",
+     "en": "Ultimate move: \"That's a limitation of the study.\""
+    },
+    "fx": {
+     "mental": 5
+    },
+    "result": {
+     "id": "Penguji tertawa. \"Jawaban klasik. Oke, lulus dengan revisi minor.\"",
+     "en": "The examiner laughs. \"Classic answer. Fine, pass with minor revisions.\""
+    },
+    "fail_result": {
+     "id": "\"Semua jadi limitasi kalau begitu. Sidang ulang.\"",
+     "en": "\"Then everything's a limitation. Defend again.\""
+    },
+    "p": 0.45,
+    "p_bonus": {
+     "social": 0.005,
+     "rel": 0.02
+    },
+    "fail_fx": {
+     "acc": -20,
+     "mental": -10
+    },
+    "unset": [
+     "sidang_ready"
+    ]
+   }
+  ],
+  "force": true,
+  "priority": 90,
+  "once": false
+ },
+ {
+  "id": "kkn_start",
+  "speaker": "kades",
+  "when": {
+   "has_kkn": true,
+   "week_max": 2
+  },
+  "text": {
+   "id": "Selamat datang di Desa Sukamaju, adik-adik KKN! Kami butuh program kerja. Sinyal cuma ada di atas pohon jambu.",
+   "en": "Welcome to Sukamaju Village, KKN students! We need a work program. The only signal is on top of the guava tree."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Proker ambisius: digitalisasi desa!",
+     "en": "Ambitious: digitize the village!"
+    },
+    "fx": {
+     "social": 8,
+     "energy": -12,
+     "rel": 1
+    },
+    "result": {
+     "id": "Warga antusias. Kamu naik pohon jambu tiap hari buat upload laporan.",
+     "en": "The villagers are thrilled. You climb the guava tree daily to upload reports."
+    },
+    "set": [
+     "kkn_ok"
+    ]
+   },
+   {
+    "label": {
+     "id": "Proker realistis: plang nama gang",
+     "en": "Realistic: street name signs"
+    },
+    "fx": {
+     "social": 5,
+     "mental": 4
+    },
+    "result": {
+     "id": "Plang selesai dalam 3 hari. Warga senang, kamu bisa tidur.",
+     "en": "Signs done in 3 days. Villagers happy, you can sleep."
+    },
+    "set": [
+     "kkn_ok"
+    ]
+   }
+  ],
+  "force": true,
+  "priority": 55
+ },
+ {
+  "id": "phk",
+  "speaker": "ayah",
+  "when": {
+   "flags": [
+    "phk_new"
+   ]
+  },
+  "text": {
+   "id": "\"Nak... Ayah kena PHK. Pabriknya tutup. Mulai semester ini Ayah belum bisa bayar UKT-mu. Kiriman juga cuma bisa sedikit.\"",
+   "en": "\"Kid... Dad got laid off. The factory closed. Starting this semester I can't pay your tuition. I can only send a little each month.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "\"Aku bakal cari kerja sendiri, Yah.\"",
+     "en": "\"I'll find a job myself, Dad.\""
+    },
+    "fx": {
+     "mental": -5
+    },
+    "result": {
+     "id": "Ayah terdiam lama. \"Maafin Ayah ya.\" Mulai sekarang UKT & hidupmu tanggung sendiri. Cek Papan Lowongan.",
+     "en": "Dad is quiet for a long time. \"I'm sorry.\" From now on, tuition and living costs are on you. Check the Job Board."
+    },
+    "set": [
+     "mandiri"
+    ],
+    "unset": [
+     "phk_new"
+    ]
+   },
+   {
+    "label": {
+     "id": "\"...Iya, Yah. Nggak apa-apa.\"",
+     "en": "\"...Okay, Dad. It's fine.\""
+    },
+    "fx": {
+     "mental": -10
+    },
+    "result": {
+     "id": "Kamu menutup telepon dan menatap langit-langit kos lama sekali. Opsi: kerja part-time, banding UKT, beasiswa, atau cuti.",
+     "en": "You hang up and stare at the ceiling for a long time. Options: part-time work, tuition appeal, scholarship, or a leave semester."
+    },
+    "unset": [
+     "phk_new"
+    ]
+   }
+  ],
+  "force": true,
+  "priority": 200
+ },
+ {
+  "id": "ukt_naik",
+  "speaker": "siakad",
+  "when": {
+   "sem_min": 2,
+   "sem_max": 6,
+   "week_min": 3
+  },
+  "text": {
+   "id": "PENGUMUMAN: UKT semester depan naik 25% \"demi peningkatan mutu layanan\". Mahasiswa geram, BEM siap demo.",
+   "en": "ANNOUNCEMENT: Next semester's tuition rises 25% \"to improve service quality\". Students are furious; the student union plans a protest."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ikut demo!",
+     "en": "Join the protest!"
+    },
+    "fx": {
+     "social": 8,
+     "energy": -10,
+     "mental": 4
+    },
+    "result": {
+     "id": "Aksi damai ribuan mahasiswa viral. Kenaikan UKT DIBATALKAN!",
+     "en": "A peaceful protest of thousands goes viral. The tuition hike is CANCELLED!"
+    },
+    "fail_result": {
+     "id": "Demo diterima Rektor, \"akan dikaji\". Kenaikan tetap berlaku.",
+     "en": "The rector receives the protesters, \"it will be reviewed\". The hike goes ahead."
+    },
+    "p": 0.45,
+    "p_bonus": {
+     "social": 0.004
+    },
+    "fail_fx": {
+     "ukt_mult": 1.25,
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Pasrah, rebahan saja",
+     "en": "Give up, lie down"
+    },
+    "fx": {
+     "ukt_mult": 1.25,
+     "mental": -3
+    },
+    "result": {
+     "id": "UKT naik. Rebahan tidak menurunkan UKT, ternyata.",
+     "en": "Tuition went up. Lying down doesn't lower tuition, it turns out."
+    }
+   }
+  ],
+  "weight": 1.2
+ },
+ {
+  "id": "read_doang",
+  "speaker": "dosen_read",
+  "when": {
+   "sem_max": 6
+  },
+  "text": {
+   "id": "Kamu chat Pak Haryo minta jadwal kuis susulan. Centang biru. Tiga hari. Satu minggu. Masih centang biru.",
+   "en": "You message Pak Haryo about a make-up quiz. Blue ticks. Three days. One week. Still blue ticks."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Chat lagi dengan salam super sopan",
+     "en": "Message again, extra polite"
+    },
+    "fx": {
+     "rel": 1,
+     "bonus": 1
+    },
+    "result": {
+     "id": "Dibalas: \"Ok.\" Hanya \"Ok.\" Tapi itu cukup.",
+     "en": "Reply: \"Ok.\" Just \"Ok.\" But it's enough."
+    },
+    "fail_result": {
+     "id": "Di-read lagi. Kali ini beliau sempat ganti foto profil.",
+     "en": "Read again. This time he even updated his profile picture."
+    },
+    "p": 0.5,
+    "fail_fx": {
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Datangi langsung ruangannya",
+     "en": "Go to his office in person"
+    },
+    "fx": {
+     "energy": -8,
+     "bonus": 1.5
+    },
+    "result": {
+     "id": "Beruntung, beliau ada! Urusan beres dalam 2 menit.",
+     "en": "Lucky, he's there! Sorted in 2 minutes."
+    },
+    "fail_result": {
+     "id": "Pintu terkunci. Tulisan \"Sedang Rapat\" tertempel sejak 2021.",
+     "en": "Locked door. A \"In a Meeting\" sign has hung there since 2021."
+    },
+    "p": 0.4,
+    "fail_fx": {
+     "energy": -8,
+     "mental": -5
+    }
+   }
+  ],
+  "weight": 1.4
+ },
+ {
+  "id": "buku_wajib",
+  "speaker": "dosen_buku",
+  "when": {
+   "sem_max": 6
+  },
+  "text": {
+   "id": "\"Buku saya edisi ke-7 wajib dibeli. 150 ribu. Yang tidak punya, tidak boleh ikut remedial.\"",
+   "en": "\"My textbook, 7th edition, is mandatory. 150K. No book, no remedial exam.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Beli bukunya (150 koin)",
+     "en": "Buy the book (150 coins)"
+    },
+    "fx": {
+     "coins": -150,
+     "bonus": 3
+    },
+    "result": {
+     "id": "Isinya sama persis dengan edisi 6. Cuma ganti cover dan harga.",
+     "en": "It's identical to the 6th edition. Only the cover and price changed."
+    },
+    "set": [
+     "buku"
+    ]
+   },
+   {
+    "label": {
+     "id": "Fotokopi punya teman (30 koin)",
+     "en": "Photocopy a friend's (30 coins)"
+    },
+    "fx": {
+     "coins": -30
+    },
+    "result": {
+     "id": "Aman. Kamu menghemat 120 ribu.",
+     "en": "Safe. You saved 120K."
+    },
+    "fail_result": {
+     "id": "Ketahuan! \"Kamu tidak menghargai karya intelektual saya.\"",
+     "en": "Caught! \"You don't respect my intellectual work.\""
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "coins": -30,
+     "bonus": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Lapor ke prodi",
+     "en": "Report it to the department"
+    },
+    "fx": {
+     "rel": -1
+    },
+    "result": {
+     "id": "Prodi menegur beliau. Kewajiban dicabut, tapi beliau ingat wajahmu.",
+     "en": "The department reprimands him. Mandate dropped, but he remembers your face."
+    },
+    "fail_result": {
+     "id": "Laporan \"sedang diproses\". Nilaimu juga \"sedang diproses\".",
+     "en": "Report \"being processed\". Your grade is also \"being processed\"."
+    },
+    "p": 0.3,
+    "p_bonus": {
+     "rel": 0.04
+    },
+    "fail_fx": {
+     "rel": -2,
+     "bonus": -3,
+     "mental": -5
+    }
+   }
+  ]
+ },
+ {
+  "id": "dosen_telat",
+  "speaker": "dosen_killer",
+  "when": {},
+  "text": {
+   "id": "Dosen killer masuk kelas 45 menit telat. Lalu mengusir mahasiswa yang telat 2 menit.",
+   "en": "The strict lecturer arrives 45 minutes late. Then kicks out a student who was 2 minutes late."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Diam, catat dalam hati",
+     "en": "Stay quiet, note it mentally"
+    },
+    "fx": {
+     "mental": -3
+    },
+    "result": {
+     "id": "Kamu menulis di buku: \"Sabar itu SKS tak terlihat.\"",
+     "en": "You write in your notebook: \"Patience is an invisible credit unit.\""
+    }
+   },
+   {
+    "label": {
+     "id": "Bisik-bisik ke teman",
+     "en": "Whisper to a friend"
+    },
+    "fx": {
+     "social": 3
+    },
+    "result": {
+     "id": "Temanmu ngakak tanpa suara. Bonding tercipta.",
+     "en": "Your friend laughs silently. A bond is formed."
+    },
+    "fail_result": {
+     "id": "\"KAMU yang ngobrol, keluar!\" Absenmu dicoret.",
+     "en": "\"YOU, the one talking, out!\" Your attendance is crossed out."
+    },
+    "p": 0.7,
+    "fail_fx": {
+     "attend": -1,
+     "bonus": -2,
+     "mental": -5
+    }
+   }
+  ]
+ },
+ {
+  "id": "kelas_kosong",
+  "speaker": "siakad",
+  "when": {},
+  "text": {
+   "id": "Dosen tidak datang. Info di grup: \"Kuliah diganti tugas resume 20 halaman, kumpul besok pagi.\"",
+   "en": "The lecturer doesn't show up. Group chat: \"Class replaced with a 20-page summary, due tomorrow morning.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Kerjain sekarang",
+     "en": "Do it now"
+    },
+    "fx": {
+     "energy": -10,
+     "tugas": 1
+    },
+    "result": {
+     "id": "Selesai jam 2 pagi. Tangan pegal, hati bangga.",
+     "en": "Done at 2 a.m. Sore hands, proud heart."
+    }
+   },
+   {
+    "label": {
+     "id": "Copas dari kating, edit dikit",
+     "en": "Copy a senior's, tweak it"
+    },
+    "fx": {
+     "tugas": 0.5,
+     "mental": 2
+    },
+    "result": {
+     "id": "Lolos! Dosennya juga nggak baca.",
+     "en": "It passed! The lecturer didn't read it either."
+    },
+    "fail_result": {
+     "id": "Ketahuan: nama kating masih ada di header.",
+     "en": "Caught: the senior's name was still in the header."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "bonus": -4,
+     "mental": -4
+    }
+   }
+  ]
+ },
+ {
+  "id": "siakad_down",
+  "speaker": "siakad",
+  "when": {},
+  "text": {
+   "id": "SIAKAD error 504 tepat 5 menit sebelum deadline upload tugas.",
+   "en": "The academic portal throws a 504 error exactly 5 minutes before the upload deadline."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Kirim via email + screenshot error",
+     "en": "Email it with an error screenshot"
+    },
+    "fx": {},
+    "result": {
+     "id": "Dosen menerima. Screenshot adalah senjata mahasiswa.",
+     "en": "The lecturer accepts it. Screenshots are a student's weapon."
+    },
+    "fail_result": {
+     "id": "\"Itu bukan urusan saya.\" Tugas dianggap tidak dikumpul.",
+     "en": "\"Not my problem.\" Assignment marked as missing."
+    },
+    "p": 0.65,
+    "fail_fx": {
+     "tugas": -1.5,
+     "mental": -6
+    }
+   },
+   {
+    "label": {
+     "id": "Refresh 200 kali",
+     "en": "Refresh 200 times"
+    },
+    "fx": {
+     "mental": 3
+    },
+    "result": {
+     "id": "Masuk di detik ke-59! Adrenalin level dewa.",
+     "en": "Uploaded at second 59! God-tier adrenaline."
+    },
+    "fail_result": {
+     "id": "Server baru pulih jam 00.01. Telat 1 menit.",
+     "en": "The server recovers at 00:01. One minute late."
+    },
+    "p": 0.35,
+    "fail_fx": {
+     "tugas": -1.5,
+     "mental": -8
+    }
+   }
+  ],
+  "weight": 1.3
+ },
+ {
+  "id": "tu_besok",
+  "speaker": "tu",
+  "when": {},
+  "text": {
+   "id": "Kamu butuh tanda tangan surat aktif kuliah. Pak Darto: \"Besok aja ya, Dik. Bapak lagi istirahat.\" (Ini jam 10.15.)",
+   "en": "You need a signed proof-of-enrollment letter. Pak Darto: \"Come back tomorrow. I'm on my break.\" (It's 10:15 a.m.)"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Balik besok",
+     "en": "Come back tomorrow"
+    },
+    "fx": {
+     "energy": -6
+    },
+    "result": {
+     "id": "Besoknya beres! Sebuah keajaiban birokrasi.",
+     "en": "Done the next day! A bureaucratic miracle."
+    },
+    "fail_result": {
+     "id": "Besoknya: \"Yang tanda tangan lagi cuti, Dik.\"",
+     "en": "Next day: \"The signatory is on leave.\""
+    },
+    "p": 0.5,
+    "fail_fx": {
+     "energy": -6,
+     "mental": -5
+    }
+   },
+   {
+    "label": {
+     "id": "Bawakan gorengan buat Pak Darto",
+     "en": "Bring fritters for Pak Darto"
+    },
+    "fx": {
+     "coins": -20,
+     "social": 2,
+     "rel": 1
+    },
+    "result": {
+     "id": "Langsung ditandatangani. Gorengan adalah kunci birokrasi.",
+     "en": "Signed instantly. Fritters are the key to bureaucracy."
+    },
+    "fail_result": {
+     "id": "Gorengannya dimakan. Suratnya tetap besok.",
+     "en": "He eats the fritters. The letter is still tomorrow."
+    },
+    "p": 0.85,
+    "fail_fx": {
+     "coins": -20,
+     "mental": -3
+    }
+   }
+  ],
+  "weight": 1.3,
+  "once": false
+ },
+ {
+  "id": "cap_basah",
+  "speaker": "tu",
+  "when": {
+   "sem_min": 2
+  },
+  "text": {
+   "id": "Legalisir harus cap basah, 3 rangkap, pakai map biru tua. \"Bukan biru muda ya, Dik.\"",
+   "en": "Certification requires wet stamps, 3 copies, in a dark blue folder. \"Not light blue.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Beli map biru tua",
+     "en": "Buy a dark blue folder"
+    },
+    "fx": {
+     "coins": -10,
+     "energy": -5
+    },
+    "result": {
+     "id": "Diterima! Setelah antre 2 jam.",
+     "en": "Accepted! After a 2-hour queue."
+    }
+   },
+   {
+    "label": {
+     "id": "Nekat pakai map biru muda",
+     "en": "Risk the light blue folder"
+    },
+    "fx": {
+     "mental": 3
+    },
+    "result": {
+     "id": "Lolos! Pak Darto sedang tidak pakai kacamata.",
+     "en": "It passed! Pak Darto wasn't wearing his glasses."
+    },
+    "fail_result": {
+     "id": "Ditolak. \"Ulang besok, Dik.\"",
+     "en": "Rejected. \"Try again tomorrow.\""
+    },
+    "p": 0.3,
+    "fail_fx": {
+     "mental": -5,
+     "energy": -5
+    }
+   }
+  ]
+ },
+ {
+  "id": "akreditasi",
+  "speaker": "dekan",
+  "when": {},
+  "text": {
+   "id": "Kampus mau akreditasi! Semua mahasiswa wajib pakai almamater dan tersenyum ke asesor. Toilet tiba-tiba direnovasi.",
+   "en": "Accreditation visit! Everyone must wear the campus jacket and smile at the assessors. The toilets are suddenly renovated."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Jadi \"mahasiswa teladan\" dadakan",
+     "en": "Be an instant \"model student\""
+    },
+    "fx": {
+     "rel": 2,
+     "energy": -6
+    },
+    "result": {
+     "id": "Asesor terkesan. Dekan ingat namamu (salah eja, tapi tetap).",
+     "en": "The assessors are impressed. The dean remembers your name (misspelled, but still)."
+    }
+   },
+   {
+    "label": {
+     "id": "Kabur ke kantin",
+     "en": "Escape to the canteen"
+    },
+    "fx": {
+     "mental": 3
+    },
+    "result": {
+     "id": "Kantin sepi. Surga.",
+     "en": "The canteen is empty. Paradise."
+    }
+   }
+  ]
+ },
+ {
+  "id": "dosen_curhat",
+  "speaker": "dosen_killer",
+  "when": {
+   "sem_min": 2
+  },
+  "text": {
+   "id": "Di akhir kelas, dosen killer tiba-tiba curhat: dosen juga tenggelam di laporan BKD, akreditasi, dan rapat tanpa akhir.",
+   "en": "After class, the strict lecturer suddenly vents: lecturers are drowning in workload reports, accreditation and endless meetings too."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Dengarkan dengan empati",
+     "en": "Listen with empathy"
+    },
+    "fx": {
+     "rel": 2,
+     "mental": 2
+    },
+    "result": {
+     "id": "Ternyata dosen juga korban sistem. Beliau tersenyum untuk pertama kalinya.",
+     "en": "Turns out lecturers are victims of the system too. She smiles for the first time."
+    }
+   },
+   {
+    "label": {
+     "id": "Main HP diam-diam",
+     "en": "Scroll your phone secretly"
+    },
+    "fx": {},
+    "result": {
+     "id": "Kamu melewatkan momen langka itu.",
+     "en": "You missed a rare moment."
+    }
+   }
+  ]
+ },
+ {
+  "id": "dosen_wa_malam",
+  "speaker": "dosen_read",
+  "when": {
+   "sem_min": 3
+  },
+  "text": {
+   "id": "Jam 23.07, pesan masuk: \"Besok jam 7 pagi ke ruangan saya.\" Tanpa konteks.",
+   "en": "11:07 p.m., a message arrives: \"Come to my office at 7 a.m. tomorrow.\" No context."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Datang jam 6.45",
+     "en": "Show up at 6:45"
+    },
+    "fx": {
+     "energy": -10,
+     "rel": 2
+    },
+    "result": {
+     "id": "Beliau datang jam 10. Tapi senang kamu rajin.",
+     "en": "He arrives at 10. But he's pleased you're diligent."
+    },
+    "fail_result": {
+     "id": "Beliau tidak datang sama sekali. Pesan berikutnya: \"Besok saja.\"",
+     "en": "He never shows. Next message: \"Tomorrow instead.\""
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "energy": -10,
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Balas \"Baik, Pak\" lalu overthinking",
+     "en": "Reply \"Yes, sir\" then overthink"
+    },
+    "fx": {
+     "mental": -3,
+     "rel": 1
+    },
+    "result": {
+     "id": "Ternyata cuma minta tolong angkat proyektor.",
+     "en": "Turns out he just needed help carrying a projector."
+    }
+   }
+  ]
+ },
+ {
+  "id": "titip_absen",
+  "speaker": "bestie",
+  "when": {},
+  "text": {
+   "id": "Temanmu nawarin: \"Bolos aja, nanti aku titip absenin.\"",
+   "en": "Your friend offers: \"Skip class, I'll sign you in.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Iya, titip!",
+     "en": "Yes please!"
+    },
+    "fx": {
+     "attend": 1,
+     "energy": 5
+    },
+    "result": {
+     "id": "Aman. Kamu tercatat hadir sambil rebahan.",
+     "en": "Safe. Marked present while lying in bed."
+    },
+    "fail_result": {
+     "id": "Dosen memanggil nama satu-satu. Ketahuan!",
+     "en": "The lecturer calls names one by one. Busted!"
+    },
+    "p": 0.7,
+    "fail_fx": {
+     "attend": -1,
+     "bonus": -3,
+     "mental": -5
+    }
+   },
+   {
+    "label": {
+     "id": "Nggak ah, takut dosa",
+     "en": "No, feels wrong"
+    },
+    "fx": {
+     "mental": -1
+    },
+    "result": {
+     "id": "Integritas terjaga. Kantuk juga terjaga.",
+     "en": "Integrity intact. Sleepiness also intact."
+    }
+   }
+  ]
+ },
+ {
+  "id": "joki",
+  "speaker": "pinjol",
+  "when": {
+   "sem_min": 2
+  },
+  "text": {
+   "id": "DM masuk: \"Jasa joki tugas & skripsi. Murah, amanah, bergaransi. Ready semua prodi.\"",
+   "en": "A DM arrives: \"Assignment & thesis ghostwriting. Cheap, trustworthy, guaranteed. All majors.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Pakai joki tugas (300 koin)",
+     "en": "Hire a ghostwriter (300 coins)"
+    },
+    "fx": {
+     "coins": -300,
+     "tugas": 3,
+     "knowledge": -1
+    },
+    "result": {
+     "id": "Tugas beres... tapi kamu tidak paham isinya sama sekali.",
+     "en": "Assignment done... but you don't understand any of it."
+    },
+    "fail_result": {
+     "id": "Turnitin: 98% plagiat. Kamu dipanggil prodi.",
+     "en": "Plagiarism checker: 98% match. The department summons you."
+    },
+    "p": 0.7,
+    "fail_fx": {
+     "coins": -300,
+     "bonus": -6,
+     "mental": -8
+    }
+   },
+   {
+    "label": {
+     "id": "Report & block",
+     "en": "Report & block"
+    },
+    "fx": {
+     "mental": 2
+    },
+    "result": {
+     "id": "Integritas +100. Tidak ada di stat, tapi kamu tahu.",
+     "en": "Integrity +100. Not on your stats, but you know."
+    }
+   }
+  ]
+ },
+ {
+  "id": "jual_nilai",
+  "speaker": "dosen_buku",
+  "when": {
+   "sem_min": 2,
+   "sem_max": 6
+  },
+  "text": {
+   "id": "Seorang \"oknum\" berbisik: \"Nilai A bisa diatur. Transfer saja, aman.\"",
+   "en": "A shady \"someone\" whispers: \"An A can be arranged. Just transfer the money, it's safe.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Transfer 500 koin",
+     "en": "Transfer 500 coins"
+    },
+    "fx": {
+     "coins": -500,
+     "bonus": 8
+    },
+    "result": {
+     "id": "Nilai \"aman\". Untuk sekarang.",
+     "en": "Grades \"secured\". For now."
+    },
+    "fail_result": {
+     "id": "Kasus jual-beli nilai terbongkar. Semua yang terlibat di-DO.",
+     "en": "The grade-selling scheme is exposed. Everyone involved is expelled."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "coins": -500
+    },
+    "fail_end": "do",
+    "end_reason": "jual_nilai"
+   },
+   {
+    "label": {
+     "id": "Tolak dan laporkan",
+     "en": "Refuse and report"
+    },
+    "fx": {
+     "rel": 2
+    },
+    "result": {
+     "id": "Oknum itu diperiksa. Kampus sedikit lebih bersih.",
+     "en": "The person is investigated. Campus is a little cleaner."
+    },
+    "fail_result": {
+     "id": "Laporanmu \"hilang\" di meja seseorang.",
+     "en": "Your report \"went missing\" on someone's desk."
+    },
+    "p": 0.55,
+    "fail_fx": {
+     "rel": -1,
+     "mental": -4
+    }
+   }
+  ],
+  "weight": 0.6
+ },
+ {
+  "id": "kelompok_beban",
+  "speaker": "beban",
+  "when": {},
+  "text": {
+   "id": "Tugas kelompok 5 orang. Dimas baru muncul H-1 presentasi: \"Bagian gue yang mana ya?\"",
+   "en": "A 5-person group project. Dimas shows up the day before the presentation: \"So which part is mine?\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Kerjain sendiri aja",
+     "en": "Just do it yourself"
+    },
+    "fx": {
+     "tugas": 1.5,
+     "energy": -15,
+     "mental": -6
+    },
+    "result": {
+     "id": "Selesai. Nama Dimas tetap tercantum. Hidup memang begitu.",
+     "en": "Done. Dimas's name is still on it. That's life."
+    }
+   },
+   {
+    "label": {
+     "id": "Coret namanya dari laporan",
+     "en": "Remove his name from the report"
+    },
+    "fx": {
+     "bonus": 1,
+     "social": -2
+    },
+    "result": {
+     "id": "Dosen mengapresiasi kejujuranmu.",
+     "en": "The lecturer appreciates your honesty."
+    },
+    "fail_result": {
+     "id": "Grup jadi drama. Dimas bikin story galau.",
+     "en": "Group drama ensues. Dimas posts a sad story."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "social": -6,
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Kasih bagian \"bawa laptop\"",
+     "en": "Give him \"bring the laptop\" duty"
+    },
+    "fx": {
+     "social": 3,
+     "mental": -2
+    },
+    "result": {
+     "id": "Dimas bawa laptop. Tanpa charger.",
+     "en": "Dimas brings the laptop. Without the charger."
+    }
+   }
+  ],
+  "weight": 1.3
+ },
+ {
+  "id": "ambis",
+  "speaker": "ambis",
+  "when": {},
+  "text": {
+   "id": "\"Kamu udah baca 3 jurnal buat minggu depan? Aku udah 12.\"",
+   "en": "\"Have you read the 3 journal papers for next week? I've read 12.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ikut belajar bareng Nadia",
+     "en": "Study with Nadia"
+    },
+    "fx": {
+     "knowledge": 1.5,
+     "energy": -8,
+     "social": 2
+    },
+    "result": {
+     "id": "Ternyata Nadia baik. Cuma ambisnya volume maksimal.",
+     "en": "Turns out Nadia is nice. Her ambition is just on max volume."
+    }
+   },
+   {
+    "label": {
+     "id": "\"Aku baca 0. Dan aku tenang.\"",
+     "en": "\"I've read 0. And I'm at peace.\""
+    },
+    "fx": {
+     "mental": 4
+    },
+    "result": {
+     "id": "Nadia menatapmu seperti melihat alien.",
+     "en": "Nadia stares at you like you're an alien."
+    }
+   }
+  ]
+ },
+ {
+  "id": "ketua_hima",
+  "speaker": "senior",
+  "when": {
+   "sem_min": 2,
+   "sem_max": 5,
+   "social_min": 50
+  },
+  "text": {
+   "id": "Kamu dicalonkan jadi Ketua Himpunan Mahasiswa!",
+   "en": "You've been nominated for Student Association President!"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Maju!",
+     "en": "Run for it!"
+    },
+    "fx": {
+     "social": 10,
+     "energy": -10,
+     "rel": 2,
+     "mental": -3
+    },
+    "result": {
+     "id": "Terpilih! Jadwal rapatmu sekarang 3x lipat.",
+     "en": "Elected! Your meeting schedule just tripled."
+    },
+    "set": [
+     "ketua"
+    ]
+   },
+   {
+    "label": {
+     "id": "Jadi anggota aja",
+     "en": "Stay a member"
+    },
+    "fx": {
+     "mental": 2
+    },
+    "result": {
+     "id": "Kamu tetap aktif tanpa beban jabatan.",
+     "en": "You stay active without the burden of office."
+    }
+   }
+  ]
+ },
+ {
+  "id": "lomba",
+  "speaker": "dosen_revisi",
+  "when": {
+   "sem_min": 2,
+   "sem_max": 6,
+   "ipk_min": 3.2
+  },
+  "text": {
+   "id": "Seorang dosen mengajakmu ikut lomba nasional. Deadline proposal: minggu depan.",
+   "en": "A lecturer invites you to a national competition. Proposal deadline: next week."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Gas!",
+     "en": "Let's go!"
+    },
+    "fx": {
+     "energy": -20,
+     "coins": 1000,
+     "rel": 3,
+     "bonus": 2
+    },
+    "result": {
+     "id": "JUARA 2 NASIONAL! Hadiah 1 juta dan sertifikat.",
+     "en": "2ND PLACE NATIONALLY! 1 million prize and a certificate."
+    },
+    "fail_result": {
+     "id": "Belum juara, tapi dosen mulai kenal kamu.",
+     "en": "No prize, but the lecturer knows you now."
+    },
+    "p": 0.4,
+    "p_bonus": {
+     "knowledge": 0.02
+    },
+    "fail_fx": {
+     "energy": -20,
+     "rel": 1,
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Skip, fokus kuliah",
+     "en": "Skip, focus on classes"
+    },
+    "fx": {
+     "knowledge": 0.5
+    },
+    "result": {
+     "id": "Fokus itu juga strategi.",
+     "en": "Focus is also a strategy."
+    }
+   }
+  ]
+ },
+ {
+  "id": "seminar_snack",
+  "speaker": "senior",
+  "when": {},
+  "text": {
+   "id": "Seminar nasional GRATIS! Dapat sertifikat, snack box, dan nasi kotak.",
+   "en": "FREE national seminar! Certificate, snack box and a boxed lunch."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Datang (demi nasi kotak)",
+     "en": "Go (for the boxed lunch)"
+    },
+    "fx": {
+     "energy": -5,
+     "coins": 35,
+     "social": 3,
+     "rel": 1
+    },
+    "result": {
+     "id": "Materinya lumayan. Nasi kotaknya juara.",
+     "en": "The talk was okay. The boxed lunch was champion-tier."
+    }
+   },
+   {
+    "label": {
+     "id": "Skip",
+     "en": "Skip"
+    },
+    "fx": {
+     "energy": 4
+    },
+    "result": {
+     "id": "Kamu tidur siang dengan damai.",
+     "en": "You take a peaceful nap."
+    }
+   }
+  ]
+ },
+ {
+  "id": "grup_drama",
+  "speaker": "ambis",
+  "when": {},
+  "text": {
+   "id": "Grup WhatsApp kelas ribut soal pembagian kelompok. 287 pesan belum dibaca.",
+   "en": "The class WhatsApp group is fighting over group assignments. 287 unread messages."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ikut debat",
+     "en": "Join the debate"
+    },
+    "fx": {
+     "social": -2,
+     "mental": -3
+    },
+    "result": {
+     "id": "Debat selesai tanpa keputusan. Seperti rapat pada umumnya.",
+     "en": "The debate ends with no decision. Like every meeting."
+    }
+   },
+   {
+    "label": {
+     "id": "Mute grup 1 minggu",
+     "en": "Mute the group for a week"
+    },
+    "fx": {
+     "mental": 4
+    },
+    "result": {
+     "id": "Damai.",
+     "en": "Peace."
+    },
+    "fail_result": {
+     "id": "Damai... sampai kamu sadar ketinggalan info kuis.",
+     "en": "Peaceful... until you realize you missed the quiz announcement."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "mental": 2,
+     "bonus": -1.5
+    }
+   }
+  ]
+ },
+ {
+  "id": "ospek_panitia",
+  "speaker": "senior",
+  "when": {
+   "sem_min": 3,
+   "sem_max": 5,
+   "week_max": 2
+  },
+  "text": {
+   "id": "Kamu jadi panitia ospek. Seorang maba bertanya polos: \"Kak, kuliah itu enak nggak?\"",
+   "en": "You're on the orientation committee. A freshman asks innocently: \"Is college fun?\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Jujur",
+     "en": "Be honest"
+    },
+    "fx": {
+     "social": 4
+    },
+    "result": {
+     "id": "Maba itu mengangguk pelan. Kamu baru saja menjadi Bang Jarwo versi baru.",
+     "en": "The freshman nods slowly. You've just become the new Bang Jarwo."
+    }
+   },
+   {
+    "label": {
+     "id": "\"Seru banget kok!\"",
+     "en": "\"It's super fun!\""
+    },
+    "fx": {
+     "mental": 2
+    },
+    "result": {
+     "id": "Bohong demi kebaikan. Kamu tersenyum getir.",
+     "en": "A white lie. You smile bitterly."
+    }
+   }
+  ]
+ },
+ {
+  "id": "glowing",
+  "speaker": "bestie",
+  "when": {
+   "mental_min": 70,
+   "social_min": 50
+  },
+  "text": {
+   "id": "\"Kamu lagi glowing banget sih akhir-akhir ini. Rahasianya apa?\"",
+   "en": "\"You've been glowing lately. What's your secret?\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "\"Tidur cukup & nongkrong secukupnya\"",
+     "en": "\"Enough sleep, enough hangouts\""
+    },
+    "fx": {
+     "mental": 3,
+     "social": 3
+    },
+    "result": {
+     "id": "Social campus balance: unlocked.",
+     "en": "Social campus balance: unlocked."
+    }
+   }
+  ]
+ },
+ {
+  "id": "kucing",
+  "speaker": "narator",
+  "when": {},
+  "text": {
+   "id": "Kucing kampus tidur di atas laptopmu, persis di tombol Delete.",
+   "en": "The campus cat falls asleep on your laptop, right on the Delete key."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Elus-elus",
+     "en": "Pet the cat"
+    },
+    "fx": {
+     "mental": 6,
+     "tugas": -0.5
+    },
+    "result": {
+     "id": "Paragraf terakhirmu hilang, tapi hatimu hangat.",
+     "en": "Your last paragraph is gone, but your heart is warm."
+    }
+   },
+   {
+    "label": {
+     "id": "Pindahkan pelan-pelan",
+     "en": "Gently move it"
+    },
+    "fx": {
+     "mental": 3
+    },
+    "result": {
+     "id": "Si kucing pindah ke tasmu. Kompromi.",
+     "en": "The cat relocates to your bag. A compromise."
+    }
+   }
+  ]
+ },
+ {
+  "id": "flash_sale",
+  "speaker": "narator",
+  "when": {
+   "coins_min": 400
+  },
+  "text": {
+   "id": "Notifikasi tengah malam: FLASH SALE! Hoodie ungu lucu diskon 70%, sisa 3 lagi!",
+   "en": "Midnight notification: FLASH SALE! Cute purple hoodie 70% off, only 3 left!"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Checkout! (khilaf, 250 koin)",
+     "en": "Check out! (impulse, 250 coins)"
+    },
+    "fx": {
+     "coins": -250,
+     "mental": 6,
+     "item": "top_hoodie_ungu"
+    },
+    "result": {
+     "id": "Paket datang 3 hari kemudian. Dompet menangis, hati senang. (Hoodie masuk Lemari.)",
+     "en": "The package arrives 3 days later. Wallet crying, heart happy. (Hoodie added to your Wardrobe.)"
+    },
+    "set": [
+     "khilaf"
+    ]
+   },
+   {
+    "label": {
+     "id": "Tutup aplikasi, tidur",
+     "en": "Close the app, sleep"
+    },
+    "fx": {
+     "mental": -2
+    },
+    "result": {
+     "id": "Kamu kuat. Kamu sigma.",
+     "en": "You're strong. You're sigma."
+    }
+   }
+  ]
+ },
+ {
+  "id": "ibu_telpon",
+  "speaker": "ibu",
+  "when": {
+   "not_flags": [
+    "phk"
+   ]
+  },
+  "text": {
+   "id": "\"Nak, udah makan belum? Kapan pulang? Jangan lupa salat/ibadah ya.\"",
+   "en": "\"Have you eaten, dear? When are you coming home? Don't forget to pray.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Cerita jujur kalau lagi capek",
+     "en": "Honestly say you're tired"
+    },
+    "fx": {
+     "mental": 10
+    },
+    "result": {
+     "id": "Ibu mendengarkan. \"Capek boleh, menyerah jangan dulu.\"",
+     "en": "Mom listens. \"It's okay to be tired, just don't give up yet.\""
+    }
+   },
+   {
+    "label": {
+     "id": "\"Baik-baik aja kok, Bu\"",
+     "en": "\"I'm fine, Mom\""
+    },
+    "fx": {
+     "mental": 3
+    },
+    "result": {
+     "id": "Ibu tahu kamu bohong. Ibu selalu tahu.",
+     "en": "Mom knows you're lying. Moms always know."
+    }
+   }
+  ],
+  "once": false,
+  "weight": 0.8
+ },
+ {
+  "id": "ibu_maaf",
+  "speaker": "ibu",
+  "when": {
+   "flags": [
+    "phk"
+   ]
+  },
+  "text": {
+   "id": "\"Maaf ya, Nak, kiriman bulan ini cuma segini. Ayah masih cari kerja.\"",
+   "en": "\"Sorry, dear, this month's allowance is all we could send. Dad is still job hunting.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "\"Nggak apa-apa, Bu. Aku kerja part-time kok.\"",
+     "en": "\"It's okay, Mom. I work part-time.\""
+    },
+    "fx": {
+     "mental": -2,
+     "social": 2
+    },
+    "result": {
+     "id": "Ibu menangis pelan di telepon. Kamu juga, setelah teleponnya ditutup.",
+     "en": "Mom cries softly on the phone. So do you, after hanging up."
+    }
+   },
+   {
+    "label": {
+     "id": "Kirim balik sedikit uang (100 koin)",
+     "en": "Send a little money back (100 coins)"
+    },
+    "fx": {
+     "coins": -100,
+     "mental": 5
+    },
+    "result": {
+     "id": "\"Kamu sudah besar ya, Nak.\"",
+     "en": "\"You've really grown up, dear.\""
+    }
+   }
+  ]
+ },
+ {
+  "id": "ibu_kos",
+  "speaker": "ibu_kos",
+  "when": {},
+  "text": {
+   "id": "\"Galon kos habis, gantian beli ya. Sekalian token listrik.\"",
+   "en": "\"The water gallon is empty, it's your turn to buy. And the electricity token.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Beli (40 koin)",
+     "en": "Buy it (40 coins)"
+    },
+    "fx": {
+     "coins": -40,
+     "social": 2
+    },
+    "result": {
+     "id": "Bu Endang memberimu pisang goreng sebagai bonus.",
+     "en": "Bu Endang gives you fried bananas as a bonus."
+    }
+   },
+   {
+    "label": {
+     "id": "Pura-pura tidur",
+     "en": "Pretend to be asleep"
+    },
+    "fx": {},
+    "result": {
+     "id": "Berhasil! Anak kamar sebelah yang kena.",
+     "en": "It worked! The kid next door got stuck with it."
+    },
+    "fail_result": {
+     "id": "Bu Endang mengetuk pintu selama 15 menit. Kamu menyerah.",
+     "en": "Bu Endang knocks for 15 minutes. You give in."
+    },
+    "p": 0.5,
+    "fail_fx": {
+     "coins": -40,
+     "mental": -3,
+     "social": -2
+    }
+   }
+  ],
+  "once": false,
+  "weight": 0.7
+ },
+ {
+  "id": "warkop_bon",
+  "speaker": "narator",
+  "when": {
+   "coins_max": 150
+  },
+  "text": {
+   "id": "Mas warkop: \"Bon kamu udah 15 gelas lho, Mas/Mbak.\"",
+   "en": "The warkop owner: \"Your tab is up to 15 coffees, you know.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Bayar setengah (60 koin)",
+     "en": "Pay half (60 coins)"
+    },
+    "fx": {
+     "coins": -60,
+     "social": 2
+    },
+    "result": {
+     "id": "\"Sip, sisanya pas kiriman ya.\"",
+     "en": "\"Cool, the rest when your allowance arrives.\""
+    }
+   },
+   {
+    "label": {
+     "id": "Janji bayar pas kiriman",
+     "en": "Promise to pay later"
+    },
+    "fx": {
+     "social": -2,
+     "mental": -3
+    },
+    "result": {
+     "id": "Mas warkop mengangguk. Matanya tidak.",
+     "en": "He nods. His eyes don't."
+    }
+   }
+  ]
+ },
+ {
+  "id": "pinjol_sms",
+  "speaker": "pinjol",
+  "when": {
+   "sem_min": 2,
+   "coins_max": 250,
+   "not_flags": [
+    "pinjol"
+   ]
+  },
+  "text": {
+   "id": "SMS: \"Butuh dana cepat? DanaKilat cair 5 menit! Tanpa jaminan!\"",
+   "en": "SMS: \"Need cash fast? DanaKilat pays out in 5 minutes! No collateral!\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Pinjam 1.000 koin",
+     "en": "Borrow 1,000 coins"
+    },
+    "fx": {
+     "coins": 1000,
+     "debt": 1500,
+     "mental": -3
+    },
+    "result": {
+     "id": "Cair. Bunganya juga cair. Utang 1.500 ditagih awal semester depan.",
+     "en": "Money's in. So is the interest. 1,500 debt due next semester."
+    },
+    "set": [
+     "pinjol"
+    ]
+   },
+   {
+    "label": {
+     "id": "Hapus SMS",
+     "en": "Delete the SMS"
+    },
+    "fx": {
+     "mental": 1
+    },
+    "result": {
+     "id": "Keputusan finansial terbaik bulan ini.",
+     "en": "Best financial decision of the month."
+    }
+   }
+  ]
+ },
+ {
+  "id": "dc_call",
+  "speaker": "pinjol",
+  "when": {
+   "flags": [
+    "pinjol"
+   ],
+   "coins_max": 300
+  },
+  "text": {
+   "id": "Debt collector DanaKilat menghubungi semua kontakmu. Termasuk dosen pembimbing akademikmu.",
+   "en": "DanaKilat's debt collector contacts everyone in your phone. Including your academic advisor."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Tutup muka pakai bantal",
+     "en": "Hide your face in a pillow"
+    },
+    "fx": {
+     "mental": -10,
+     "rel": -1,
+     "social": -3
+    },
+    "result": {
+     "id": "Pelajaran mahal: pinjol bukan solusi.",
+     "en": "An expensive lesson: loan apps aren't a solution."
+    }
+   }
+  ]
+ },
+ {
+  "id": "pulang_kampung",
+  "speaker": "ibu",
+  "when": {
+   "week": 7
+  },
+  "text": {
+   "id": "Libur tengah semester. Ibu masak rendang. Pulang kampung?",
+   "en": "Mid-semester break. Mom is cooking rendang. Go home?"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Pulang (200 koin)",
+     "en": "Go home (200 coins)"
+    },
+    "fx": {
+     "coins": -200,
+     "mental": 15,
+     "energy": 10
+    },
+    "result": {
+     "id": "Rendang Ibu menyembuhkan segalanya. Hampir.",
+     "en": "Mom's rendang heals everything. Almost."
+    }
+   },
+   {
+    "label": {
+     "id": "Stay, nyicil tugas",
+     "en": "Stay, catch up on work"
+    },
+    "fx": {
+     "tugas": 1.5,
+     "mental": -2
+    },
+    "result": {
+     "id": "Kos sepi. Tugas maju. Rindu juga maju.",
+     "en": "The boarding house is quiet. Work progresses. So does homesickness."
+    }
+   }
+  ]
+ },
+ {
+  "id": "motor_mogok",
+  "speaker": "narator",
+  "when": {},
+  "text": {
+   "id": "Hujan deras, motor matic-mu mogok di depan gerbang kampus.",
+   "en": "Pouring rain, your scooter breaks down at the campus gate."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Dorong ke bengkel (60 koin)",
+     "en": "Push it to a repair shop (60 coins)"
+    },
+    "fx": {
+     "energy": -12,
+     "coins": -60
+    },
+    "result": {
+     "id": "Basah kuyup, tapi motor hidup lagi.",
+     "en": "Soaked, but the scooter lives again."
+    }
+   },
+   {
+    "label": {
+     "id": "Titip satpam, pulang naik ojol",
+     "en": "Leave it with security, take a ride"
+    },
+    "fx": {
+     "coins": -25
+    },
+    "result": {
+     "id": "Pak Satpam menjaga motormu seperti anak sendiri.",
+     "en": "The security guard guards it like his own child."
+    }
+   }
+  ]
+ },
+ {
+  "id": "laptop_rusak",
+  "speaker": "narator",
+  "when": {
+   "sem_min": 2
+  },
+  "text": {
+   "id": "Laptopmu bluescreen pas lagi ngerjain tugas besar. Belum di-save.",
+   "en": "Your laptop bluescreens mid-project. Unsaved."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Servis (400 koin)",
+     "en": "Get it repaired (400 coins)"
+    },
+    "fx": {
+     "coins": -400
+    },
+    "result": {
+     "id": "Hidup lagi. Pelajaran: Ctrl+S tiap 5 detik.",
+     "en": "Back alive. Lesson: Ctrl+S every 5 seconds."
+    }
+   },
+   {
+    "label": {
+     "id": "Pinjam laptop teman",
+     "en": "Borrow a friend's laptop"
+    },
+    "fx": {
+     "tugas": -1,
+     "social": 2
+    },
+    "result": {
+     "id": "Kamu mengulang dari nol di laptop orang. Pahit.",
+     "en": "You redo everything on someone else's laptop. Bitter."
+    }
+   }
+  ]
+ },
+ {
+  "id": "banjir",
+  "speaker": "narator",
+  "when": {},
+  "text": {
+   "id": "Banjir! Kampus diliburkan mendadak.",
+   "en": "Flood! Campus closes unexpectedly."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Syukuri, istirahat",
+     "en": "Be grateful, rest"
+    },
+    "fx": {
+     "energy": 15,
+     "mental": 5
+    },
+    "result": {
+     "id": "Libur dadakan adalah hadiah terindah.",
+     "en": "Surprise holidays are the best gift."
+    }
+   },
+   {
+    "label": {
+     "id": "Tetap belajar online",
+     "en": "Keep studying online"
+    },
+    "fx": {
+     "knowledge": 1
+    },
+    "result": {
+     "id": "Sinyal naik-turun seperti mood dosen.",
+     "en": "The signal goes up and down like a lecturer's mood."
+    }
+   }
+  ]
+ },
+ {
+  "id": "demam",
+  "speaker": "narator",
+  "when": {
+   "mental_max": 45
+  },
+  "text": {
+   "id": "Badanmu demam tinggi. Kata dokter klinik kampus: gejala tifus, harus istirahat.",
+   "en": "You have a high fever. The campus clinic says: typhoid symptoms, you need rest."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Istirahat total (150 koin obat)",
+     "en": "Rest completely (150 coins for meds)"
+    },
+    "fx": {
+     "energy": 30,
+     "mental": 4,
+     "coins": -150,
+     "attend": -1
+    },
+    "result": {
+     "id": "Tubuhmu berterima kasih. Absen bolong satu.",
+     "en": "Your body thanks you. One absence."
+    }
+   },
+   {
+    "label": {
+     "id": "Paksa tetap kuliah",
+     "en": "Force yourself to class"
+    },
+    "fx": {
+     "energy": -15,
+     "mental": -6
+    },
+    "result": {
+     "id": "Kamu hadir secara fisik. Jiwamu di kasur.",
+     "en": "Your body attended. Your soul stayed in bed."
+    }
+   }
+  ]
+ },
+ {
+  "id": "kelas_pengganti",
+  "speaker": "dosen_killer",
+  "when": {
+   "job_slot": "malam"
+  },
+  "text": {
+   "id": "Dosen memindahkan kelas pengganti ke jam 19.00 — tepat jam shift kerjamu. BENTROK!",
+   "en": "The lecturer moves a make-up class to 7 p.m. — exactly your work shift. CLASH!"
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Masuk kelas, izin kerja",
+     "en": "Attend class, skip work"
+    },
+    "fx": {
+     "job_izin": 1,
+     "coins": -150,
+     "knowledge": 0.5
+    },
+    "result": {
+     "id": "Ilmu dapat, gaji kepotong. Bos mencatat izinmu.",
+     "en": "Knowledge gained, pay docked. The boss logs your absence."
+    }
+   },
+   {
+    "label": {
+     "id": "Masuk kerja, bolos kelas",
+     "en": "Go to work, skip class"
+    },
+    "fx": {
+     "attend": -1
+    },
+    "result": {
+     "id": "Kamu dianggap tidak hadir. Kehadiranmu makin tipis.",
+     "en": "Marked absent. Your attendance gets thinner."
+    }
+   }
+  ],
+  "once": false,
+  "weight": 1.2
+ },
+ {
+  "id": "kelas_pengganti_siang",
+  "speaker": "dosen_read",
+  "when": {
+   "job_slot": "siang"
+  },
+  "text": {
+   "id": "Kuliah pengganti dadakan jam 13.00. Kamu ada shift les privat jam segitu.",
+   "en": "Surprise make-up class at 1 p.m. You have a tutoring shift then."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Masuk kelas, izin kerja",
+     "en": "Attend class, skip work"
+    },
+    "fx": {
+     "job_izin": 1,
+     "coins": -150,
+     "knowledge": 0.5
+    },
+    "result": {
+     "id": "Murid lesmu kecewa. Dosen tidak sadar kamu hadir.",
+     "en": "Your student is disappointed. The lecturer didn't notice you came."
+    }
+   },
+   {
+    "label": {
+     "id": "Tetap kerja",
+     "en": "Keep working"
+    },
+    "fx": {
+     "attend": -1
+    },
+    "result": {
+     "id": "Absen bolong satu. Dompet aman.",
+     "en": "One absence. Wallet safe."
+    }
+   }
+  ],
+  "once": false,
+  "weight": 1.2
+ },
+ {
+  "id": "lembur",
+  "speaker": "bos",
+  "when": {
+   "job": true
+  },
+  "text": {
+   "id": "\"Besok lembur ya, pas jam kuliah pagi kamu. Dibayar dobel!\"",
+   "en": "\"Overtime tomorrow, during your morning class. Double pay!\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ambil lembur (+300 koin)",
+     "en": "Take it (+300 coins)"
+    },
+    "fx": {
+     "coins": 300,
+     "attend": -1,
+     "energy": -10
+    },
+    "result": {
+     "id": "Uang masuk. Absen keluar.",
+     "en": "Money in. Attendance out."
+    }
+   },
+   {
+    "label": {
+     "id": "Tolak, kuliah dulu",
+     "en": "Decline, class first"
+    },
+    "fx": {},
+    "result": {
+     "id": "\"Oke, paham. Kuliah yang bener ya.\"",
+     "en": "\"Okay, I get it. Study hard.\""
+    },
+    "fail_result": {
+     "id": "Mas Bram cemberut. Dicatat sebagai izin.",
+     "en": "Mas Bram frowns. Logged as a skipped shift."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "job_izin": 1
+    }
+   }
+  ],
+  "once": false,
+  "weight": 0.9
+ },
+ {
+  "id": "magang",
+  "speaker": "dekan",
+  "when": {
+   "sem_min": 5
+  },
+  "text": {
+   "id": "Tawaran magang berbayar di startup unicorn (katanya). 600 koin, tapi kerjanya kayak karyawan tetap.",
+   "en": "A paid internship at a (supposed) unicorn startup. 600 coins, but they work you like full-time staff."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ambil",
+     "en": "Take it"
+    },
+    "fx": {
+     "coins": 600,
+     "energy": -20,
+     "rel": 1,
+     "mental": -3
+    },
+    "result": {
+     "id": "Pengalaman dapat, CV makin berkilau.",
+     "en": "Experience gained, your CV sparkles."
+    }
+   },
+   {
+    "label": {
+     "id": "Tolak",
+     "en": "Decline"
+    },
+    "fx": {
+     "mental": 2
+    },
+    "result": {
+     "id": "Belum waktunya.",
+     "en": "Not yet."
+    }
+   }
+  ]
+ },
+ {
+  "id": "revisi_font",
+  "speaker": "dosen_revisi",
+  "when": {
+   "skripsi": true,
+   "dospem": "dosen_revisi"
+  },
+  "text": {
+   "id": "Catatan revisi: \"Font Times New Roman 12 diganti Times New Roman 12.\"",
+   "en": "Revision note: \"Change Times New Roman 12 to Times New Roman 12.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ganti... jadi sama",
+     "en": "Change it... to the same"
+    },
+    "fx": {
+     "mental": -2,
+     "acc": 4
+    },
+    "result": {
+     "id": "ACC! Ternyata itu tes kesabaran.",
+     "en": "Approved! It was a patience test."
+    }
+   },
+   {
+    "label": {
+     "id": "Tanya maksudnya",
+     "en": "Ask what she means"
+    },
+    "fx": {},
+    "result": {
+     "id": "\"Oh, maksud saya spasinya.\" Masuk akal.",
+     "en": "\"Oh, I meant the spacing.\" Makes sense."
+    },
+    "fail_result": {
+     "id": "\"Kamu meragukan saya? Ulang Bab 2.\"",
+     "en": "\"Are you questioning me? Redo Chapter 2.\""
+    },
+    "p": 0.5,
+    "fail_fx": {
+     "draft": -6,
+     "mental": -4
+    }
+   }
+  ],
+  "once": false,
+  "weight": 1.5
+ },
+ {
+  "id": "dinas_jenewa",
+  "speaker": "dosen_dinas",
+  "when": {
+   "skripsi": true,
+   "dospem": "dosen_dinas"
+  },
+  "text": {
+   "id": "\"Saya di Jenewa sampai bulan depan. Bimbingan via email saja ya.\"",
+   "en": "\"I'm in Geneva until next month. Let's do supervision by email.\""
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Kirim email bimbingan",
+     "en": "Send the draft by email"
+    },
+    "fx": {
+     "acc": 12
+    },
+    "result": {
+     "id": "Dibalas dari bandara! \"Lanjut.\"",
+     "en": "Reply from the airport! \"Continue.\""
+    },
+    "fail_result": {
+     "id": "Email terpental: inbox penuh.",
+     "en": "Email bounced: inbox full."
+    },
+    "p": 0.45,
+    "fail_fx": {
+     "mental": -4
+    }
+   },
+   {
+    "label": {
+     "id": "Tunggu beliau pulang",
+     "en": "Wait until he's back"
+    },
+    "fx": {
+     "mental": -2
+    },
+    "result": {
+     "id": "Kamu menunggu. Dan menunggu.",
+     "en": "You wait. And wait."
+    }
+   }
+  ],
+  "once": false,
+  "weight": 1.5
+ },
+ {
+  "id": "read_jam2",
+  "speaker": "dosen_read",
+  "when": {
+   "skripsi": true,
+   "dospem": "dosen_read"
+  },
+  "text": {
+   "id": "Jam 2 pagi Pak Haryo online. \"Sedang mengetik...\" lalu berhenti. Pesanmu tetap di-read.",
+   "en": "2 a.m. Pak Haryo is online. \"Typing...\" then it stops. Still left on read."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Kirim stiker kucing memohon",
+     "en": "Send a begging cat sticker"
+    },
+    "fx": {
+     "acc": 10,
+     "mental": 3
+    },
+    "result": {
+     "id": "Dibalas stiker jempol. Itu artinya ACC!",
+     "en": "He replies with a thumbs-up sticker. That's approval!"
+    },
+    "fail_result": {
+     "id": "Stikermu juga di-read.",
+     "en": "Your sticker was also left on read."
+    },
+    "p": 0.45,
+    "fail_fx": {
+     "mental": -5
+    }
+   },
+   {
+    "label": {
+     "id": "Tidur, coba besok",
+     "en": "Sleep, try tomorrow"
+    },
+    "fx": {
+     "energy": 8
+    },
+    "result": {
+     "id": "Keputusan dewasa.",
+     "en": "A mature decision."
+    }
+   }
+  ],
+  "once": false,
+  "weight": 1.5
+ },
+ {
+  "id": "kkn_rebahan",
+  "speaker": "kades",
+  "when": {
+   "has_kkn": true,
+   "week_min": 4
+  },
+  "text": {
+   "id": "Teman KKN-mu cuma rebahan di posko. Proker tinggal 2 minggu lagi.",
+   "en": "Your KKN teammate just lies around at base. The program ends in 2 weeks."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Tegur baik-baik",
+     "en": "Gently call them out"
+    },
+    "fx": {
+     "social": 3
+    },
+    "result": {
+     "id": "Dia malu, lalu ikut bantu. Kerja tim!",
+     "en": "They're embarrassed, then help out. Teamwork!"
+    },
+    "fail_result": {
+     "id": "Dia baper. Posko jadi dingin.",
+     "en": "They take it personally. Base camp turns icy."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "social": -4,
+     "mental": -3
+    }
+   },
+   {
+    "label": {
+     "id": "Kerjakan sendiri",
+     "en": "Do it yourself"
+    },
+    "fx": {
+     "energy": -12,
+     "social": 2
+    },
+    "result": {
+     "id": "Warga menyayangimu. Temanmu tetap rebahan.",
+     "en": "Villagers adore you. Your teammate keeps lying down."
+    }
+   }
+  ]
+ },
+ {
+  "id": "kkn_cinlok",
+  "speaker": "bestie",
+  "when": {
+   "has_kkn": true,
+   "week_min": 3
+  },
+  "text": {
+   "id": "Ada teman KKN yang mulai perhatian: bawain kopi tiap pagi, nemenin rapat sampai malam.",
+   "en": "A KKN teammate starts paying attention: brings coffee every morning, stays with you through late meetings."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Ehem...",
+     "en": "Ahem..."
+    },
+    "fx": {
+     "mental": 6,
+     "social": 4
+    },
+    "result": {
+     "id": "Cinlok KKN: mitos atau fakta? Kamu tidak mau menjawab.",
+     "en": "KKN romance: myth or fact? You refuse to answer."
+    }
+   },
+   {
+    "label": {
+     "id": "Fokus proker",
+     "en": "Focus on the program"
+    },
+    "fx": {
+     "social": 1
+    },
+    "result": {
+     "id": "Profesional. Sangat sigma.",
+     "en": "Professional. Very sigma."
+    }
+   }
+  ]
+ },
+ {
+  "id": "if_bug",
+  "speaker": "narator",
+  "when": {
+   "prodi": [
+    "IF"
+   ]
+  },
+  "text": {
+   "id": "Program tugas besar error di production 1 jam sebelum demo. Pesannya: \"undefined is not a function\".",
+   "en": "Your big project crashes 1 hour before the demo: \"undefined is not a function\"."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Debug sampai ketemu",
+     "en": "Debug until it's fixed"
+    },
+    "fx": {
+     "energy": -12,
+     "knowledge": 1,
+     "tugas": 0.5
+    },
+    "result": {
+     "id": "Ternyata kurang titik koma. Satu. Titik koma.",
+     "en": "It was a missing semicolon. One. Semicolon."
+    },
+    "fail_result": {
+     "id": "Demo pakai screenshot. Dosen tidak terkesan.",
+     "en": "You demo with screenshots. The lecturer is unimpressed."
+    },
+    "p": 0.6,
+    "fail_fx": {
+     "tugas": -1,
+     "mental": -6
+    }
+   },
+   {
+    "label": {
+     "id": "Tanya ke AI",
+     "en": "Ask an AI"
+    },
+    "fx": {
+     "tugas": 0.5
+    },
+    "result": {
+     "id": "Jalan! Kamu tidak tahu kenapa. Tidak apa-apa.",
+     "en": "It works! You don't know why. That's fine."
+    }
+   }
+  ]
+ },
+ {
+  "id": "mn_presentasi",
+  "speaker": "narator",
+  "when": {
+   "prodi": [
+    "MN"
+   ]
+  },
+  "text": {
+   "id": "Presentasi wajib pakai jas, di ruangan tanpa AC, jam 1 siang.",
+   "en": "Mandatory presentation in a suit, in a room without AC, at 1 p.m."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Tampil percaya diri",
+     "en": "Present confidently"
+    },
+    "fx": {
+     "bonus": 2,
+     "energy": -8
+    },
+    "result": {
+     "id": "Keringatmu deras, tapi slide-mu lebih deras. Dosen kagum.",
+     "en": "You sweat buckets, but your slides flow. The lecturer is impressed."
+    },
+    "fail_result": {
+     "id": "Proyektor mati di slide 2.",
+     "en": "The projector dies on slide 2."
+    },
+    "p": 0.65,
+    "p_bonus": {
+     "social": 0.004
+    },
+    "fail_fx": {
+     "mental": -5
+    }
+   },
+   {
+    "label": {
+     "id": "Jadi operator slide saja",
+     "en": "Just run the slides"
+    },
+    "fx": {
+     "social": -1
+    },
+    "result": {
+     "id": "Aman, tapi nilaimu ikut \"aman\".",
+     "en": "Safe, and so is your grade: \"safe\"."
+    }
+   }
+  ]
+ },
+ {
+  "id": "kd_anatomi",
+  "speaker": "narator",
+  "when": {
+   "prodi": [
+    "KD"
+   ]
+  },
+  "text": {
+   "id": "Praktikum anatomi jam 6 pagi, hafalan 200 istilah Latin, ujian besok.",
+   "en": "Anatomy lab at 6 a.m., 200 Latin terms to memorize, exam tomorrow."
+  },
+  "choices": [
+   {
+    "label": {
+     "id": "Hafalan sistem jembatan keledai",
+     "en": "Use silly mnemonics"
+    },
+    "fx": {
+     "knowledge": 1.5,
+     "energy": -10
+    },
+    "result": {
+     "id": "\"Some Lovers Try Positions...\" Kamu tidak akan pernah lupa.",
+     "en": "You'll never forget those mnemonics. Ever."
+    },
+    "fail_result": {
+     "id": "Mnemonicnya lebih susah dari istilahnya.",
+     "en": "The mnemonics were harder than the terms."
+    },
+    "p": 0.7,
+    "fail_fx": {
+     "mental": -6
+    }
+   },
+   {
+    "label": {
+     "id": "Belajar bareng sambil gantian kuis",
+     "en": "Quiz each other in a group"
+    },
+    "fx": {
+     "knowledge": 1,
+     "social": 3
+    },
+    "result": {
+     "id": "Belajar bareng ternyata efektif.",
+     "en": "Group study actually works."
+    }
+   }
+  ]
+ }
+]

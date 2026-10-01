@@ -1,0 +1,1376 @@
+{
+ "IF": [
+  [
+   {
+    "code": "IF101",
+    "name": {
+     "id": "Kalkulus I",
+     "en": "Calculus I"
+    },
+    "sks": 3,
+    "diff": 1.25,
+    "type": "mk"
+   },
+   {
+    "code": "IF102",
+    "name": {
+     "id": "Pengantar Teknologi Informasi",
+     "en": "Intro to Information Technology"
+    },
+    "sks": 2,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "IF103",
+    "name": {
+     "id": "Algoritma dan Pemrograman",
+     "en": "Algorithms and Programming"
+    },
+    "sks": 4,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF104",
+    "name": {
+     "id": "Fisika Dasar",
+     "en": "Basic Physics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF105",
+    "name": {
+     "id": "Bahasa Inggris",
+     "en": "English"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   },
+   {
+    "code": "UNI101",
+    "name": {
+     "id": "Pancasila",
+     "en": "Pancasila (State Ideology)"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI102",
+    "name": {
+     "id": "Pendidikan Agama",
+     "en": "Religious Studies"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "IF201",
+    "name": {
+     "id": "Kalkulus II",
+     "en": "Calculus II"
+    },
+    "sks": 3,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "IF202",
+    "name": {
+     "id": "Struktur Data",
+     "en": "Data Structures"
+    },
+    "sks": 4,
+    "diff": 1.2,
+    "type": "mk"
+   },
+   {
+    "code": "IF203",
+    "name": {
+     "id": "Matematika Diskrit",
+     "en": "Discrete Mathematics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF204",
+    "name": {
+     "id": "Logika Informatika",
+     "en": "Logic for Computing"
+    },
+    "sks": 3,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "IF205",
+    "name": {
+     "id": "Sistem Digital",
+     "en": "Digital Systems"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "UNI201",
+    "name": {
+     "id": "Kewarganegaraan",
+     "en": "Civic Education"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI202",
+    "name": {
+     "id": "Bahasa Indonesia",
+     "en": "Indonesian Language"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "IF301",
+    "name": {
+     "id": "Aljabar Linear",
+     "en": "Linear Algebra"
+    },
+    "sks": 3,
+    "diff": 1.2,
+    "type": "mk"
+   },
+   {
+    "code": "IF302",
+    "name": {
+     "id": "Basis Data",
+     "en": "Databases"
+    },
+    "sks": 4,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "IF303",
+    "name": {
+     "id": "Pemrograman Berorientasi Objek",
+     "en": "Object-Oriented Programming"
+    },
+    "sks": 4,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "IF304",
+    "name": {
+     "id": "Organisasi dan Arsitektur Komputer",
+     "en": "Computer Architecture"
+    },
+    "sks": 3,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "IF305",
+    "name": {
+     "id": "Probabilitas dan Statistika",
+     "en": "Probability and Statistics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF306",
+    "name": {
+     "id": "Desain dan Analisis Algoritma",
+     "en": "Algorithm Design and Analysis"
+    },
+    "sks": 3,
+    "diff": 1.25,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "IF401",
+    "name": {
+     "id": "Sistem Operasi",
+     "en": "Operating Systems"
+    },
+    "sks": 3,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "IF402",
+    "name": {
+     "id": "Jaringan Komputer",
+     "en": "Computer Networks"
+    },
+    "sks": 4,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "IF403",
+    "name": {
+     "id": "Rekayasa Perangkat Lunak",
+     "en": "Software Engineering"
+    },
+    "sks": 4,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "IF404",
+    "name": {
+     "id": "Interaksi Manusia dan Komputer",
+     "en": "Human-Computer Interaction"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "IF405",
+    "name": {
+     "id": "Teori Bahasa dan Automata",
+     "en": "Automata Theory"
+    },
+    "sks": 3,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "IF406",
+    "name": {
+     "id": "Pemrograman Web",
+     "en": "Web Programming"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "IF501",
+    "name": {
+     "id": "Kecerdasan Buatan",
+     "en": "Artificial Intelligence"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF502",
+    "name": {
+     "id": "Pemrograman Mobile",
+     "en": "Mobile Programming"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "IF503",
+    "name": {
+     "id": "Keamanan Informasi",
+     "en": "Information Security"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "IF504",
+    "name": {
+     "id": "Grafika Komputer",
+     "en": "Computer Graphics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF505",
+    "name": {
+     "id": "Metodologi Penelitian",
+     "en": "Research Methodology"
+    },
+    "sks": 2,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "IF506",
+    "name": {
+     "id": "Manajemen Proyek TI",
+     "en": "IT Project Management"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "IF507",
+    "name": {
+     "id": "Komputasi Awan",
+     "en": "Cloud Computing"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "IF601",
+    "name": {
+     "id": "Pembelajaran Mesin",
+     "en": "Machine Learning"
+    },
+    "sks": 3,
+    "diff": 1.25,
+    "type": "mk"
+   },
+   {
+    "code": "IF602",
+    "name": {
+     "id": "Proyek Perangkat Lunak",
+     "en": "Software Project"
+    },
+    "sks": 4,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "IF603",
+    "name": {
+     "id": "Kerja Praktik",
+     "en": "Internship"
+    },
+    "sks": 2,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "IF604",
+    "name": {
+     "id": "Etika Profesi",
+     "en": "Professional Ethics"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "IF605",
+    "name": {
+     "id": "Pengembangan Game",
+     "en": "Game Development"
+    },
+    "sks": 3,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "IF606",
+    "name": {
+     "id": "Sistem Terdistribusi",
+     "en": "Distributed Systems"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "IF607",
+    "name": {
+     "id": "Kewirausahaan",
+     "en": "Entrepreneurship"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KKN",
+    "name": {
+     "id": "Kuliah Kerja Nyata (KKN)",
+     "en": "Community Service Program (KKN)"
+    },
+    "sks": 4,
+    "diff": 1.0,
+    "type": "kkn"
+   },
+   {
+    "code": "IF702",
+    "name": {
+     "id": "Seminar Proposal",
+     "en": "Thesis Proposal Seminar"
+    },
+    "sks": 2,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "IF703",
+    "name": {
+     "id": "Visi Komputer",
+     "en": "Computer Vision"
+    },
+    "sks": 3,
+    "diff": 1.2,
+    "type": "mk"
+   },
+   {
+    "code": "IF704",
+    "name": {
+     "id": "Data Mining",
+     "en": "Data Mining"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "IF705",
+    "name": {
+     "id": "Internet of Things",
+     "en": "Internet of Things"
+    },
+    "sks": 3,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "IF706",
+    "name": {
+     "id": "Big Data",
+     "en": "Big Data"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "SKRIPSI",
+    "name": {
+     "id": "Skripsi",
+     "en": "Undergraduate Thesis"
+    },
+    "sks": 6,
+    "diff": 1.0,
+    "type": "skripsi"
+   },
+   {
+    "code": "IF801",
+    "name": {
+     "id": "Topik Khusus Informatika",
+     "en": "Special Topics in Computing"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   }
+  ]
+ ],
+ "MN": [
+  [
+   {
+    "code": "MN101",
+    "name": {
+     "id": "Pengantar Manajemen",
+     "en": "Intro to Management"
+    },
+    "sks": 3,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "MN102",
+    "name": {
+     "id": "Pengantar Ekonomi Mikro",
+     "en": "Intro to Microeconomics"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN103",
+    "name": {
+     "id": "Matematika Ekonomi",
+     "en": "Mathematics for Economics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN104",
+    "name": {
+     "id": "Pengantar Akuntansi I",
+     "en": "Intro to Accounting I"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "MN105",
+    "name": {
+     "id": "Bahasa Inggris",
+     "en": "English"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   },
+   {
+    "code": "UNI101",
+    "name": {
+     "id": "Pancasila",
+     "en": "Pancasila (State Ideology)"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI102",
+    "name": {
+     "id": "Pendidikan Agama",
+     "en": "Religious Studies"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "MN201",
+    "name": {
+     "id": "Pengantar Ekonomi Makro",
+     "en": "Intro to Macroeconomics"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN202",
+    "name": {
+     "id": "Pengantar Akuntansi II",
+     "en": "Intro to Accounting II"
+    },
+    "sks": 3,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "MN203",
+    "name": {
+     "id": "Statistika Ekonomi",
+     "en": "Economic Statistics"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN204",
+    "name": {
+     "id": "Pengantar Bisnis",
+     "en": "Intro to Business"
+    },
+    "sks": 3,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "MN205",
+    "name": {
+     "id": "Hukum Bisnis",
+     "en": "Business Law"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "UNI201",
+    "name": {
+     "id": "Kewarganegaraan",
+     "en": "Civic Education"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI202",
+    "name": {
+     "id": "Bahasa Indonesia",
+     "en": "Indonesian Language"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "MN301",
+    "name": {
+     "id": "Manajemen Keuangan I",
+     "en": "Financial Management I"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN302",
+    "name": {
+     "id": "Manajemen Pemasaran",
+     "en": "Marketing Management"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN303",
+    "name": {
+     "id": "Manajemen SDM",
+     "en": "Human Resource Management"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN304",
+    "name": {
+     "id": "Manajemen Operasi",
+     "en": "Operations Management"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN305",
+    "name": {
+     "id": "Perilaku Organisasi",
+     "en": "Organizational Behavior"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN306",
+    "name": {
+     "id": "Akuntansi Biaya",
+     "en": "Cost Accounting"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN307",
+    "name": {
+     "id": "Komunikasi Bisnis",
+     "en": "Business Communication"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "MN401",
+    "name": {
+     "id": "Manajemen Keuangan II",
+     "en": "Financial Management II"
+    },
+    "sks": 3,
+    "diff": 1.2,
+    "type": "mk"
+   },
+   {
+    "code": "MN402",
+    "name": {
+     "id": "Riset Pemasaran",
+     "en": "Marketing Research"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN403",
+    "name": {
+     "id": "Sistem Informasi Manajemen",
+     "en": "Management Information Systems"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "MN404",
+    "name": {
+     "id": "Ekonomi Manajerial",
+     "en": "Managerial Economics"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "MN405",
+    "name": {
+     "id": "Hubungan Industrial",
+     "en": "Industrial Relations"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN406",
+    "name": {
+     "id": "Perpajakan",
+     "en": "Taxation"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN407",
+    "name": {
+     "id": "Kewirausahaan",
+     "en": "Entrepreneurship"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "MN501",
+    "name": {
+     "id": "Manajemen Strategik",
+     "en": "Strategic Management"
+    },
+    "sks": 3,
+    "diff": 1.0,
+    "type": "mk"
+   },
+   {
+    "code": "MN502",
+    "name": {
+     "id": "Perilaku Konsumen",
+     "en": "Consumer Behavior"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN503",
+    "name": {
+     "id": "Manajemen Investasi",
+     "en": "Investment Management"
+    },
+    "sks": 3,
+    "diff": 1.15,
+    "type": "mk"
+   },
+   {
+    "code": "MN504",
+    "name": {
+     "id": "Metodologi Penelitian",
+     "en": "Research Methodology"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN505",
+    "name": {
+     "id": "E-Business",
+     "en": "E-Business"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN506",
+    "name": {
+     "id": "Bisnis Internasional",
+     "en": "International Business"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "MN507",
+    "name": {
+     "id": "Etika Bisnis",
+     "en": "Business Ethics"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "MN601",
+    "name": {
+     "id": "Manajemen Risiko",
+     "en": "Risk Management"
+    },
+    "sks": 3,
+    "diff": 1.05,
+    "type": "mk"
+   },
+   {
+    "code": "MN602",
+    "name": {
+     "id": "Studi Kelayakan Bisnis",
+     "en": "Business Feasibility Study"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "MN603",
+    "name": {
+     "id": "Pasar Modal",
+     "en": "Capital Markets"
+    },
+    "sks": 3,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "MN604",
+    "name": {
+     "id": "Manajemen Merek",
+     "en": "Brand Management"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN605",
+    "name": {
+     "id": "Magang",
+     "en": "Internship"
+    },
+    "sks": 3,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "MN606",
+    "name": {
+     "id": "Seminar Manajemen",
+     "en": "Management Seminar"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "MN607",
+    "name": {
+     "id": "Kepemimpinan",
+     "en": "Leadership"
+    },
+    "sks": 2,
+    "diff": 0.75,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KKN",
+    "name": {
+     "id": "Kuliah Kerja Nyata (KKN)",
+     "en": "Community Service Program (KKN)"
+    },
+    "sks": 4,
+    "diff": 1.0,
+    "type": "kkn"
+   },
+   {
+    "code": "MN702",
+    "name": {
+     "id": "Seminar Proposal",
+     "en": "Thesis Proposal Seminar"
+    },
+    "sks": 2,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "MN703",
+    "name": {
+     "id": "Digital Marketing",
+     "en": "Digital Marketing"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   },
+   {
+    "code": "MN704",
+    "name": {
+     "id": "Manajemen Perubahan",
+     "en": "Change Management"
+    },
+    "sks": 3,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "MN705",
+    "name": {
+     "id": "Analisis Laporan Keuangan",
+     "en": "Financial Statement Analysis"
+    },
+    "sks": 3,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "MN706",
+    "name": {
+     "id": "Manajemen Rantai Pasok",
+     "en": "Supply Chain Management"
+    },
+    "sks": 3,
+    "diff": 0.95,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "SKRIPSI",
+    "name": {
+     "id": "Skripsi",
+     "en": "Undergraduate Thesis"
+    },
+    "sks": 6,
+    "diff": 1.0,
+    "type": "skripsi"
+   },
+   {
+    "code": "MN801",
+    "name": {
+     "id": "Topik Khusus Manajemen",
+     "en": "Special Topics in Management"
+    },
+    "sks": 3,
+    "diff": 0.85,
+    "type": "mk"
+   }
+  ]
+ ],
+ "KD": [
+  [
+   {
+    "code": "KD101",
+    "name": {
+     "id": "Blok Biomedik Dasar I",
+     "en": "Basic Biomedical Sciences I"
+    },
+    "sks": 6,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "KD102",
+    "name": {
+     "id": "Blok Biomedik Dasar II",
+     "en": "Basic Biomedical Sciences II"
+    },
+    "sks": 6,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "KD103",
+    "name": {
+     "id": "Keterampilan Klinik Dasar I",
+     "en": "Basic Clinical Skills I"
+    },
+    "sks": 2,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "KD104",
+    "name": {
+     "id": "Bahasa Inggris Kedokteran",
+     "en": "Medical English"
+    },
+    "sks": 2,
+    "diff": 0.8,
+    "type": "mk"
+   },
+   {
+    "code": "UNI101",
+    "name": {
+     "id": "Pancasila",
+     "en": "Pancasila (State Ideology)"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI102",
+    "name": {
+     "id": "Pendidikan Agama",
+     "en": "Religious Studies"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KD201",
+    "name": {
+     "id": "Blok Sel dan Jaringan",
+     "en": "Cells and Tissues Block"
+    },
+    "sks": 6,
+    "diff": 1.35,
+    "type": "mk"
+   },
+   {
+    "code": "KD202",
+    "name": {
+     "id": "Blok Muskuloskeletal",
+     "en": "Musculoskeletal Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD203",
+    "name": {
+     "id": "Keterampilan Klinik Dasar II",
+     "en": "Basic Clinical Skills II"
+    },
+    "sks": 2,
+    "diff": 1.1,
+    "type": "mk"
+   },
+   {
+    "code": "KD204",
+    "name": {
+     "id": "Metodologi Riset Dasar",
+     "en": "Basic Research Methods"
+    },
+    "sks": 2,
+    "diff": 0.9,
+    "type": "mk"
+   },
+   {
+    "code": "UNI201",
+    "name": {
+     "id": "Kewarganegaraan",
+     "en": "Civic Education"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   },
+   {
+    "code": "UNI202",
+    "name": {
+     "id": "Bahasa Indonesia",
+     "en": "Indonesian Language"
+    },
+    "sks": 2,
+    "diff": 0.7,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KD301",
+    "name": {
+     "id": "Blok Kardiovaskular",
+     "en": "Cardiovascular Block"
+    },
+    "sks": 6,
+    "diff": 1.45,
+    "type": "mk"
+   },
+   {
+    "code": "KD302",
+    "name": {
+     "id": "Blok Respirasi",
+     "en": "Respiratory Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD303",
+    "name": {
+     "id": "Blok Hematologi dan Imunologi",
+     "en": "Hematology and Immunology Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD304",
+    "name": {
+     "id": "Keterampilan Klinik III",
+     "en": "Clinical Skills III"
+    },
+    "sks": 2,
+    "diff": 1.15,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KD401",
+    "name": {
+     "id": "Blok Gastrointestinal",
+     "en": "Gastrointestinal Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD402",
+    "name": {
+     "id": "Blok Neurosains",
+     "en": "Neuroscience Block"
+    },
+    "sks": 6,
+    "diff": 1.5,
+    "type": "mk"
+   },
+   {
+    "code": "KD403",
+    "name": {
+     "id": "Blok Urogenital",
+     "en": "Urogenital Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD404",
+    "name": {
+     "id": "Keterampilan Klinik IV",
+     "en": "Clinical Skills IV"
+    },
+    "sks": 2,
+    "diff": 1.15,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KD501",
+    "name": {
+     "id": "Blok Endokrin dan Metabolik",
+     "en": "Endocrine and Metabolic Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD502",
+    "name": {
+     "id": "Blok Reproduksi",
+     "en": "Reproductive Block"
+    },
+    "sks": 6,
+    "diff": 1.35,
+    "type": "mk"
+   },
+   {
+    "code": "KD503",
+    "name": {
+     "id": "Blok Tumbuh Kembang",
+     "en": "Growth and Development Block"
+    },
+    "sks": 6,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "KD504",
+    "name": {
+     "id": "Biostatistik",
+     "en": "Biostatistics"
+    },
+    "sks": 2,
+    "diff": 1.0,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KD601",
+    "name": {
+     "id": "Blok Penyakit Tropis",
+     "en": "Tropical Medicine Block"
+    },
+    "sks": 6,
+    "diff": 1.4,
+    "type": "mk"
+   },
+   {
+    "code": "KD602",
+    "name": {
+     "id": "Blok Kegawatdaruratan",
+     "en": "Emergency Medicine Block"
+    },
+    "sks": 6,
+    "diff": 1.5,
+    "type": "mk"
+   },
+   {
+    "code": "KD603",
+    "name": {
+     "id": "Blok Kedokteran Komunitas",
+     "en": "Community Medicine Block"
+    },
+    "sks": 6,
+    "diff": 1.2,
+    "type": "mk"
+   },
+   {
+    "code": "KD604",
+    "name": {
+     "id": "Etika dan Hukum Kedokteran",
+     "en": "Medical Ethics and Law"
+    },
+    "sks": 2,
+    "diff": 0.85,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "KKN",
+    "name": {
+     "id": "Kuliah Kerja Nyata (KKN)",
+     "en": "Community Service Program (KKN)"
+    },
+    "sks": 4,
+    "diff": 1.0,
+    "type": "kkn"
+   },
+   {
+    "code": "KD702",
+    "name": {
+     "id": "Seminar Proposal",
+     "en": "Thesis Proposal Seminar"
+    },
+    "sks": 2,
+    "diff": 0.95,
+    "type": "mk"
+   },
+   {
+    "code": "KD703",
+    "name": {
+     "id": "Blok Geriatri",
+     "en": "Geriatrics Block"
+    },
+    "sks": 6,
+    "diff": 1.3,
+    "type": "mk"
+   },
+   {
+    "code": "KD704",
+    "name": {
+     "id": "Blok Kesehatan Jiwa",
+     "en": "Mental Health Block"
+    },
+    "sks": 4,
+    "diff": 1.2,
+    "type": "mk"
+   }
+  ],
+  [
+   {
+    "code": "SKRIPSI",
+    "name": {
+     "id": "Skripsi",
+     "en": "Undergraduate Thesis"
+    },
+    "sks": 6,
+    "diff": 1.0,
+    "type": "skripsi"
+   },
+   {
+    "code": "KD801",
+    "name": {
+     "id": "Blok Elektif",
+     "en": "Elective Block"
+    },
+    "sks": 2,
+    "diff": 1.0,
+    "type": "mk"
+   }
+  ]
+ ]
+}
