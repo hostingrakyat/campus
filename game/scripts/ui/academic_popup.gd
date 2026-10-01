@@ -6,6 +6,7 @@ func _init(m: Node) -> void:
 	super(m, Loc.T("Akademik", "Academics"), 680)
 	var s: Dictionary = Game.s
 	var list := scroll_list(860)
+	list.ready.connect(func(): Fx.stagger(list, 0.025, 0.1))
 	var sum := Kit.hbox(8)
 	list.add_child(sum)
 	sum.add_child(Kit.chip("IPK " + ("-" if s.history.is_empty() else "%.2f" % Sim.ipk(s)), Kit.BLUE, Color.WHITE, 22))

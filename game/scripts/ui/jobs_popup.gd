@@ -51,3 +51,6 @@ func _refresh() -> void:
 				main.toast(Loc.T("Diterima kerja! Shift mulai minggu ini.", "Hired! Your shift starts this week."), Kit.GREEN)
 				_refresh(), 22))
 		list.add_child(p)
+	if not has_meta("shown"):
+		set_meta("shown", true)
+		Fx.stagger(list, 0.04, 0.1)

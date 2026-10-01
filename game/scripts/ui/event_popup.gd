@@ -27,16 +27,24 @@ func _init(m: Node, e: Dictionary) -> void:
 	var dospem_name: String = Data.NPCS[s.dospem].name if s.dospem != "" else "-"
 	var text := Loc.fill(ev.text, {"name": s.name, "dospem": dospem_name})
 	var bubble := Kit.panel(Color.WHITE, 24, 20)
-	bubble.add_child(Kit.dual(text, 27))
+	var d := Kit.dual(text, 27)
+	bubble.add_child(d)
 	body.add_child(bubble)
+	Fx.typewriter(d.main_label, 80.0)
+	Fx.fade_in(d.sub_label, 0.4, 0.5)
+	var delay := clampf(d.main_label.text.length() / 80.0, 0.2, 1.6) * 0.6
 	for i in ev.choices.size():
 		var ch: Dictionary = ev.choices[i]
 		var b := Kit.button(ch.label, [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i % 3], func(): _choose(i), 23)
 		body.add_child(b)
+		Fx.pop_in(b, delay + i * 0.08)
+	Audio.play("card", -3.0)
 
 
 func _choose(i: int) -> void:
 	var r := Game.choose(ev, i)
+	Audio.play("card_place", -4.0)
+	Audio.play("good" if r.success else "bad", -6.0)
 	for c in body.get_children():
 		c.queue_free()
 	var head := Kit.title(Loc.main(Loc.T("Hasilnya...", "Outcome...")), 34, Kit.GREEN if r.success else Kit.RED)
@@ -50,6 +58,11 @@ func _choose(i: int) -> void:
 	for f in Kit.fx_text(r.fx):
 		chips.add_child(Kit.chip(f.text, Color("e3f7ea") if f.good else Color("ffe6e3"), Color("17643a") if f.good else Color("b3261e"), 20))
 	body.add_child(chips)
-	body.add_child(Kit.button(Loc.T("Lanjut", "Continue"), Kit.GREEN, func():
+	var cont := Kit.button(Loc.T("Lanjut", "Continue"), Kit.GREEN, func():
 		main.close_top_modal()
-		done.emit(), 26))
+		done.emit(), 26)
+	body.add_child(cont)
+	Fx.pop_in(head, 0.0, 0.7)
+	Fx.pop_in(bubble, 0.06)
+	Fx.stagger(chips, 0.06, 0.2)
+	Fx.pop_in(cont, 0.35)

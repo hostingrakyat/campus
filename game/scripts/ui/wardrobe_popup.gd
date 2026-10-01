@@ -46,5 +46,7 @@ func _refresh() -> void:
 		var on: bool = Game.s.look.get(slot, "") == id
 		var b := Kit.button(it.name, Kit.BLUE if on else Color.WHITE, func():
 			Game.equip(id)
+			Audio.play("pop", -2.0)
+			main.world.player.hop()
 			_refresh(), 24)
 		list.add_child(b)

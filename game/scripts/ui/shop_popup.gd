@@ -56,6 +56,9 @@ func _refresh() -> void:
 			_snack_tab()
 		"exchange":
 			_exchange_tab()
+	if tab != get_meta("anim_tab", ""):
+		set_meta("anim_tab", tab)
+		Fx.stagger(list, 0.03, 0.05)
 
 
 func _diamond_tab() -> void:
@@ -68,6 +71,7 @@ func _diamond_tab() -> void:
 	var watch := Kit.button(Loc.T("Tonton", "Watch"), Kit.GREEN, func():
 		Ads.show_rewarded("shop_diamonds", func(ok: bool):
 			if ok:
+				Audio.play("diamond")
 				Meta.add_diamonds(Data.REWARDED_DIAMONDS)
 				main.toast(Loc.T("+%d diamond!" % Data.REWARDED_DIAMONDS, "+%d diamonds!" % Data.REWARDED_DIAMONDS), Kit.CYAN)), 22)
 	watch.disabled = Ads.rewarded_left() <= 0
@@ -102,6 +106,7 @@ func _confirm_iap(pid: String) -> void:
 	box.body.add_child(Kit.dual(Loc.T("Beli %s seharga %s? (simulasi)" % [p.name.id, p.price], "Buy %s for %s? (simulated)" % [p.name.en, p.price]), 24))
 	box.body.add_child(Kit.button(Loc.T("Beli", "Buy"), Kit.GREEN, func():
 		Iap.buy(pid)
+		Audio.play("unlock", -3.0)
 		main.close_top_modal()
 		main.toast(Loc.T("Terima kasih! Pembelian berhasil.", "Thank you! Purchase complete."), Kit.GREEN)))
 	main.open_modal(box)
@@ -131,6 +136,9 @@ func _style_tab() -> void:
 		r.add_child(price_box)
 		r.add_child(Kit.button(Loc.T("Beli", "Buy"), Kit.ORANGE, func():
 			var res := Game.buy_item(id)
+			Audio.play(("diamond" if is_d else "spend") if res.ok else "error", -2.0)
+			if res.ok:
+				Audio.play("unlock", -10.0)
 			main.toast(res.msg, Kit.GREEN if res.ok else Kit.RED), 20))
 
 
@@ -155,6 +163,7 @@ func _snack_tab() -> void:
 		r.add_child(price_box)
 		r.add_child(Kit.button(Loc.T("Beli", "Buy"), Kit.ORANGE, func():
 			var res := Game.buy_consumable(id)
+			Audio.play("spend" if res.ok else "error", -3.0)
 			main.toast(res.msg, Kit.GREEN if res.ok else Kit.RED), 20))
 
 

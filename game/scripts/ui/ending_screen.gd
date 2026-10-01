@@ -47,6 +47,11 @@ func _ready() -> void:
 			w.focus(w.player.position + Vector3(0, 1.0, 0), 6.0, true, 0.13)
 	if graduated:
 		_confetti()
+		Audio.stinger("lulus", "kampus_pagi")
+	elif id == "pindah":
+		Audio.play_music("kampus_pagi")
+	else:
+		Audio.play_music("sedih", 1.5)
 
 	var tone: Color = TONES.get(e.tone, Kit.BLUE)
 	var v := sheet()
@@ -97,6 +102,7 @@ func _ready() -> void:
 	btns.add_child(again)
 	btns.add_child(Kit.button(Loc.T("Galeri", "Gallery"), Kit.PURPLE, func(): main.goto("gallery"), 22, 80))
 	btns.add_child(Kit.button(Loc.T("Judul", "Title"), Color("8a8398"), func(): main.goto("title"), 22, 80))
+	_intro(v, t, first)
 
 
 func _exit_tree() -> void:
@@ -131,3 +137,21 @@ func _confetti() -> void:
 	g.set_color(g.get_point_count() - 1, Kit.GREEN)
 	p.color_initial_ramp = g
 	add_child(p)
+
+
+func _intro(v: VBoxContainer, title_l: Label, first: bool) -> void:
+	for c in v.get_children():
+		c.modulate.a = 0.0
+	await get_tree().create_timer(0.45).timeout
+	var i := 0
+	for c in v.get_children():
+		if not is_inside_tree():
+			return
+		if c == title_l:
+			Fx.pop_in(c, 0.0, 0.5, 0.5)
+		else:
+			Fx.pop_in(c, 0.0, 0.92, 0.3)
+		i += 1
+		await get_tree().create_timer(0.12).timeout
+	if first:
+		Audio.play("unlock", -6.0)

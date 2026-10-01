@@ -44,6 +44,7 @@ func _ready() -> void:
 		if got:
 			h.add_child(Kit.chip("x%d" % Meta.endings[id].count, tone, Color.WHITE, 20))
 		list.add_child(p)
+	Fx.stagger(list, 0.04, 0.2)
 
 
 func on_back() -> bool:

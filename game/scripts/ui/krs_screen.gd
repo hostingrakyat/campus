@@ -49,6 +49,9 @@ func _build_select() -> void:
 	v.add_child(sc)
 	for c in Sim.krs_options(s):
 		list.add_child(_course_toggle(c, limit))
+	if not has_meta("shown"):
+		set_meta("shown", true)
+		Fx.stagger(list, 0.03, 0.2)
 	var go := Kit.button(Loc.T("Ikut War KRS!", "Enter the Registration War!"), Kit.RED, _start_war, 28, 84)
 	go.disabled = total == 0 or total > limit
 	v.add_child(go)
@@ -121,6 +124,9 @@ func _start_war() -> void:
 		h.add_child(b)
 		rows[code] = r
 		list.add_child(r)
+	Fx.stagger(list, 0.04)
+	Fx.pop_in(portal, 0.0, 0.8)
+	Audio.play("whoosh", -6.0)
 	time_left = WAR_TIME
 	war_on = true
 	if rows.is_empty():
@@ -131,6 +137,8 @@ func _take(code: String, b: Button, r: PanelContainer) -> void:
 	if not war_on or b.disabled:
 		return
 	if randf() < BUSY_CHANCE:
+		Audio.play("glitch", -2.0)
+		Audio.play("error", -6.0)
 		b.text = "503!"
 		Kit.style_button(b, Kit.RED)
 		b.disabled = true
@@ -147,6 +155,8 @@ func _take(code: String, b: Button, r: PanelContainer) -> void:
 			Kit.style_button(b, Kit.GREEN)
 		return
 	cls[code] = "A"
+	Audio.play("good", -4.0, 1.0 + 0.05 * cls.size())
+	Fx.pulse(r, 1.04)
 	b.disabled = true
 	b.text = Loc.main(Loc.T("DAPAT", "GOT IT"))
 	Kit.style_button(b, Kit.BLUE)
@@ -162,14 +172,20 @@ func _take(code: String, b: Button, r: PanelContainer) -> void:
 func _process(delta: float) -> void:
 	if not war_on:
 		return
+	var before := ceili(time_left)
 	time_left -= delta
 	timer_bar.value = maxf(0.0, time_left)
+	if ceili(time_left) != before and time_left <= 5.0 and time_left > 0.0:
+		Audio.play("tick", -2.0, 1.0 + (5.0 - time_left) * 0.06)
+		(timer_bar.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = Kit.RED
+		Fx.pulse(timer_bar, 1.03)
 	if time_left <= 0.0:
 		_finish_war()
 
 
 func _finish_war() -> void:
 	war_on = false
+	Audio.play("bell", -3.0)
 	for code in picked:
 		if not cls.has(code):
 			cls[code] = "B"
@@ -192,6 +208,7 @@ func _finish_war() -> void:
 		n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		r.add_child(n)
 		var good: bool = cls[c.code] == "A"
+		Fx.pop_in(r, list.get_child_count() * 0.06)
 		r.add_child(Kit.chip(Loc.main(Loc.T("Kelas A", "Class A")) if good else Loc.main(Loc.T("Kelas B · dosen killer", "Class B · strict lecturer")), Kit.GREEN if good else Kit.RED, Color.WHITE, 18))
 		list.add_child(r)
 	if n_b > 0:

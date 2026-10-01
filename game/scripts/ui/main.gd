@@ -79,6 +79,28 @@ func goto(name: String, args: Dictionary = {}) -> void:
 	for k in args:
 		screen.set_meta(k, args[k])
 	screen_holder.add_child(screen)
+	_animate_screen_in(screen)
+	_music_for(name)
+
+
+## Fade the new screen in, slide its bottom sheet up and its top bar down.
+func _animate_screen_in(scr: Control) -> void:
+	Fx.fade_in(scr, 0.2)
+	for c in scr.get_children():
+		if c is PanelContainer and c.get_meta("sheet", false):
+			Fx.slide_in(c, Vector2(0, 260), 0.02, 0.45)
+		elif c is HBoxContainer:
+			Fx.slide_in(c, Vector2(0, -60), 0.08, 0.4)
+
+
+func _music_for(name: String) -> void:
+	match name:
+		"title", "create", "gallery", "khs":
+			Audio.play_music("kampus_pagi")
+		"ukt", "krs":
+			Audio.play_music("kampus_malam")
+		"week":
+			Audio.play_music("kampus_malam" if Game.s.get("mental", 100) < Data.MENTAL_WARNING else "kampus_pagi")
 
 
 ## Routes to whatever screen the current run's phase needs.
@@ -123,22 +145,42 @@ func open_modal(content: Control, dismissable: bool = true, bottom: bool = false
 		wrap.add_child(center)
 		center.add_child(content)
 	wrap.set_meta("dismissable", dismissable)
+	wrap.set_meta("content", content)
+	wrap.set_meta("dim", dim)
+	wrap.set_meta("bottom", bottom)
 	modal_holder.add_child(wrap)
 	_modals.append(wrap)
-	content.pivot_offset = content.get_combined_minimum_size() * 0.5
-	content.scale = Vector2(0.9, 0.9)
-	content.modulate.a = 0.0
-	var tw := create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tw.tween_property(content, "scale", Vector2.ONE, 0.22)
-	tw.tween_property(content, "modulate:a", 1.0, 0.15)
+	var target_dim: float = dim.color.a
+	dim.color.a = 0.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(dim, "color:a", target_dim, 0.2)
+	if bottom:
+		Fx.slide_in(content, Vector2(0, 420), 0.0, 0.4)
+	else:
+		Fx.pop_in(content, 0.0, 0.88, 0.32)
+	Audio.play("open", -6.0)
 	return wrap
 
 
 func close_modal(wrap: Control) -> void:
-	if wrap == null or not is_instance_valid(wrap):
+	if wrap == null or not is_instance_valid(wrap) or wrap.get_meta("closing", false):
 		return
+	wrap.set_meta("closing", true)
 	_modals.erase(wrap)
-	wrap.queue_free()
+	var dim: ColorRect = wrap.get_meta("dim")
+	var content: Control = wrap.get_meta("content")
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.propagate_call("set_mouse_filter", [Control.MOUSE_FILTER_IGNORE])
+	Audio.play("close", -8.0)
+	var tw := wrap.create_tween().set_parallel(true)
+	tw.tween_property(dim, "color:a", 0.0, 0.16)
+	tw.tween_property(content, "modulate:a", 0.0, 0.14)
+	if wrap.get_meta("bottom", false):
+		tw.tween_property(content, "position:y", content.position.y + 300, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	else:
+		Fx.center_pivot(content)
+		tw.tween_property(content, "scale", Vector2(0.92, 0.92), 0.14)
+	tw.chain().tween_callback(wrap.queue_free)
 
 
 func close_top_modal() -> void:
@@ -163,10 +205,10 @@ func toast(pair: Variant, color: Color = Kit.INK, secs: float = 2.4) -> void:
 	p.add_child(d)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	toast_box.add_child(p)
-	p.modulate.a = 0.0
-	var tw := create_tween()
-	tw.tween_property(p, "modulate:a", 1.0, 0.15)
-	tw.tween_interval(secs)
+	Fx.pop_in(p, 0.0, 0.7, 0.35)
+	Audio.play("toast", -8.0)
+	var tw := p.create_tween()
+	tw.tween_interval(secs + 0.3)
 	tw.tween_property(p, "modulate:a", 0.0, 0.3)
 	tw.tween_callback(p.queue_free)
 

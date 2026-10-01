@@ -13,6 +13,9 @@ tests/           sim_bot (balancing headless), autoplay (main lewat UI asli)
 tools/           gen_events.py (sumber cerita), shot.sh (screenshot), check_scripts.sh
 ```
 
+Musik dibangkitkan dari kode (butuh `numpy` + `ffmpeg`): `python3 tools/gen_music.py`.
+SFX di `assets/audio/sfx` berasal dari paket Kenney (CC0, lisensi disertakan).
+
 Semua teks berbentuk pasangan `{"id": ..., "en": ...}`. Cerita ditulis di `tools/gen_events.py`
 lalu dibangkitkan ke `data/events.json`:
 
@@ -36,7 +39,10 @@ godot --path game --headless res://tests/sim_bot.tscn
 # Autoplay: memainkan UI asli dari UKT sampai ending (nangkap runtime error)
 AUTOPLAY_SEED=3 godot --path game --headless -- --shot=autoplay
 
-# Screenshot satu layar (butuh xvfb): title create ukt ukt_phk krs war week event picker
+# Video demo ±40 dtk dengan audio (Movie Maker Godot)
+xvfb-run godot --path game --write-movie /tmp/demo.avi --fixed-fps 30 -- --shot=demo
+
+# Screenshot satu layar (butuh xvfb): title create ukt ukt_phk krs war week weekrun settings event picker
 # shop wardrobe jobs academic khs ending_<id> gallery note icon
 game/tools/shot.sh week /tmp/shots
 ```

@@ -27,6 +27,7 @@ func sheet(max_h: int = 760) -> VBoxContainer:
 	p.add_child(v)
 	p.custom_minimum_size.y = 0
 	p.set_meta("max_h", max_h)
+	p.set_meta("sheet", true)
 	return v
 
 

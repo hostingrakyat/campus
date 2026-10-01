@@ -57,7 +57,9 @@ func _build() -> void:
 	if s.debt > 0:
 		cv.add_child(Kit.label(Loc.main(Loc.T("Utang pinjol: %s koin", "Loan app debt: %s coins")) % Kit.fmt(s.debt), 20, Kit.RED, Kit.font_bold))
 	if s.ukt_paid:
-		cv.add_child(Kit.label(Loc.main(Loc.T("LUNAS", "PAID")), 30, Kit.GREEN, Kit.font_bold))
+		var paid := Kit.label(Loc.main(Loc.T("LUNAS", "PAID")), 30, Kit.GREEN, Kit.font_bold)
+		cv.add_child(paid)
+		Fx.pop_in(paid, 0.1, 0.4, 0.4)
 		v.add_child(Kit.button(Loc.T("Lanjut isi KRS  >", "Continue to course registration  >"), Kit.GREEN, func():
 			Game.s.phase = "krs"
 			Game.touch()
@@ -84,12 +86,22 @@ func _build() -> void:
 		if s.cuti_used < Data.MAX_CUTI:
 			opts.add_child(_opt(Loc.T("Cuti 1 semester, kerja full-time (sisa %d)" % (Data.MAX_CUTI - s.cuti_used), "Take a leave semester, work full-time (%d left)" % (Data.MAX_CUTI - s.cuti_used)), Kit.ORANGE, "cuti"))
 		opts.add_child(Kit.button(Loc.T("Nggak sanggup bayar...", "I can't pay..."), Color("8a8398"), _give_up, 20))
+	if not has_meta("shown"):
+		set_meta("shown", true)
+		Fx.stagger(opts, 0.04, 0.15)
 
 
 func _opt(label: Dictionary, color: Color, method: String, enabled: bool = true) -> Button:
 	var b := Kit.button(label, color, func():
+		var before: int = Game.s.coins
 		var r := Game.pay_ukt(method)
 		main.toast(r.msg, Kit.GREEN if r.ok else Kit.RED, 3.2)
+		if r.ok:
+			Audio.play("spend" if Game.s.coins < before else "confirm", -3.0)
+			if Game.s.ukt_paid:
+				Audio.play("levelup", -6.0)
+		else:
+			Audio.play("error", -4.0)
 		_build(), 22)
 	b.disabled = not enabled
 	return b

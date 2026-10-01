@@ -86,6 +86,24 @@ Kedua ending ini menaikkan rating konten — targetkan rating remaja/17+ (IARC),
 - Siap diganti/ditambah aset Meshy: ganti mesh di `campus_world.gd` / `vinyl_character.gd` (pertahankan skala ±1 unit = 1 m,
   karakter ±1.9 m, decimate ≤10k tris per prop).
 
+## Audio
+
+- **Musik orisinal** (dibangkitkan `game/tools/gen_music.py`, tanpa sampel): angklung (bambu digoyang) + bonang (gong-chime)
+  di tangga nada pentatonik di atas groove pop/lo-fi.
+  - `kampus_pagi` — judul, buat karakter, gameplay siang (104 BPM, ceria)
+  - `kampus_malam` — UKT, KRS, dan otomatis saat mental kritis (lo-fi 78 BPM, piano FM + crackle)
+  - `sedih` — ending DO/Rawat/Padam (piano minor pelan, berakhir lebih hangat)
+  - `lulus` — fanfare wisuda (brass + bonang + angklung), lalu kembali ke `kampus_pagi`
+- **SFX** dari Kenney (CC0): klik tombol otomatis, buka/tutup modal, kartu event, koin & diamond, error/glitch SIAKAD "503",
+  detik terakhir War KRS, langkah kaki karakter, fanfare unlock, dll.
+- Bus terpisah Music/SFX, crossfade antar lagu, slider volume di Pengaturan (tersimpan), musik di-duck saat iklan.
+
+## Animasi UI
+
+Transisi layar (fade + bottom sheet naik), modal pop & tutup beranimasi, tombol squash-spring saat ditekan, daftar muncul bertahap,
+angka koin/diamond menghitung, bar stat bergerak per slot saat minggu berjalan, pita "MINGGU N" & slot aktif, teks event
+diketik, nilai KHS terbuka satu per satu + IPS menghitung, ending muncul bertahap + konfeti, karakter melompat saat ganti baju.
+
 ## Bahasa
 
 4 mode: Indonesia + subtitle English (default), English + subtitle Indonesia, ID saja, EN saja.

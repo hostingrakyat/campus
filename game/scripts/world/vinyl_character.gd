@@ -10,6 +10,8 @@ var look: Dictionary = {}
 var prodi := "IF"
 var walking := false
 var speed := 3.2
+var footsteps := false
+var _step_i := 0
 
 var _body: Node3D
 var _head: Node3D
@@ -271,6 +273,10 @@ func _process(delta: float) -> void:
 			position += to / dist * step
 			rotation.y = lerp_angle(rotation.y, atan2(to.x, to.z), minf(1.0, delta * 12.0))
 		_body.position.y = absf(sin(_t * 11.0)) * 0.09
+		var step := int(_t * 11.0 / PI)
+		if footsteps and step != _step_i:
+			_step_i = step
+			Audio.play("step", -10.0, 1.0, 0.12)
 		_body.rotation.z = sin(_t * 11.0) * 0.07
 		_head.rotation.x = 0.06
 	else:
@@ -278,3 +284,15 @@ func _process(delta: float) -> void:
 		_body.rotation.z = lerpf(_body.rotation.z, 0.0, minf(1.0, delta * 8.0))
 		_head.rotation.z = sin(_t * 1.3) * 0.05
 		_head.rotation.x = 0.0
+
+
+## Little happy jump (outfit change, good news).
+func hop() -> void:
+	if _parts == null:
+		return
+	var tw := create_tween()
+	tw.tween_property(_parts, "position:y", 0.45, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_parts, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	var sq := create_tween()
+	sq.tween_property(_parts, "scale", Vector3(1.12, 0.88, 1.12), 0.08)
+	sq.tween_property(_parts, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

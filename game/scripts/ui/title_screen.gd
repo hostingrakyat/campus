@@ -39,6 +39,11 @@ func _ready() -> void:
 	t3.add_theme_constant_override("outline_size", 8)
 	logo.add_child(t3)
 	logo.pivot_offset = Vector2(330, 80)
+	logo.scale = Vector2(0.6, 0.6)
+	logo.modulate.a = 0.0
+	var drop := logo.create_tween().set_parallel(true)
+	drop.tween_property(logo, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT).set_delay(0.15)
+	drop.tween_property(logo, "modulate:a", 1.0, 0.25).set_delay(0.15)
 	var tw := create_tween().set_loops()
 	tw.tween_property(logo, "rotation", 0.025, 1.6).set_trans(Tween.TRANS_SINE)
 	tw.tween_property(logo, "rotation", -0.025, 1.6).set_trans(Tween.TRANS_SINE)
@@ -63,6 +68,7 @@ func _ready() -> void:
 	Loc.mode_changed.connect(refresh_lang)
 	tree_exiting.connect(func(): Loc.mode_changed.disconnect(refresh_lang))
 	v.add_child(lang)
+	Fx.stagger(v, 0.06, 0.25)
 
 
 func _exit_tree() -> void:

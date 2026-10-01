@@ -11,6 +11,9 @@ var header: HBoxContainer
 var planner: VBoxContainer
 var go_btn: Button
 var nav: HBoxContainer
+var _w: Dictionary = {}
+var _amounts: Dictionary = {}
+var _hold := false
 
 
 func _ready() -> void:
@@ -51,6 +54,7 @@ func _ready() -> void:
 	Meta.changed.connect(refresh)
 	Loc.mode_changed.connect(refresh)
 	refresh()
+	_build_planner(true)
 	_first_week_hint()
 
 
@@ -66,37 +70,37 @@ func on_back() -> bool:
 
 
 func refresh() -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or _hold:
 		return
 	var s: Dictionary = Game.s
 	var look_key: String = JSON.stringify(s.look) + s.prodi
 	if look_key != get_meta("look_key", ""):
 		set_meta("look_key", look_key)
 		main.world.player.build(s.look, s.prodi)
-	for c in header.get_children():
-		c.queue_free()
-	header.add_child(Icon.make("badge", 64, Data.PRODI[s.prodi].color, s.prodi))
-	var who := Kit.vbox(0)
-	who.add_child(Kit.label(s.name, 28, Color.WHITE, Kit.font_bold))
-	var when := Loc.T("Semester %d · Minggu %d/12" % [s.sem, s.week], "Semester %d · Week %d/12" % [s.sem, s.week])
-	who.add_child(Kit.label(Loc.main(when), 20, Color.WHITE))
-	for l in who.get_children():
-		l.add_theme_color_override("font_outline_color", Color(0.1, 0.07, 0.16, 0.8))
-		l.add_theme_constant_override("outline_size", 8)
-	header.add_child(who)
-	header.add_child(Kit.spacer(0, true))
-	header.add_child(Kit.currency_chip("coin", s.coins))
-	header.add_child(Kit.currency_chip("diamond", Meta.diamonds, _watch_for_diamonds))
+	if _w.is_empty():
+		_build_static()
+	_w.badge.color = Data.PRODI[s.prodi].color
+	_w.badge.text = s.prodi
+	_w.badge.queue_redraw()
+	_w.name.text = s.name
+	_w.when.text = Loc.main(Loc.T("Semester %d · Minggu %d/12", "Semester %d · Week %d/12")) % [s.sem, s.week]
+	_animate_amount("coins", _w.coins, int(s.coins), "coin")
+	_animate_amount("diamonds", _w.diamonds, Meta.diamonds, "diamond")
+	for k in ["energy", "mental", "social"]:
+		var st: Dictionary = _w[k]
+		var v: int = s[k]
+		st.name.text = Loc.main(st.pair)
+		if int(st.bar.value) != v:
+			Fx.bar_to(st.bar, v)
+			Fx.count(st.num, st.bar.value, v, func(x: float): return str(int(round(x))), 0.55)
+			if absi(int(st.bar.value) - v) >= 8:
+				Fx.pulse(st.box, 1.06)
+	var mental_col := Kit.PINK if s.mental >= Data.MENTAL_WARNING else Kit.RED
+	(_w.mental.bar.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = mental_col
 
-	for c in stats_box.get_children():
+	for c in _w.chips.get_children():
 		c.queue_free()
-	var row := Kit.hbox(14)
-	stats_box.add_child(row)
-	row.add_child(_stat(Loc.T("Energi", "Energy"), s.energy, Kit.YELLOW))
-	row.add_child(_stat(Loc.T("Mental", "Mental"), s.mental, Kit.PINK if s.mental >= Data.MENTAL_WARNING else Kit.RED))
-	row.add_child(_stat(Loc.T("Sosial", "Social"), s.social, Kit.PURPLE))
-	var row2 := Kit.hbox(10)
-	stats_box.add_child(row2)
+	var row2: HFlowContainer = _w.chips
 	var ipk_txt := "-" if s.history.is_empty() else "%.2f" % Sim.ipk(s)
 	row2.add_child(Kit.chip("IPK %s" % ipk_txt, Kit.BLUE, Color.WHITE, 20))
 	if Sim.has_classes(s):
@@ -104,7 +108,6 @@ func refresh() -> void:
 		var possible: int = s.attend + (Data.WEEKS_PER_SEMESTER - s.week + 1)
 		var att_col := Kit.GREEN if possible >= need + 2 else (Kit.ORANGE if possible >= need else Kit.RED)
 		row2.add_child(Kit.chip(Loc.main(Loc.T("Hadir %d/%d", "Attended %d/%d")) % [s.attend, s.week - 1], att_col, Color.WHITE, 20))
-	if Sim.has_classes(s):
 		var prog := Sim.study_progress(s)
 		var expect := float(s.week - 1) / Data.WEEKS_PER_SEMESTER
 		for k in [["knowledge", Loc.T("Ilmu", "Study")], ["tugas", Loc.T("Tugas", "Tasks")]]:
@@ -118,11 +121,84 @@ func refresh() -> void:
 	if s.job != "":
 		row2.add_child(Kit.chip(Loc.main(Loc.T("Kerja", "Job")), Kit.INK_SOFT, Color.WHITE, 20))
 	var warn := _warning()
-	if not warn.is_empty():
-		var w := Kit.panel(Color("ffe3e0"), 16, 10)
-		w.add_child(Kit.dual(warn, 20, Color("b3261e"), HORIZONTAL_ALIGNMENT_LEFT, true))
-		stats_box.add_child(w)
-	_build_planner()
+	var key := JSON.stringify(warn)
+	if key != _w.warn_key:
+		_w.warn_key = key
+		for c in _w.warn.get_children():
+			c.queue_free()
+		_w.warn.visible = not warn.is_empty()
+		if not warn.is_empty():
+			_w.warn.add_child(Kit.dual(warn, 20, Color("b3261e"), HORIZONTAL_ALIGNMENT_LEFT, true))
+			Fx.pop_in(_w.warn, 0.05, 0.9)
+			Fx.shake(_w.warn, 6.0)
+			Audio.play("error", -10.0)
+	if s.mental < Data.MENTAL_WARNING:
+		Audio.play_music("kampus_malam", 2.5)
+	elif Audio.music_name == "kampus_malam" and main.screen_name == "week":
+		Audio.play_music("kampus_pagi", 2.5)
+	if not running:
+		_build_planner()
+
+
+## Header and stat widgets are built once so values can animate between refreshes.
+func _build_static() -> void:
+	var badge := Icon.make("badge", 64, Kit.BLUE, "")
+	header.add_child(badge)
+	var who := Kit.vbox(0)
+	var nm := Kit.label("", 28, Color.WHITE, Kit.font_bold)
+	var when := Kit.label("", 20, Color.WHITE)
+	for l in [nm, when]:
+		l.add_theme_color_override("font_outline_color", Color(0.1, 0.07, 0.16, 0.8))
+		l.add_theme_constant_override("outline_size", 8)
+		who.add_child(l)
+	header.add_child(who)
+	header.add_child(Kit.spacer(0, true))
+	var coin_chip := Kit.currency_chip("coin", Game.s.coins)
+	var dia_chip := Kit.currency_chip("diamond", Meta.diamonds, _watch_for_diamonds)
+	header.add_child(coin_chip)
+	header.add_child(dia_chip)
+	_w = {"badge": badge, "name": nm, "when": when, "coins": coin_chip, "diamonds": dia_chip, "warn_key": "null"}
+	_amounts = {"coins": int(Game.s.coins), "diamonds": Meta.diamonds}
+	var row := Kit.hbox(14)
+	stats_box.add_child(row)
+	for k in [["energy", Loc.T("Energi", "Energy"), Kit.YELLOW], ["mental", Loc.T("Mental", "Mental"), Kit.PINK], ["social", Loc.T("Sosial", "Social"), Kit.PURPLE]]:
+		var v := Kit.vbox(2)
+		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var h := Kit.hbox(4)
+		var name_l := Kit.label(Loc.main(k[1]), 20, Kit.INK_SOFT, Kit.font_bold)
+		h.add_child(name_l)
+		h.add_child(Kit.spacer(0, true))
+		var val: int = Game.s[k[0]]
+		var num := Kit.label(str(val), 20, Kit.INK, Kit.font_bold)
+		h.add_child(num)
+		v.add_child(h)
+		var bar := Kit.bar(val, 100, k[2], 14)
+		v.add_child(bar)
+		row.add_child(v)
+		_w[k[0]] = {"box": v, "name": name_l, "num": num, "bar": bar, "pair": k[1]}
+	var chips := HFlowContainer.new()
+	chips.add_theme_constant_override("h_separation", 8)
+	chips.add_theme_constant_override("v_separation", 6)
+	stats_box.add_child(chips)
+	_w["chips"] = chips
+	var warn := Kit.panel(Color("ffe3e0"), 16, 10)
+	warn.visible = false
+	stats_box.add_child(warn)
+	_w["warn"] = warn
+
+
+## Counts a currency chip from its previous value; sparkle + sound when it goes up.
+func _animate_amount(key: String, chip: Control, value: int, sfx: String) -> void:
+	var prev: int = _amounts.get(key, value)
+	_amounts[key] = value
+	var l: Label = chip.find_child("Amount", true, false)
+	if prev == value:
+		l.text = Kit.fmt(value)
+		return
+	Fx.count(l, prev, value, func(x: float): return Kit.fmt(int(round(x))), 0.7)
+	Fx.pulse(chip, 1.12)
+	if value > prev:
+		Audio.play(sfx, -6.0)
 
 
 func _warning() -> Dictionary:
@@ -143,19 +219,7 @@ func _warning() -> Dictionary:
 	return {}
 
 
-func _stat(name: Dictionary, value: int, color: Color) -> Control:
-	var v := Kit.vbox(2)
-	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var h := Kit.hbox(4)
-	h.add_child(Kit.label(Loc.main(name), 20, Kit.INK_SOFT, Kit.font_bold))
-	h.add_child(Kit.spacer(0, true))
-	h.add_child(Kit.label(str(value), 20, Kit.INK, Kit.font_bold))
-	v.add_child(h)
-	v.add_child(Kit.bar(value, 100, color, 14))
-	return v
-
-
-func _build_planner() -> void:
+func _build_planner(animate: bool = false) -> void:
 	for c in planner.get_children():
 		c.queue_free()
 	var s: Dictionary = Game.s
@@ -167,6 +231,8 @@ func _build_planner() -> void:
 		head.add_child(Kit.chip(Loc.main(Loc.T("MINGGU UJIAN", "EXAM WEEK")), Kit.RED, Color.WHITE, 20))
 	for i in Data.SLOTS.size():
 		planner.add_child(_slot_row(i))
+	if animate:
+		Fx.stagger(planner, 0.05)
 
 
 func _slot_row(i: int) -> Control:
@@ -230,7 +296,9 @@ func _pick(i: int) -> void:
 	picker.picked.connect(func(id: String):
 		plan[i] = id
 		main.close_top_modal()
-		_build_planner())
+		_build_planner()
+		Audio.play("select", -4.0)
+		Fx.pulse(planner.get_child(i + 1), 1.05))
 	main.open_modal(picker)
 
 
@@ -248,18 +316,36 @@ func _run_week() -> void:
 	var w: CampusWorld = main.world
 	var s: Dictionary = Game.s
 	var job_loc: String = Data.JOBS[s.job].loc if s.job != "" else "kafe"
+	var disp := {"energy": s.energy, "mental": s.mental, "social": s.social, "coins": s.coins}
+	_hold = true
+	Audio.play("week", -4.0)
+	_banner(Loc.main(Loc.T("MINGGU %d", "WEEK %d")) % s.week, Kit.INK, true)
 	var res := Game.run_week(plan)
-	for entry in res.log:
+	planner.modulate = Color(1, 1, 1, 0.75)
+	for idx in res.log.size():
+		var entry: Dictionary = res.log[idx]
 		var slot: String = entry.slot
+		for r in planner.get_child_count() - 1:
+			planner.get_child(r + 1).modulate.a = 1.0 if r == idx else 0.45
+		Fx.pulse(planner.get_child(idx + 1), 1.04)
 		w.set_time("siang" if slot == "weekend" else slot)
 		var loc: String = job_loc if entry.action == "kerja" else Data.ACTIONS[entry.action].loc
+		var act_name: Dictionary = Data.JOBS[s.job].name if entry.action == "kerja" and s.job != "" else Data.ACTIONS[entry.action].name
+		_banner("%s · %s" % [Loc.main(Data.SLOT_NAMES[slot]), Loc.main(act_name)], SLOT_COLORS[slot])
 		w.move_player(loc)
 		w.follow(12.0, 0.36)
 		await _wait_arrival(1.8)
+		Audio.play("pop", -6.0)
 		w.float_text(Kit.fx_text(entry.fx))
+		for k in disp:
+			if entry.fx.has(k):
+				disp[k] = disp[k] + int(round(entry.fx[k])) if k == "coins" else clampi(disp[k] + int(round(entry.fx[k])), 0, 100)
+		_display(disp)
 		if not entry.note.is_empty():
 			w.player.say(Loc.main(entry.note), 2.2)
 		await get_tree().create_timer(0.9).timeout
+	planner.modulate = Color.WHITE
+	_hold = false
 	w.set_time("pagi")
 	for n in res.notes:
 		main.toast(n, Kit.INK)
@@ -288,6 +374,7 @@ func _run_week() -> void:
 	plan = Sim.default_plan(Game.s)
 	_set_busy(false)
 	refresh()
+	_build_planner(true)
 
 
 func _wait_arrival(max_t: float) -> void:
@@ -330,3 +417,38 @@ func _first_week_hint() -> void:
 		Meta.settings["hint_planner"] = true
 		Meta.save_meta()
 		main.toast(Loc.T("Ketuk tiap slot untuk ganti aktivitas, lalu Jalani Minggu.", "Tap a slot to change the activity, then Live This Week."), Kit.BLUE, 4.0)
+
+
+## Shows intermediate stat values while the week plays out slot by slot.
+func _display(d: Dictionary) -> void:
+	for k in ["energy", "mental", "social"]:
+		var st: Dictionary = _w[k]
+		var v: int = d[k]
+		if int(st.bar.value) != v:
+			Fx.count(st.num, st.bar.value, v, func(x: float): return str(int(round(x))), 0.45)
+			Fx.bar_to(st.bar, v, 0.45)
+	_animate_amount("coins", _w.coins, int(d.coins), "coin")
+
+
+## Ribbon that sweeps across the screen (week number / current slot).
+func _banner(text: String, color: Color, big: bool = false) -> void:
+	var p := Kit.panel(color, 40, 14)
+	var l := Kit.title(text, 44 if big else 30, Color.WHITE)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	p.add_child(l)
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(p)
+	await get_tree().process_frame
+	if not is_instance_valid(p):
+		return
+	var sz := p.get_combined_minimum_size()
+	var vw := get_viewport_rect().size.x
+	var y := 520.0 if big else 250.0
+	p.size = sz
+	p.position = Vector2(-sz.x - 20, y)
+	var mid := Vector2((vw - sz.x) * 0.5, y)
+	var tw := p.create_tween()
+	tw.tween_property(p, "position", mid, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(0.7 if big else 0.9)
+	tw.tween_property(p, "position", Vector2(vw + 20, y), 0.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_callback(p.queue_free)

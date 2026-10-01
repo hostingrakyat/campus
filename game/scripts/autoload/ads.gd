@@ -39,6 +39,7 @@ func maybe_interstitial(placement: String) -> void:
 
 func _show_mock(rewarded: bool, placement: String, cb: Callable) -> void:
 	_busy = true
+	Audio.duck(true)
 	var layer := CanvasLayer.new()
 	layer.layer = 120
 	get_tree().root.add_child(layer)
@@ -77,6 +78,7 @@ func _show_mock(rewarded: bool, placement: String, cb: Callable) -> void:
 	var finish := func(ok: bool):
 		layer.queue_free()
 		_busy = false
+		Audio.duck(false)
 		cb.call(ok)
 	close.pressed.connect(func(): finish.call(true))
 	var secs := 3 if rewarded else 2

@@ -72,6 +72,7 @@ func _ready() -> void:
 	_waypoints = spots.values()
 	player = VinylChar.new()
 	player.name = "Player"
+	player.footsteps = true
 	add_child(player)
 	player.teleport(spots.kos)
 	_spawn_npcs()

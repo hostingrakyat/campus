@@ -9,6 +9,7 @@ func _init(m: Node, slot: String, current: String) -> void:
 	var list := scroll_list(820)
 	for id in Sim.available_actions(Game.s, slot):
 		list.add_child(_option(id, id == current))
+	Fx.stagger(list, 0.03, 0.08)
 
 
 func _option(id: String, selected: bool) -> Control:
