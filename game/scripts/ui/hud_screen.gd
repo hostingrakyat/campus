@@ -104,7 +104,15 @@ func refresh() -> void:
 		var possible: int = s.attend + (Data.WEEKS_PER_SEMESTER - s.week + 1)
 		var att_col := Kit.GREEN if possible >= need + 2 else (Kit.ORANGE if possible >= need else Kit.RED)
 		row2.add_child(Kit.chip(Loc.main(Loc.T("Hadir %d/%d", "Attended %d/%d")) % [s.attend, s.week - 1], att_col, Color.WHITE, 20))
-	row2.add_child(Kit.chip("SKS %d/144" % Sim.sks_lulus(s), Color("5d5670"), Color.WHITE, 20))
+	if Sim.has_classes(s):
+		var prog := Sim.study_progress(s)
+		var expect := float(s.week - 1) / Data.WEEKS_PER_SEMESTER
+		for k in [["knowledge", Loc.T("Ilmu", "Study")], ["tugas", Loc.T("Tugas", "Tasks")]]:
+			var v: float = prog[k[0]]
+			var col := Kit.GREEN if v >= expect * 0.9 else (Kit.ORANGE if v >= expect * 0.6 else Kit.RED)
+			row2.add_child(Kit.chip("%s %d%%" % [Loc.main(k[1]), int(minf(v, 1.0) * 100)], col, Color.WHITE, 20))
+	else:
+		row2.add_child(Kit.chip("SKS %d/144" % Sim.sks_lulus(s), Color("5d5670"), Color.WHITE, 20))
 	if s.skripsi and not s.skripsi_done:
 		row2.add_child(Kit.chip(Loc.main(Loc.T("Skripsi %d%%", "Thesis %d%%")) % int(s.acc), Kit.ORANGE, Color.WHITE, 20))
 	if s.job != "":
@@ -125,6 +133,11 @@ func _warning() -> Dictionary:
 		return Loc.T("Kehadiran di bawah 75%: semua matkul terancam E.", "Attendance below 75%: every course is at risk of an E.")
 	if s.energy < 20:
 		return Loc.T("Energi hampir habis. Tidur dulu biar fokus.", "Almost out of energy. Sleep so you can focus.")
+	if Sim.has_classes(s) and s.week >= 5:
+		var prog := Sim.study_progress(s)
+		var expect := float(s.week - 1) / Data.WEEKS_PER_SEMESTER
+		if minf(prog.knowledge, prog.tugas) < expect * 0.5:
+			return Loc.T("Belajar/tugas tertinggal jauh. Nilai matkul terancam jeblok.", "Study/assignments are far behind. Your grades are in danger.")
 	if s.coins < 0:
 		return Loc.T("Koin minus! Cari kerja part-time atau tukar diamond.", "Coins negative! Find a part-time job or exchange diamonds.")
 	return {}

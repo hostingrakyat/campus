@@ -29,6 +29,7 @@ func _ready() -> void:
 	match id:
 		"padam":
 			w.set_time("malam", true)
+			w.lamps_off()
 			w.player.visible = false
 			w.focus(w.spots.kos + Vector3(-0.8, 2.0, -3.0), 9.0, true, 0.16)
 		"rawat":

@@ -141,6 +141,11 @@ func _update_camera() -> void:
 	camera.v_offset = (cam_frac - 0.5) * cam_size
 
 
+func lamps_off() -> void:
+	for l in lamps:
+		l.visible = false
+
+
 ## pagi | siang | malam
 func set_time(slot: String, instant: bool = false) -> void:
 	var sky := Color("9fd6f2")
@@ -533,8 +538,8 @@ func _lamp(p: Vector3) -> void:
 	var light := OmniLight3D.new()
 	light.position = p + Vector3(0, 2.9, 0)
 	light.light_color = Color("ffd98a")
-	light.light_energy = 1.6
-	light.omni_range = 5.0
+	light.light_energy = 0.9
+	light.omni_range = 4.2
 	light.visible = false
 	add_child(light)
 	lamps.append(light)

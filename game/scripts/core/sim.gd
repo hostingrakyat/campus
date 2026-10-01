@@ -51,6 +51,23 @@ static func last_ips(s: Dictionary) -> float:
 	return -1.0 if s.history.is_empty() else float(s.history[-1].ips)
 
 
+## Study progress this semester as 0..1+ of what an average-difficulty course needs (for HUD hints).
+static func study_progress(s: Dictionary) -> Dictionary:
+	var pdiff: float = D.PRODI[s.prodi].diff
+	var load: float = maxf(1.0, krs_sks(s) / 20.0)
+	var dsum := 0.0
+	var n := 0
+	for c in s.krs:
+		if c.type == "mk":
+			dsum += float(c.diff)
+			n += 1
+	var diff := 1.0 if n == 0 else dsum / n
+	return {
+		"knowledge": s.knowledge / (D.TARGET_KNOWLEDGE * pdiff * diff * load),
+		"tugas": s.tugas / (D.TARGET_TUGAS * pdiff * diff * load),
+	}
+
+
 static func avg_mental(s: Dictionary) -> float:
 	return float(s.mental) if s.mental_n == 0 else s.mental_sum / s.mental_n
 

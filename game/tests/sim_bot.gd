@@ -169,12 +169,12 @@ func _plan(s: Dictionary, strat: String) -> Array:
 				if s.skripsi and not s.skripsi_done and not Sim.has_classes(s):
 					plan[0] = "garap_skripsi"
 					plan[1] = "bimbingan" if s.draft > s.acc + 5.0 else "garap_skripsi"
+			if s.skripsi and not s.skripsi_done and plan[1] != "kerja" and (s.draft > s.acc + 5.0 or s.acc >= 100.0) and (int(s.week) % 2 == 0 or not Sim.has_classes(s)):
+				plan[1] = "bimbingan"
 			if low_e:
 				plan[free] = "tidur"
 			if low_m and plan[1] != "kerja":
 				plan[1] = "konseling"
-			if s.skripsi and not s.skripsi_done and plan[1] != "kerja" and (s.draft > s.acc + 5.0 or s.acc >= 100.0):
-				plan[1] = "bimbingan"
 		"balance":
 			plan[3] = "nongkrong" if int(s.week) % 2 == 0 else ("belajar" if e > 60 else "tidur")
 			if int(s.week) % 3 == 0 and plan[free] != "kerja":

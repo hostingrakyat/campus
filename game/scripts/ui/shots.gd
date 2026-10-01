@@ -14,6 +14,9 @@ static func run(main: Node, shot: String, out: String) -> void:
 	if shot.ends_with("_m"):
 		look = {"skin": 2, "hair": "hair_fringe", "hair_color": 0, "top": "top_flanel", "head": "head_none", "face": "face_none", "back": "back_ransel", "aura": "aura_none"}
 		shot = shot.trim_suffix("_m")
+	if shot == "icon":
+		await _icon(main, out)
+		return
 	if shot == "autoplay":
 		Autoplay.run(main)
 		return
@@ -99,5 +102,44 @@ static func run(main: Node, shot: String, out: String) -> void:
 		await main.get_tree().process_frame
 	var img: Image = main.get_viewport().get_texture().get_image()
 	img.save_png(out if out != "" else "user://shot.png")
+	print("SHOT saved ", out)
+	main.get_tree().quit()
+
+
+## Renders the launcher icon subject (sigma student head-and-shoulders) on a transparent background.
+static func _icon(main: Node, out: String) -> void:
+	main.ui.visible = false
+	main.world.visible = false
+	main.get_viewport().transparent_bg = true
+	var stage := Node3D.new()
+	main.add_child(stage)
+	var env := WorldEnvironment.new()
+	env.environment = Environment.new()
+	env.environment.background_mode = Environment.BG_CLEAR_COLOR
+	env.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.environment.ambient_light_color = Color("fff3e0")
+	env.environment.ambient_light_energy = 0.55
+	stage.add_child(env)
+	var sun := DirectionalLight3D.new()
+	sun.rotation = Vector3(deg_to_rad(-35), deg_to_rad(35), 0)
+	sun.light_energy = 1.0
+	stage.add_child(sun)
+	var c := VinylChar.new()
+	stage.add_child(c)
+	c.build({"skin": 1, "hair": "hair_fringe", "hair_color": 0, "top": "top_hoodie_gold", "head": "head_none", "face": "face_shades", "back": "back_none", "aura": "aura_none"}, "IF")
+	c.rotation.y = deg_to_rad(-14)
+	var cam := Camera3D.new()
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = 2.0
+	cam.position = Vector3(0, 1.32, 6)
+	stage.add_child(cam)
+	cam.make_current()
+	for i in 30:
+		await main.get_tree().process_frame
+	c.set_process(false)
+	for i in 5:
+		await main.get_tree().process_frame
+	var img: Image = main.get_viewport().get_texture().get_image()
+	img.save_png(out)
 	print("SHOT saved ", out)
 	main.get_tree().quit()
