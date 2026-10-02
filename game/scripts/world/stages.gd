@@ -316,7 +316,7 @@ func _lapangan() -> Dictionary:
 			"track": spot(c + Vector3(-2.8, 0, 1.8), PI * 0.5),
 			"track_path": [c + Vector3(2.8, 0, 1.8), c + Vector3(2.8, 0, -1.8), c + Vector3(-2.8, 0, -1.8), c + Vector3(-2.8, 0, 1.8), c + Vector3(2.8, 0, 1.8)],
 			"field": spot(c + Vector3(0.2, 0, 0.3), 0.3),
-			"field_b": spot(c + Vector3(-0.8, 0, 0.6), 0.5),
+			"field_b": spot(c + Vector3(-1.3, 0, 0.9), 0.5),
 			"field_list": field,
 		}}
 

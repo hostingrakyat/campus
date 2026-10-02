@@ -277,8 +277,8 @@ func event_scene(ev: Dictionary) -> Dictionary:
 			scene = {"stage": "konseling", "spot": "chair_a", "pose": "sit", "anim": "listen"}
 			speaker_spot = "chair_b"
 		"bestie", "senior":
-			scene = {"stage": "warkop", "spot": "bench", "pose": "sit", "anim": "listen"}
-			speaker_spot = "bench_b"
+			scene = {"stage": "lapangan", "spot": "field", "anim": "listen"}
+			speaker_spot = "field_b"
 		"ambis":
 			scene = {"stage": "perpus", "spot": "seat", "pose": "sit", "anim": "listen"}
 			speaker_spot = "seat_b"
@@ -304,12 +304,17 @@ func stage_event(ev: Dictionary, ctx: Dictionary, frac: float = 0.42) -> VinylCh
 	stage(info.scene, ctx, frac)
 	if info.speaker_spot == "":
 		world.player.emote("!" if info.phone else "?", Color("ff9f1c"))
+		world.focus(world.player.position + Vector3(0, 1.0, 0), 5.4, true, frac)
 		return null
 	var st := stages.get_stage(info.scene.stage)
 	var s: Dictionary = st.spots.get(info.speaker_spot, {})
 	if s.is_empty():
 		return null
 	var actor := actor_for(ev.speaker, ctx)
+	# Cinematic two-shot: frame the player and the speaker's destination together.
+	var mid: Vector3 = (world.player.position + s.pos) * 0.5 + Vector3(0, 1.0, 0)
+	var span: float = world.player.position.distance_to(s.pos)
+	world.focus(mid, clampf(4.6 + span * 1.2, 5.2, 7.5), true, frac)
 	var seated: bool = s.get("pose", "stand") == "sit"
 	if seated:
 		_activate(actor, s, "sit", "talk", "")
