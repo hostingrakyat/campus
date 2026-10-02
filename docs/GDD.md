@@ -17,6 +17,31 @@ Awal semester → UKT (bayar / banding / beasiswa / pinjol / cuti) → Isi KRS �
   sisa = Kelas B (dosen killer, −4). Rewarded ad: "refresh SIAKAD" sekali.
 - **Batas SKS** dari IPS lalu: ≥3.0 → 24, ≥2.5 → 21, ≥2.0 → 18, lainnya 15.
 
+## Variasi mingguan
+
+- **Kabar Minggu Ini** (acak tiap minggu, tidak pernah sama dua kali berturut): Tanggal Merah (tidak ada kuliah, kehadiran
+  tetap dihitung), Musim Kuis Dadakan, Dosen Seminar ke Luar Negeri, Deadline Numpuk, Promo Kopi Warkop, Hujan Seminggu
+  (ojol tarif hujan), Bonus dari Bos, Festival Kampus, Flu di Kos, Listrik Padam Bergilir, Seminar Gratis, Tanggal Tua.
+- **Varian aktivitas** (47 total): setiap aktivitas punya beberapa kejadian acak dengan efek kecil berbeda — mis. Kuliah:
+  ceramah 2 jam / kuis dadakan / dosen telat 45 menit / presentasi kelompok / diskusi seru / slide Comic Sans; Nongkrong:
+  gorengan / ditraktir kating / curhat / main remi; Ojol: orderan biasa / dapat tip / ban bocor; dst.
+- Rencana default ikut bervariasi menurut energi, mental, sosial, dan uang; tombol **Acak** untuk mengocok ulang.
+- Data di `game/tools/gen_activities.py` → `data/activities.json`.
+
+## Cutscene
+
+- **Aktivitas** dimainkan sebagai montase 3D: panel rencana turun, layar fade ke set yang sesuai, karakter berpose dan
+  beranimasi, NPC ikut tampil dan bicara (balon teks), caption menampilkan kejadian varian + perubahan stat.
+  Tombol **Cepat** (diingat) dan **Lewati**.
+- **Set**: kelas (dosen di papan tulis, kursi kuliah lipat), kamar kos (kasur, meja + laptop, kipas angin berputar, lemari),
+  perpustakaan, sekretariat organisasi, kafe/toko 24 jam/apotek, ruang konseling, ruang dosen (pintu "SEDANG RAPAT" /
+  "DINAS LUAR KOTA" saat ghosting), plus warkop, lapangan (jogging/futsal), jalan raya (ojol berboncengan).
+- **Event** = cutscene: letterbox, NPC 3D (tiap NPC punya penampilan sendiri) berjalan menghampiri atau sudah duduk di
+  tempatnya, dialog gaya visual novel (nama, avatar, teks diketik, ketuk untuk lanjut), pilihan, pemain mengucapkan pilihannya,
+  reaksi (sorak + lompat / lesu + geleng kepala), lalu hasil + perubahan stat. Telepon ortu/pinjol: pemain di kos memegang HP.
+- Karakter punya sendi bahu/pinggul: jalan dengan ayunan, duduk, berbaring, naik motor, mengetik, mencatat, membaca, menelepon,
+  tertawa, bersorak, sedih, menunjuk, melambai, plus emote ("!", "?", "...", "z z z").
+
 ## Stat
 
 | Stat | Fungsi |

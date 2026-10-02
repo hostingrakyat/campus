@@ -28,6 +28,7 @@ func _ready() -> void:
 	modal_holder = Kit.full_rect(Control.new())
 	modal_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(modal_holder)
+	TouchScroll.modal_root = modal_holder
 	toast_box = Kit.vbox(8)
 	toast_box.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	toast_box.offset_left = -320
@@ -162,8 +163,24 @@ func open_modal(content: Control, dismissable: bool = true, bottom: bool = false
 	return wrap
 
 
+## Full-screen cinematic (letterbox + dialogue); counts as a non-dismissable modal.
+func open_cutscene(c: Control) -> void:
+	c.set_meta("dismissable", false)
+	c.set_meta("cutscene", true)
+	modal_holder.add_child(c)
+	_modals.append(c)
+
+
+func close_cutscene(c: Control) -> void:
+	_modals.erase(c)
+	if is_instance_valid(c):
+		c.queue_free()
+
+
 func close_modal(wrap: Control) -> void:
 	if wrap == null or not is_instance_valid(wrap) or wrap.get_meta("closing", false):
+		return
+	if wrap.get_meta("cutscene", false):
 		return
 	wrap.set_meta("closing", true)
 	_modals.erase(wrap)

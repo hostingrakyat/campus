@@ -163,7 +163,13 @@ func _on_node_added(n: Node) -> void:
 	if n is BaseButton:
 		var b: BaseButton = n
 		b.pressed.connect(func():
-			if not b.has_meta("silent"):
+			if not b.has_meta("silent") and not TouchScroll.gesture_was_drag:
 				play("click", -3.0))
 		if b is Button:
 			Fx.press_feedback(b)
+
+
+func _input(e: InputEvent) -> void:
+	# Every new touch starts a fresh gesture (see TouchScroll).
+	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+		TouchScroll.gesture_was_drag = false

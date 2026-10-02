@@ -17,6 +17,15 @@ static func run(main: Node, shot: String, out: String) -> void:
 	if shot == "icon":
 		await _icon(main, out)
 		return
+	if shot.begins_with("stage_"):
+		await _stage_shot(main, shot.trim_prefix("stage_"), out)
+		return
+	if shot == "cutscene" or shot.begins_with("cutscene_"):
+		await _cutscene_shot(main, shot.trim_prefix("cutscene_") if shot != "cutscene" else "read_doang", out)
+		return
+	if shot == "scrolltest":
+		await _scroll_test(main)
+		return
 	if shot == "autoplay":
 		Autoplay.run(main)
 		return
@@ -90,7 +99,7 @@ static func run(main: Node, shot: String, out: String) -> void:
 							"event":
 								for ev in Data.events:
 									if ev.id == "read_doang":
-										main.open_modal(EventPopup.new(main, ev), false)
+										main.open_cutscene(Cutscene.new(main, ev, main.screen._ctx()))
 							"picker":
 								main.screen._pick(1)
 							"shop":
@@ -198,30 +207,8 @@ static func _demo(main: Node) -> void:
 	Game.s.coins = 1650
 	for i in 2:
 		main.screen._run_week()
-		var t := 0.0
-		while t < 16.0:
-			await wait.call(0.25)
-			t += 0.25
-			if main.has_modal():
-				await wait.call(2.2)
-				var top: Control = main._modals[-1]
-				var btn: Button = null
-				for b in top.find_children("*", "Button", true, false):
-					if b.visible and not b.disabled and b.text != "X":
-						btn = b
-						break
-				if btn:
-					btn.pressed.emit()
-				await wait.call(2.0)
-				var top2: Control = main._modals[-1] if main.has_modal() else null
-				if top2:
-					for b in top2.find_children("*", "Button", true, false):
-						if b.visible and b.text.begins_with("Lanjut"):
-							b.pressed.emit()
-				break
-			if not main.screen.running:
-				break
-		await wait.call(1.5)
+		await _auto_until_idle(main, 70.0)
+		await wait.call(1.2)
 	var rng := RandomNumberGenerator.new()
 	for w in 12:
 		Sim.run_week(Game.s, ["kuliah", "belajar", "tugas", "tidur"], rng)
@@ -243,3 +230,129 @@ static func _press(n: Node, prefixes: Array) -> void:
 			if b.text.begins_with(p) and not b.disabled:
 				b.pressed.emit()
 				return
+
+
+## Renders one activity variant staged in its set (no UI): stage_<action>[:<variant>]
+static func _stage_shot(main: Node, spec: String, out: String) -> void:
+	Game.new_run("Ayu", "IF", {"skin": 1, "hair": "hair_hijab", "hair_color": 4, "top": "top_almamater", "head": "head_none", "face": "face_round", "back": "back_ransel", "aura": "aura_none"})
+	Game.s.job = "barista"
+	Game.s.dospem = "dosen_revisi"
+	main.goto("title")
+	main.ui.visible = false
+	var parts := spec.split(":")
+	var action: String = parts[0]
+	var entry := {"action": action, "variant": {}, "scene_key": parts[1] if parts.size() > 1 else "acc"}
+	for v in Data.activities.variants.get(action, []):
+		if parts.size() < 2 or v.id == parts[1]:
+			entry.variant = v
+			break
+	var w: CampusWorld = main.world
+	w.set_time(OS.get_environment("SHOT_TIME") if OS.get_environment("SHOT_TIME") != "" else "siang", true)
+	var scene := w.director.scene_for(entry)
+	var ctx := {"lecturer": "dosen_killer", "dospem": "dosen_revisi", "job": "barista", "friend": "beban", "scene_key": entry.scene_key}
+	w.director.stage(scene, ctx, 0.5)
+	w.director.play_bubbles(scene, ctx)
+	await _finish(main, out)
+
+
+static func _cutscene_shot(main: Node, ev_id: String, out: String) -> void:
+	Game.new_run("Ayu", "IF", {"skin": 1, "hair": "hair_hijab", "hair_color": 4, "top": "top_almamater", "head": "head_none", "face": "face_round", "back": "back_ransel", "aura": "aura_none"})
+	Sim.pay_ukt(Game.s, "parents", RandomNumberGenerator.new())
+	Sim.set_krs(Game.s, Sim.default_krs(Game.s), {}, RandomNumberGenerator.new())
+	Game.s.dospem = "dosen_revisi"
+	main.goto("week")
+	await main.get_tree().process_frame
+	for ev in Data.events:
+		if ev.id == ev_id:
+			var cs := Cutscene.new(main, ev, main.screen._ctx())
+			main.open_cutscene(cs)
+	await _finish(main, out)
+
+
+static func _finish(main: Node, out: String) -> void:
+	var frames := int(OS.get_environment("SHOT_FRAMES")) if OS.get_environment("SHOT_FRAMES") != "" else 70
+	for i in frames:
+		await main.get_tree().process_frame
+	var img: Image = main.get_viewport().get_texture().get_image()
+	img.save_png(out if out != "" else "user://shot.png")
+	print("SHOT saved ", out)
+	main.get_tree().quit()
+
+
+## Simulated finger gestures on the KRS list: a swipe must scroll without toggling a course,
+## a short tap must toggle exactly one course.
+static func _scroll_test(main: Node) -> void:
+	var tree := main.get_tree()
+	Game.new_run("Tes", "KD", Data.DEFAULT_LOOK)
+	Game.s.sem = 7
+	Game.s.ukt_paid = true
+	Game.s.phase = "krs"
+	main.goto("krs")
+	for i in 60:
+		await tree.process_frame
+	var scr: KrsScreen = main.screen
+	var sc: TouchScroll = scr.find_children("*", "TouchScroll", true, false)[0]
+	var r := sc.get_global_rect()
+	var before_pick := scr.picked.duplicate()
+	var x := r.position.x + r.size.x * 0.5
+	var y0 := r.position.y + r.size.y * 0.8
+	await _mouse(tree, Vector2(x, y0), true)
+	for i in 12:
+		await _move(tree, Vector2(x, y0 - i * 25.0))
+	await _mouse(tree, Vector2(x, y0 - 300.0), false)
+	for i in 20:
+		await tree.process_frame
+	var scrolled := sc.scroll_vertical
+	var unchanged := scr.picked == before_pick
+	print("SCROLLTEST swipe: scroll_vertical=%d picked_unchanged=%s" % [scrolled, unchanged])
+	await _mouse(tree, Vector2(x, y0), true)
+	await _mouse(tree, Vector2(x, y0), false)
+	for i in 5:
+		await tree.process_frame
+	var toggled := scr.picked.size() != before_pick.size()
+	print("SCROLLTEST tap: toggled_one=%s" % toggled)
+	print("SCROLLTEST %s" % ("PASS" if scrolled > 100 and unchanged and toggled else "FAIL"))
+	tree.quit()
+
+
+static func _mouse(tree: SceneTree, pos: Vector2, pressed: bool) -> void:
+	var e := InputEventMouseButton.new()
+	e.button_index = MOUSE_BUTTON_LEFT
+	e.pressed = pressed
+	e.position = pos
+	e.global_position = pos
+	Input.parse_input_event(e)
+	await tree.process_frame
+	await tree.process_frame
+
+
+static func _move(tree: SceneTree, pos: Vector2) -> void:
+	var e := InputEventMouseMotion.new()
+	e.position = pos
+	e.global_position = pos
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT
+	Input.parse_input_event(e)
+	await tree.process_frame
+
+
+## Plays through a running week like a reader: taps dialogue every ~2 s and picks the first choice.
+static func _auto_until_idle(main: Node, max_t: float) -> void:
+	var tree := main.get_tree()
+	var t := 0.0
+	var next_tap := 2.2
+	while t < max_t:
+		await tree.create_timer(0.2).timeout
+		t += 0.2
+		if main.has_modal():
+			next_tap -= 0.2
+			if next_tap <= 0.0:
+				next_tap = 2.2
+				var top: Control = main._modals[-1]
+				for b in top.find_children("*", "Button", true, false):
+					if b.visible and not b.disabled and b.text != "X":
+						b.pressed.emit()
+						break
+		elif main.screen is HudScreen and not main.screen.running:
+			return
+		elif not (main.screen is HudScreen):
+			return

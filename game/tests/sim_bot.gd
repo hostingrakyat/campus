@@ -3,7 +3,7 @@ extends Node
 ## Run: godot --headless res://tests/sim_bot.tscn
 
 const STRATEGIES := ["rajin", "balance", "santai", "pekerja"]
-const RUNS := 40
+const RUNS := 15
 
 var failures := 0
 

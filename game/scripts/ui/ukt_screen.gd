@@ -20,9 +20,7 @@ func _ready() -> void:
 	if Game.s.flags.get("phk_new", false):
 		for ev in Data.events:
 			if ev.id == "phk":
-				var pop := EventPopup.new(main, ev)
-				main.open_modal(pop, false)
-				pop.done.connect(_build)
+				_phk(ev)
 				break
 
 
@@ -127,3 +125,16 @@ func _give_up() -> void:
 		main.goto("ending")))
 	box.body.add_child(Kit.button(Loc.T("Coba cara lain", "Try another way"), Kit.GREEN, func(): main.close_top_modal()))
 	main.open_modal(box)
+
+
+func _phk(ev: Dictionary) -> void:
+	var cs := Cutscene.new(main, ev)
+	main.open_cutscene(cs)
+	await cs.done
+	main.close_cutscene(cs)
+	var w: CampusWorld = main.world
+	w.player.teleport(w.spots.rektorat + Vector3(0, 0, 1.0))
+	w.player.rotation.y = PI
+	w.set_time("pagi", true)
+	w.focus(w.player.position + Vector3(0, 1.0, 0), 8.0, true, 0.2)
+	_build()

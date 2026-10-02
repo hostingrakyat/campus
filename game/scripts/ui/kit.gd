@@ -169,8 +169,25 @@ static func button(pair: Variant, color: Color = BLUE, cb: Callable = Callable()
 		if Loc.mode_changed.is_connected(refresh):
 			Loc.mode_changed.disconnect(refresh))
 	if cb.is_valid():
-		b.pressed.connect(cb)
+		on_tap(b, cb)
 	return b
+
+
+## Connects a button press that is ignored when the finger was scrolling a list.
+static func on_tap(b: BaseButton, cb: Callable) -> void:
+	b.pressed.connect(func():
+		if not TouchScroll.gesture_was_drag:
+			cb.call())
+
+
+## Makes any control (cards, rows) tappable: fires on release, never after a scroll drag.
+static func tap(c: Control, cb: Callable) -> void:
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT and not e.pressed:
+			if not TouchScroll.gesture_was_drag and c.get_global_rect().has_point(e.global_position):
+				Audio.play("click", -3.0)
+				cb.call())
 
 
 ## Tighter padding for small buttons in rows (tabs, nav).
@@ -217,8 +234,7 @@ static func margin(node: Control, l: int, t: int, r: int, b: int) -> MarginConta
 
 
 static func scroll(child: Control) -> ScrollContainer:
-	var s := ScrollContainer.new()
-	s.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	var s := TouchScroll.new()
 	s.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	child.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	s.add_child(child)

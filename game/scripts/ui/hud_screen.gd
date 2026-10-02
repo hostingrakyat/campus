@@ -14,10 +14,16 @@ var nav: HBoxContainer
 var _w: Dictionary = {}
 var _amounts: Dictionary = {}
 var _hold := false
+var _sheet_panel: PanelContainer
+var _curtain: ColorRect
+var _caption: PanelContainer
+var _cap_box: VBoxContainer
+var _skip := false
+var _sheet_home := -1.0
 
 
 func _ready() -> void:
-	plan = Sim.default_plan(Game.s)
+	plan = Game.suggest_plan()
 	main.world.player.build(Game.s.look, Game.s.prodi)
 	main.world.player.teleport(main.world.spots.kos)
 	main.world.follow(12.0, 0.36, true)
@@ -33,7 +39,12 @@ func _ready() -> void:
 	stats_box = Kit.vbox(8)
 	stats_panel.add_child(stats_box)
 
+	_curtain = Kit.full_rect(ColorRect.new())
+	_curtain.color = Color(0.06, 0.05, 0.1, 0.0)
+	_curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_curtain)
 	var v := sheet()
+	_sheet_panel = v.get_parent()
 	planner = Kit.vbox(10)
 	v.add_child(planner)
 	go_btn = Kit.button(Loc.T("Jalani Minggu Ini  >", "Live This Week  >"), Kit.GREEN, _run_week, 30, 84)
@@ -50,6 +61,7 @@ func _ready() -> void:
 		var b := Kit.compact(Kit.button(n[0], n[1], n[2], 19, 64, false))
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		nav.add_child(b)
+	_build_caption()
 	Game.changed.connect(refresh)
 	Meta.changed.connect(refresh)
 	Loc.mode_changed.connect(refresh)
@@ -229,8 +241,23 @@ func _build_planner(animate: bool = false) -> void:
 	head.add_child(Kit.spacer(0, true))
 	if Sim.is_exam_week(s) and Sim.has_classes(s):
 		head.add_child(Kit.chip(Loc.main(Loc.T("MINGGU UJIAN", "EXAM WEEK")), Kit.RED, Color.WHITE, 20))
+	var shuffle := Kit.compact(Kit.button(Loc.T("Acak", "Shuffle"), Kit.PURPLE, func():
+		plan = Game.suggest_plan()
+		Audio.play("card", -6.0)
+		_build_planner(true), 18, 48, false), 12)
+	head.add_child(shuffle)
+	var news := Game.ensure_week()
+	if news.get("id", "normal") != "normal":
+		var card := Kit.panel(Color("fff1db") if not news.get("no_class", false) else Color("ffe3e0"), 18, 12)
+		var nv := Kit.vbox(2)
+		card.add_child(nv)
+		nv.add_child(Kit.label(Loc.main(Loc.T("KABAR MINGGU INI: ", "THIS WEEK: ")) + Loc.main(news.title), 20, Kit.ORANGE.darkened(0.25), Kit.font_bold))
+		nv.add_child(Kit.dual(news.text, 18, Kit.INK_SOFT))
+		planner.add_child(card)
 	for i in Data.SLOTS.size():
-		planner.add_child(_slot_row(i))
+		var row := _slot_row(i)
+		row.set_meta("slot_row", i)
+		planner.add_child(row)
 	if animate:
 		Fx.stagger(planner, 0.05)
 
@@ -285,7 +312,7 @@ func _slot_row(i: int) -> Control:
 	arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(arrow)
 	if not locked:
-		b.pressed.connect(func(): _pick(i))
+		Kit.on_tap(b, func(): _pick(i))
 	return b
 
 
@@ -298,7 +325,9 @@ func _pick(i: int) -> void:
 		main.close_top_modal()
 		_build_planner()
 		Audio.play("select", -4.0)
-		Fx.pulse(planner.get_child(i + 1), 1.05))
+		for r in planner.get_children():
+			if r.get_meta("slot_row", -1) == i:
+				Fx.pulse(r, 1.05))
 	main.open_modal(picker)
 
 
@@ -315,38 +344,36 @@ func _run_week() -> void:
 	_set_busy(true)
 	var w: CampusWorld = main.world
 	var s: Dictionary = Game.s
-	var job_loc: String = Data.JOBS[s.job].loc if s.job != "" else "kafe"
 	var disp := {"energy": s.energy, "mental": s.mental, "social": s.social, "coins": s.coins}
 	_hold = true
+	_skip = false
 	Audio.play("week", -4.0)
-	_banner(Loc.main(Loc.T("MINGGU %d", "WEEK %d")) % s.week, Kit.INK, true)
 	var res := Game.run_week(plan)
-	planner.modulate = Color(1, 1, 1, 0.75)
+	var ctx := _ctx()
+	await _sheet_slide(false)
+	_banner(Loc.main(Loc.T("MINGGU %d", "WEEK %d")) % s.week, Kit.INK, true)
+	await get_tree().create_timer(0.35).timeout
 	for idx in res.log.size():
 		var entry: Dictionary = res.log[idx]
 		var slot: String = entry.slot
-		for r in planner.get_child_count() - 1:
-			planner.get_child(r + 1).modulate.a = 1.0 if r == idx else 0.45
-		Fx.pulse(planner.get_child(idx + 1), 1.04)
-		w.set_time("siang" if slot == "weekend" else slot)
-		var loc: String = job_loc if entry.action == "kerja" else Data.ACTIONS[entry.action].loc
-		var act_name: Dictionary = Data.JOBS[s.job].name if entry.action == "kerja" and s.job != "" else Data.ACTIONS[entry.action].name
-		_banner("%s · %s" % [Loc.main(Data.SLOT_NAMES[slot]), Loc.main(act_name)], SLOT_COLORS[slot])
-		w.move_player(loc)
-		w.follow(12.0, 0.36)
-		await _wait_arrival(1.8)
+		await _cover(true)
+		w.set_time("siang" if slot == "weekend" else slot, true)
+		ctx["scene_key"] = entry.get("scene_key", "")
+		var scene := w.director.scene_for(entry)
+		w.director.stage(scene, ctx, 0.47)
+		_show_caption(entry)
+		await _cover(false)
 		Audio.play("pop", -6.0)
+		if not _skip:
+			w.director.play_bubbles(scene, ctx)
 		w.float_text(Kit.fx_text(entry.fx))
 		for k in disp:
 			if entry.fx.has(k):
 				disp[k] = disp[k] + int(round(entry.fx[k])) if k == "coins" else clampi(disp[k] + int(round(entry.fx[k])), 0, 100)
 		_display(disp)
-		if not entry.note.is_empty():
-			w.player.say(Loc.main(entry.note), 2.2)
-		await get_tree().create_timer(0.9).timeout
-	planner.modulate = Color.WHITE
+		await _hold_scene(1.3 if Meta.settings.get("fast_scenes", false) else 2.8)
+	_caption.visible = false
 	_hold = false
-	w.set_time("pagi")
 	for n in res.notes:
 		main.toast(n, Kit.INK)
 	refresh()
@@ -355,9 +382,18 @@ func _run_week() -> void:
 	if Game.s.phase != "ending":
 		var ev := Game.pick_event()
 		if not ev.is_empty():
-			var pop := EventPopup.new(main, ev)
-			main.open_modal(pop, false)
-			await pop.done
+			await _cover(true)
+			var cs := Cutscene.new(main, ev, ctx)
+			main.open_cutscene(cs)
+			_curtain.color.a = 0.0
+			await cs.done
+			main.close_cutscene(cs)
+			_curtain.color.a = 1.0
+	await _cover(true)
+	w.director.return_to_campus("kos")
+	w.set_time("pagi", true)
+	w.follow(12.0, 0.36, true)
+	await _cover(false)
 	if Game.s.phase == "ending":
 		main.goto("ending")
 		return
@@ -371,10 +407,109 @@ func _run_week() -> void:
 		return
 	if int(Game.s.week) % 4 == 1:
 		Ads.maybe_interstitial("week_%d" % Game.s.week)
-	plan = Sim.default_plan(Game.s)
+	plan = Game.suggest_plan()
 	_set_busy(false)
 	refresh()
 	_build_planner(true)
+	_sheet_slide(true)
+
+
+## Context for casting scenes: this week's lecturer, the advisor, the job, a friend.
+func _ctx() -> Dictionary:
+	var s: Dictionary = Game.s
+	var lect: String = Data.LECTURERS[(int(s.sem) * 13 + int(s.week) * 7) % Data.LECTURERS.size()]
+	var friends := ["ambis", "beban", "senior"]
+	return {"lecturer": lect, "dospem": s.get("dospem", ""), "job": s.job, "friend": friends[int(s.week) % friends.size()]}
+
+
+func _cover(on: bool) -> void:
+	var tw := create_tween()
+	tw.tween_property(_curtain, "color:a", 1.0 if on else 0.0, 0.06 if _skip else 0.18)
+	await tw.finished
+
+
+func _hold_scene(t: float) -> void:
+	var el := 0.0
+	while el < t and not _skip:
+		await get_tree().process_frame
+		el += get_process_delta_time()
+	if _skip:
+		await get_tree().create_timer(0.08).timeout
+
+
+func _sheet_slide(show_sheet: bool) -> void:
+	var h := _sheet_panel.size.y + 60.0
+	if not show_sheet:
+		_sheet_home = _sheet_panel.position.y
+	var base_y := _sheet_home
+	var tw := create_tween()
+	if show_sheet:
+		_sheet_panel.visible = true
+		tw.tween_property(_sheet_panel, "position:y", base_y, 0.35).from(base_y + h).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	else:
+		tw.tween_property(_sheet_panel, "position:y", base_y + h, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.tween_callback(func(): _sheet_panel.visible = false)
+	await tw.finished
+
+
+func _build_caption() -> void:
+	_caption = Kit.panel(Kit.PAPER, 30, 20)
+	_caption.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_caption.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_caption.offset_left = 14
+	_caption.offset_right = -14
+	_caption.offset_bottom = -26
+	_caption.visible = false
+	add_child(_caption)
+	var v := Kit.vbox(10)
+	_caption.add_child(v)
+	_cap_box = Kit.vbox(8)
+	v.add_child(_cap_box)
+	var row := Kit.hbox(10)
+	v.add_child(row)
+	row.add_child(Kit.spacer(0, true))
+	var fast := Kit.compact(Kit.button(Loc.T("Cepat", "Fast"), Kit.BLUE if Meta.settings.get("fast_scenes", false) else Color("c9c2d6"), Callable(), 18, 50, false), 14)
+	Kit.on_tap(fast, func():
+		Meta.settings["fast_scenes"] = not Meta.settings.get("fast_scenes", false)
+		Meta.save_meta()
+		Kit.style_button(fast, Kit.BLUE if Meta.settings.fast_scenes else Color("c9c2d6"))
+		Kit.compact(fast, 14))
+	row.add_child(fast)
+	row.add_child(Kit.compact(Kit.button(Loc.T("Lewati  >>", "Skip  >>"), Kit.INK_SOFT, func(): _skip = true, 18, 50, false), 14))
+
+
+func _show_caption(entry: Dictionary) -> void:
+	for c in _cap_box.get_children():
+		c.queue_free()
+	var s: Dictionary = Game.s
+	var slot: String = entry.slot
+	var act_name: Dictionary = Data.JOBS[s.job].name if entry.action == "kerja" and s.job != "" else Data.ACTIONS[entry.action].name
+	var head := Kit.hbox(10)
+	head.add_child(Kit.chip(Loc.main(Data.SLOT_NAMES[slot]), SLOT_COLORS[slot], Color.WHITE, 20))
+	var n := Kit.label(Loc.main(act_name), 28, Kit.INK, Kit.font_display)
+	n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(n)
+	_cap_box.add_child(head)
+	var v: Dictionary = entry.get("variant", {})
+	var line: Dictionary = entry.note if not entry.note.is_empty() else v.get("text", {})
+	if not line.is_empty():
+		var d := Kit.dual(line, 23)
+		_cap_box.add_child(d)
+		Fx.typewriter(d.main_label, 90.0)
+		if not entry.note.is_empty() and v.has("text") and entry.action != "bimbingan":
+			_cap_box.add_child(Kit.dual(v.text, 19, Kit.INK_SOFT))
+	var chips := HFlowContainer.new()
+	chips.add_theme_constant_override("h_separation", 6)
+	chips.add_theme_constant_override("v_separation", 6)
+	for f in Kit.fx_text(entry.fx):
+		chips.add_child(Kit.chip(f.text, Color("e3f7ea") if f.good else Color("ffe6e3"), Color("17643a") if f.good else Color("b3261e"), 18))
+	_cap_box.add_child(chips)
+	Fx.stagger(chips, 0.05, 0.3)
+	if not _caption.visible:
+		_caption.visible = true
+		Fx.slide_in(_caption, Vector2(0, 220), 0.0, 0.35)
+	else:
+		Fx.pulse(_caption, 1.02)
 
 
 func _wait_arrival(max_t: float) -> void:

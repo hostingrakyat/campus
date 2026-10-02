@@ -115,7 +115,7 @@ func _confirm_iap(pid: String) -> void:
 func _style_tab() -> void:
 	for id in Data.ITEMS:
 		var it: Dictionary = Data.ITEMS[id]
-		if it.get("price_c", 1) == 0:
+		if it.get("price_c", 1) == 0 or it.get("npc", false):
 			continue
 		var r := row_card(Color("fff6d6") if it.get("premium", false) else Color.WHITE)
 		list.add_child(r.get_parent())

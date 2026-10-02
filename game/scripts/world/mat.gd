@@ -64,6 +64,15 @@ static func pattern(kind: String, base: Color) -> StandardMaterial3D:
 						c = base.darkened(0.2)
 					if x % 8 == 0 or y % 8 == 0:
 						c = c.lightened(0.35)
+				"tiles":
+					c = base if ((x / 16) + (y / 16)) % 2 == 0 else base.darkened(0.06)
+					if x % 16 == 0 or y % 16 == 0:
+						c = base.darkened(0.18)
+				"wood":
+					var plank := (y / 8) % 4
+					c = base.darkened(0.05 * plank)
+					if y % 8 == 0 or (x + plank * 9) % 32 == 0:
+						c = base.darkened(0.3)
 				"batik":
 					var cx := (x % 8) - 4
 					var cy := (y % 8) - 4

@@ -35,8 +35,5 @@ func _option(id: String, selected: bool) -> Control:
 	if id == "bolos":
 		chips.add_child(Kit.chip(Loc.main(Loc.T("Absen bolong", "Missed attendance")), Color("ffe6e3"), Color("b3261e"), 18))
 	v.add_child(chips)
-	p.mouse_filter = Control.MOUSE_FILTER_STOP
-	p.gui_input.connect(func(e: InputEvent):
-		if e is InputEventMouseButton and not e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
-			picked.emit(id))
+	Kit.tap(p, func(): picked.emit(id))
 	return p

@@ -274,7 +274,7 @@ static func available_actions(s: Dictionary, slot: String) -> Array:
 			continue
 		if a.get("needs", "") == "skripsi" and not (s.skripsi and not s.skripsi_done):
 			continue
-		if id == "kuliah" and not has_classes(s):
+		if id == "kuliah" and (not has_classes(s) or week_mod(s).get("no_class", false)):
 			continue
 		out.append(id)
 	if s.job != "" and D.JOBS[s.job].slot == slot:
@@ -282,7 +282,9 @@ static func available_actions(s: Dictionary, slot: String) -> Array:
 	return out
 
 
-static func default_plan(s: Dictionary) -> Array:
+## Suggested plan. Without rng it is deterministic (tests/bots); with rng it varies week to week
+## while still reacting to energy, mental, social, money and the thesis.
+static func default_plan(s: Dictionary, rng: RandomNumberGenerator = null) -> Array:
 	var plan: Array = []
 	for slot in D.SLOTS:
 		var opts := available_actions(s, slot)
@@ -293,21 +295,113 @@ static func default_plan(s: Dictionary) -> Array:
 				plan.append("ujian")
 			elif opts.has("kuliah"):
 				plan.append("kuliah")
+			elif opts.has("garap_skripsi"):
+				plan.append("garap_skripsi")
 			else:
-				plan.append("garap_skripsi" if opts.has("garap_skripsi") else "belajar")
+				plan.append(_pick(rng, ["belajar", "olahraga", "belajar"], "belajar"))
 		elif slot == "siang":
 			if opts.has("bimbingan") and (s.draft > s.acc + 5.0 or s.acc >= 100.0):
 				plan.append("bimbingan")
-			else:
+			elif s.mental < 35 and opts.has("konseling"):
+				plan.append("konseling")
+			elif rng == null:
 				plan.append("belajar" if int(s.week) % 2 == 1 or not opts.has("tugas") else "tugas")
+			else:
+				var pool := ["belajar", "tugas", "belajar", "tugas"]
+				if s.social < 40:
+					pool.append("organisasi")
+				if s.mental < 55:
+					pool.append("nongkrong")
+				plan.append(_pick(rng, pool, "belajar"))
 		elif slot == "malam":
 			if opts.has("garap_skripsi") and (not has_classes(s) or int(s.week) % 2 == 0):
 				plan.append("garap_skripsi")
-			else:
+			elif rng == null:
 				plan.append("tugas")
+			else:
+				var pool := ["tugas", "tugas", "belajar"]
+				if s.mental < 60 or s.social < 45:
+					pool.append("nongkrong")
+				if s.energy < 35:
+					pool = ["tidur"]
+				plan.append(_pick(rng, pool, "tugas"))
 		else:
-			plan.append("tidur")
+			if rng == null or s.energy < 55:
+				plan.append("tidur")
+			else:
+				var pool := ["tidur", "nongkrong", "olahraga", "belajar"]
+				if s.coins < 400:
+					pool.append("ojol")
+				plan.append(_pick(rng, pool, "tidur"))
 	return plan
+
+
+static func _pick(rng: RandomNumberGenerator, pool: Array, fallback: String) -> String:
+	if rng == null or pool.is_empty():
+		return fallback
+	return pool[rng.randi() % pool.size()]
+
+
+# --- Weekly news ("Kabar Minggu Ini") --------------------------------------------
+
+static func week_mod(s: Dictionary) -> Dictionary:
+	var id: String = s.get("week_mod", "normal")
+	if s.get("week_mod_tag", "") != "%d-%d" % [s.sem, s.week]:
+		id = "normal"
+	for m in Data.activities.get("weekly", []):
+		if m.id == id:
+			return m
+	return {"id": "normal", "mods": {}}
+
+
+## Rolls this week's news once per week (never the same twice in a row).
+static func ensure_week_mod(s: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var tag := "%d-%d" % [s.sem, s.week]
+	if s.get("week_mod_tag", "") == tag:
+		return week_mod(s)
+	var pool: Array = []
+	var total := 0.0
+	for m in Data.activities.get("weekly", []):
+		var w: Dictionary = m.get("when", {})
+		if w.get("not_exam", false) and is_exam_week(s):
+			continue
+		if w.has("job") and (s.job != "") != bool(w.job):
+			continue
+		if m.id == s.get("week_mod", "") and m.id != "normal":
+			continue
+		if s.week == 1 and m.id == "tanggal_merah":
+			continue
+		pool.append(m)
+		total += float(m.weight)
+	var roll := rng.randf() * total
+	var chosen: Dictionary = pool[0]
+	for m in pool:
+		roll -= float(m.weight)
+		if roll <= 0.0:
+			chosen = m
+			break
+	s["week_mod"] = chosen.id
+	s["week_mod_tag"] = tag
+	return chosen
+
+
+static func _variant(s: Dictionary, a: String, rng: RandomNumberGenerator) -> Dictionary:
+	var key := a
+	if a == "kerja" and s.job != "":
+		var loc: String = D.JOBS[s.job].loc
+		key = "kerja_les" if s.job == "les" else ("kerja_asdos" if s.job == "asdos" else ("kerja_home" if loc == "kos" else "kerja"))
+	var pool: Array = Data.activities.get("variants", {}).get(key, [])
+	if pool.is_empty():
+		return {}
+	var total := 0.0
+	for v in pool:
+		total += float(v.get("weight", 1.0))
+	var roll := rng.randf() * total
+	for v in pool:
+		roll -= float(v.get("weight", 1.0))
+		if roll <= 0.0:
+			return v
+	return pool[-1]
 
 
 ## Resolves the 3 slots of the current week plus weekly upkeep.
@@ -315,12 +409,16 @@ static func run_week(s: Dictionary, plan: Array, rng: RandomNumberGenerator) -> 
 	var log: Array = []
 	var notes: Array = []
 	var wages := 0
+	var mod := ensure_week_mod(s, rng)
+	if mod.get("no_class", false) and has_classes(s) and not is_exam_week(s):
+		s.attend = mini(int(s.attend) + 1, D.WEEKS_PER_SEMESTER)
+		notes.append({"id": "Tanggal merah: kehadiran minggu ini otomatis dihitung.", "en": "Public holiday: this week's attendance counts automatically."})
 	for i in range(D.SLOTS.size()):
 		var slot: String = D.SLOTS[i]
 		var a: String = plan[i]
 		var res := _resolve_action(s, a, slot, rng)
 		wages += int(res.get("wages", 0))
-		log.append({"slot": slot, "action": a, "fx": res.fx, "note": res.get("note", {})})
+		log.append({"slot": slot, "action": a, "fx": res.fx, "note": res.get("note", {}), "variant": res.get("variant", {}), "scene_key": res.get("scene_key", "")})
 
 	# Skipped contract shifts.
 	if s.job != "":
@@ -335,7 +433,7 @@ static func run_week(s: Dictionary, plan: Array, rng: RandomNumberGenerator) -> 
 				notes.append({"id": "Izin kerja (%d/3). Bos mulai sebel." % s.job_izin, "en": "Skipped a shift (%d/3). Boss is getting annoyed." % s.job_izin})
 
 	# Weekly upkeep.
-	_add(s, "energy", D.ENERGY_REGEN)
+	_add(s, "energy", D.ENERGY_REGEN + int(mod.get("energy_regen", 0)))
 	_add(s, "social", -D.SOCIAL_DECAY)
 	s.coins -= D.FOOD_PER_WEEK
 	if [1, 5, 9].has(int(s.week)):
@@ -372,15 +470,27 @@ static func _resolve_action(s: Dictionary, a: String, slot: String, rng: RandomN
 		fx["mental"] = fx.get("mental", 0) - 3
 		out.note = {"id": "Ngantuk berat, nggak fokus.", "en": "Too sleepy to focus."}
 
+	if a == "kerja":
+		var job: Dictionary = D.JOBS[s.job]
+		fx = {"coins": job.pay, "energy": job.energy, "mental": job.mental}
+		if job.has("rel"):
+			fx["rel"] = job.rel
+	# Random variant of the activity (flavour, small stat tweak, 3D scene) + this week's news.
+	if a != "bimbingan":
+		var v := _variant(s, a, rng)
+		if not v.is_empty():
+			out["variant"] = v
+			for k in v.fx:
+				fx[k] = float(fx.get(k, 0.0)) + float(v.fx[k])
+	var mods: Dictionary = week_mod(s).get("mods", {}).get(a, {})
+	for k in mods.get("mult", {}):
+		if fx.has(k):
+			fx[k] = float(fx[k]) * float(mods.mult[k])
+	for k in mods.get("add", {}):
+		fx[k] = float(fx.get(k, 0.0)) + float(mods.add[k])
 	match a:
-		"kerja":
-			var job: Dictionary = D.JOBS[s.job]
-			fx = {"coins": job.pay, "energy": job.energy, "mental": job.mental}
-			if job.has("rel"):
-				fx["rel"] = job.rel
-			out["wages"] = job.pay
-		"ojol":
-			out["wages"] = fx.coins
+		"kerja", "ojol":
+			out["wages"] = maxi(0, int(fx.get("coins", 0)))
 		"konseling":
 			if s.konseling_week == s.sem * 100 + s.week:
 				fx = {}
@@ -391,7 +501,9 @@ static func _resolve_action(s: Dictionary, a: String, slot: String, rng: RandomN
 			s.draft = minf(100.0, s.draft + 12.0 * eff)
 			out.fx["draft"] = 12.0 * eff
 		"bimbingan":
-			out.note = _bimbingan(s, rng)
+			var b := _bimbingan(s, rng)
+			out.note = b.note
+			out["scene_key"] = b.scene
 		"ujian":
 			var ratio: float = s.knowledge / maxf(1.0, D.TARGET_KNOWLEDGE * (0.5 if s.week <= 6 else 1.0))
 			if ratio >= 0.9:
@@ -426,23 +538,23 @@ static func _bimbingan(s: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var roll := rng.randf()
 	if roll < ghost:
 		if s.dospem == "dosen_dinas":
-			return {"id": "Dospem lagi dinas ke luar kota. Lagi.", "en": "Your advisor is out of town. Again."}
-		return {"id": "Chat bimbingan cuma di-read. Centang biru, hati kelabu.", "en": "Your message was left on read. Blue ticks, grey heart."}
+			return {"scene": "dinas", "note": {"id": "Dospem lagi dinas ke luar kota. Lagi.", "en": "Your advisor is out of town. Again."}}
+		return {"scene": "ghost", "note": {"id": "Chat bimbingan cuma di-read. Centang biru, hati kelabu.", "en": "Your message was left on read. Blue ticks, grey heart."}}
 	if roll < ghost + revisi:
 		s.draft = maxf(0.0, s.draft - 8.0)
 		s.acc = maxf(0.0, s.acc - 5.0)
-		return {"id": "\"Ganti judul ya. Sama font-nya.\" Revisi besar.", "en": "\"Change the title. And the font.\" Major revision."}
+		return {"scene": "revisi", "note": {"id": "\"Ganti judul ya. Sama font-nya.\" Revisi besar.", "en": "\"Change the title. And the font.\" Major revision."}}
 	if s.acc >= 100.0:
 		s.flags["sidang_ready"] = true
-		return {"id": "\"Sudah, daftar sidang sana.\"", "en": "\"That's enough, go register for your defense.\""}
+		return {"scene": "acc", "note": {"id": "\"Sudah, daftar sidang sana.\"", "en": "\"That's enough, go register for your defense.\""}}
 	var gain := minf(s.draft - s.acc, 34.0 + s.rel)
 	if gain <= 0.0:
-		return {"id": "\"Mana progresnya?\" Draf kamu belum nambah.", "en": "\"Where's the progress?\" Your draft hasn't grown."}
+		return {"scene": "kosong", "note": {"id": "\"Mana progresnya?\" Draf kamu belum nambah.", "en": "\"Where's the progress?\" Your draft hasn't grown."}}
 	s.acc = minf(100.0, s.acc + gain)
 	if s.acc >= 100.0:
 		s.flags["sidang_ready"] = true
-		return {"id": "ACC MAJU SIDANG! Akhirnya!", "en": "APPROVED FOR DEFENSE! Finally!"}
-	return {"id": "Dospem ACC sebagian. Progres naik!", "en": "Advisor approved part of it. Progress!"}
+		return {"scene": "acc", "note": {"id": "ACC MAJU SIDANG! Akhirnya!", "en": "APPROVED FOR DEFENSE! Finally!"}}
+	return {"scene": "acc", "note": {"id": "Dospem ACC sebagian. Progres naik!", "en": "Advisor approved part of it. Progress!"}}
 
 
 static func _check_crisis(s: Dictionary) -> void:

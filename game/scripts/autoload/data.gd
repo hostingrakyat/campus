@@ -204,6 +204,13 @@ const ITEMS := {
 	"top_varsity": {"slot": "top", "price_c": 1200, "color": Color("1d2a4d"), "name": {"id": "Jaket Varsity", "en": "Varsity Jacket"}},
 	"top_snelli": {"slot": "top", "price_c": 600, "color": Color("fbfbfb"), "name": {"id": "Jas Lab / Snelli", "en": "Lab Coat"}},
 	"top_hoodie_gold": {"slot": "top", "price_d": 120, "color": Color("ffc83d"), "hood": true, "premium": true, "name": {"id": "Hoodie Sigma Emas", "en": "Golden Sigma Hoodie"}},
+	# NPC-only wardrobe (never sold; "npc" keeps them out of the shop).
+	"top_pns": {"slot": "top", "npc": true, "color": Color("c3a46b"), "name": {"id": "Seragam Staf", "en": "Staff Uniform"}},
+	"top_daster": {"slot": "top", "npc": true, "color": Color("e85d75"), "pattern": "batik", "name": {"id": "Daster", "en": "House Dress"}},
+	"top_apron": {"slot": "top", "npc": true, "color": Color("2f5d50"), "name": {"id": "Apron", "en": "Apron"}},
+	"top_cardigan": {"slot": "top", "npc": true, "color": Color("8fb996"), "name": {"id": "Kardigan", "en": "Cardigan"}},
+	"top_ojol": {"slot": "top", "npc": true, "color": Color("1fa463"), "name": {"id": "Jaket Ojol", "en": "Rider Jacket"}},
+	"head_helm": {"slot": "head", "npc": true, "color": Color("1fa463"), "name": {"id": "Helm", "en": "Helmet"}},
 	"head_none": {"slot": "head", "price_c": 0, "name": {"id": "Tanpa Topi", "en": "No Hat"}},
 	"head_bucket": {"slot": "head", "price_c": 350, "color": Color("e9d8a6"), "name": {"id": "Topi Bucket", "en": "Bucket Hat"}},
 	"head_cap": {"slot": "head", "price_c": 300, "color": Color("ff5a4e"), "name": {"id": "Topi Baseball", "en": "Baseball Cap"}},
@@ -267,6 +274,29 @@ const NPCS := {
 }
 
 const DOSPEM_POOL := ["dosen_read", "dosen_revisi", "dosen_dinas"]
+const LECTURERS := ["dosen_read", "dosen_revisi", "dosen_dinas", "dosen_buku", "dosen_killer"]
+
+## How each NPC looks as a 3D vinyl character in cutscenes and activity scenes.
+const NPC_LOOKS := {
+	"senior": {"skin": 2, "hair": "hair_long", "hair_color": 0, "top": "top_flanel", "back": "back_ransel"},
+	"dosen_read": {"skin": 1, "hair": "hair_buzz", "hair_color": 3, "top": "top_batik", "face": "face_round"},
+	"dosen_revisi": {"skin": 1, "hair": "hair_hijab", "hair_color": 5, "top": "top_batik", "face": "face_round"},
+	"dosen_dinas": {"skin": 2, "hair": "hair_buzz", "hair_color": 3, "top": "top_varsity", "face": "face_shades", "back": "back_tote"},
+	"dosen_buku": {"skin": 3, "hair": "hair_short", "hair_color": 3, "top": "top_batik", "face": "face_round", "head": "head_peci"},
+	"dosen_killer": {"skin": 0, "hair": "hair_long", "hair_color": 0, "top": "top_varsity", "face": "face_round"},
+	"tu": {"skin": 3, "hair": "hair_buzz", "hair_color": 0, "top": "top_pns"},
+	"ibu": {"skin": 2, "hair": "hair_hijab", "hair_color": 1, "top": "top_daster"},
+	"ayah": {"skin": 3, "hair": "hair_short", "hair_color": 3, "top": "top_batik", "head": "head_peci"},
+	"ambis": {"skin": 0, "hair": "hair_fringe", "hair_color": 0, "top": "top_almamater", "face": "face_round", "back": "back_ransel"},
+	"beban": {"skin": 2, "hair": "hair_curly", "hair_color": 0, "top": "top_hoodie_ungu", "head": "head_cap"},
+	"bestie": {"skin": 1, "hair": "hair_hijab", "hair_color": 5, "top": "top_tee", "back": "back_tote"},
+	"ibu_kos": {"skin": 2, "hair": "hair_curly", "hair_color": 3, "top": "top_daster"},
+	"bos": {"skin": 1, "hair": "hair_short", "hair_color": 0, "top": "top_apron", "head": "head_cap"},
+	"konselor": {"skin": 1, "hair": "hair_hijab", "hair_color": 2, "top": "top_cardigan"},
+	"dekan": {"skin": 2, "hair": "hair_buzz", "hair_color": 3, "top": "top_varsity", "face": "face_round", "head": "head_peci"},
+	"kades": {"skin": 3, "hair": "hair_short", "hair_color": 0, "top": "top_batik", "head": "head_peci"},
+	"ojol": {"skin": 3, "hair": "hair_short", "hair_color": 0, "top": "top_ojol", "head": "head_helm"},
+}
 
 # --- Endings -------------------------------------------------------------------
 const ENDINGS := ["summa", "balance", "cumlaude", "tepat", "telat", "abadi", "do", "pindah", "rawat", "padam"]
@@ -274,12 +304,14 @@ const ENDINGS := ["summa", "balance", "cumlaude", "tepat", "telat", "abadi", "do
 var curriculum: Dictionary = {}
 var events: Array = []
 var endings: Dictionary = {}
+var activities: Dictionary = {}
 
 
 func _ready() -> void:
 	curriculum = _load_json("res://data/curriculum.json")
 	events = _load_json("res://data/events.json")
 	endings = _load_json("res://data/endings.json")
+	activities = _load_json("res://data/activities.json")
 
 
 func _load_json(path: String) -> Variant:

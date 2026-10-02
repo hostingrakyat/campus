@@ -13,12 +13,25 @@ var speed := 3.2
 var footsteps := false
 var _step_i := 0
 
+## Pose: stand | sit | lie | ride. Anim: idle | talk | listen | write | type | read | laugh | sleep |
+## cheer | sad | phone | wave | point | ride | run | nervous.
+var pose := "stand"
+var anim := "idle"
+
 var _body: Node3D
 var _head: Node3D
 var _parts: Node3D
+var _hip_l: Node3D
+var _hip_r: Node3D
+var _sh_l: Node3D
+var _sh_r: Node3D
+var _hand_r: Node3D
+var _held: Node3D
 var _t := randf() * 10.0
 var _path: Array = []
 var _bubble: Label3D
+var _emote: Label3D
+var _pose_y := 0.0
 
 
 func _ready() -> void:
@@ -49,10 +62,17 @@ func build(new_look: Dictionary, new_prodi: String = "IF") -> void:
 	var pants := Mat.vinyl(Color("2b3a55"), 0.5)
 	var shoe := Mat.vinyl(Color("f4f1ea"), 0.4)
 
-	# Legs & shoes.
+	# Legs & shoes on hip pivots so they can swing, sit and ride.
 	for sx in [-1.0, 1.0]:
-		Mat.add(_body, Mat.capsule(0.11, 0.38), pants, Vector3(0.13 * sx, 0.22, 0))
-		Mat.add(_body, Mat.sphere(0.12, 16), shoe, Vector3(0.13 * sx, 0.06, 0.05), Vector3.ZERO, Vector3(1.0, 0.55, 1.45))
+		var hip := Node3D.new()
+		hip.position = Vector3(0.13 * sx, 0.42, 0)
+		_body.add_child(hip)
+		Mat.add(hip, Mat.capsule(0.11, 0.42), pants, Vector3(0, -0.19, 0))
+		Mat.add(hip, Mat.sphere(0.12, 16), shoe, Vector3(0, -0.36, 0.05), Vector3.ZERO, Vector3(1.0, 0.55, 1.45))
+		if sx < 0:
+			_hip_l = hip
+		else:
+			_hip_r = hip
 	# Torso.
 	Mat.add(_body, Mat.capsule(0.31, 0.88), top_mat, Vector3(0, 0.66, 0), Vector3.ZERO, Vector3(1.0, 1.0, 0.86))
 	if top_def.get("almamater", false) or top_id == "top_varsity" or top_id == "top_snelli":
@@ -67,8 +87,19 @@ func build(new_look: Dictionary, new_prodi: String = "IF") -> void:
 	# Arms.
 	var sleeve: Material = Mat.vinyl(Color("f7f4ee")) if top_id == "top_varsity" else top_mat
 	for sx in [-1.0, 1.0]:
-		Mat.add(_body, Mat.capsule(0.085, 0.5), sleeve, Vector3(0.37 * sx, 0.7, 0), Vector3(0, 0, 0.2 * sx))
-		Mat.add(_body, Mat.sphere(0.09, 14), skin_mat, Vector3(0.42 * sx, 0.45, 0.01))
+		var sh := Node3D.new()
+		sh.position = Vector3(0.33 * sx, 0.96, 0)
+		sh.rotation.z = 0.2 * sx
+		_body.add_child(sh)
+		Mat.add(sh, Mat.capsule(0.085, 0.5), sleeve, Vector3(0, -0.24, 0))
+		Mat.add(sh, Mat.sphere(0.09, 14), skin_mat, Vector3(0, -0.5, 0.01))
+		if sx < 0:
+			_sh_l = sh
+		else:
+			_sh_r = sh
+			_hand_r = Node3D.new()
+			_hand_r.position = Vector3(0, -0.52, 0.05)
+			sh.add_child(_hand_r)
 	# Back item.
 	match look.get("back", "back_none"):
 		"back_ransel":
@@ -97,6 +128,8 @@ func build(new_look: Dictionary, new_prodi: String = "IF") -> void:
 	_build_face_item(look.get("face", "face_none"))
 	if look.get("aura", "aura_none") == "aura_sigma":
 		_build_aura()
+	_held = null
+	set_pose(pose)
 
 
 func _build_hair(hair: String, c: Color) -> void:
@@ -154,6 +187,9 @@ func _build_head_item(id: String) -> void:
 			var cap := Mat.hemi(0.55, 28)
 			Mat.add(_head, cap, m, Vector3(0, 0.08, -0.02), Vector3(-0.15, 0, 0))
 			Mat.add(_head, Mat.box(Vector3(0.5, 0.03, 0.34)), m, Vector3(0, 0.16, 0.6))
+		"head_helm":
+			Mat.add(_head, Mat.hemi(0.6, 28), m, Vector3(0, 0.02, -0.04), Vector3(-0.25, 0, 0))
+			Mat.add(_head, Mat.box(Vector3(0.7, 0.05, 0.2)), Mat.vinyl(Color(0.2, 0.25, 0.3, 1.0), 0.1), Vector3(0, 0.12, 0.5), Vector3(-0.4, 0, 0))
 		"head_peci":
 			Mat.add(_head, Mat.cyl(0.4, 0.43, 0.24, 24), m, Vector3(0, 0.42, -0.04), Vector3(-0.18, 0, 0))
 		"head_toga":
@@ -211,11 +247,13 @@ func _build_aura() -> void:
 # --- Behaviour ---------------------------------------------------------------
 
 func walk_to(target: Vector3) -> void:
+	set_pose("stand")
 	_path = [target]
 	walking = true
 
 
 func walk_path(points: Array) -> void:
+	set_pose("stand")
 	_path = points.duplicate()
 	walking = not _path.is_empty()
 
@@ -232,24 +270,107 @@ func face(dir: Vector3) -> void:
 		rotation.y = atan2(dir.x, dir.z)
 
 
+func face_point(p: Vector3) -> void:
+	face(p - position)
+
+
+## stand | sit (on a ~0.45 m seat) | lie (on a ~0.5 m bed, head towards -z) | ride (motorbike seat)
+func set_pose(p: String) -> void:
+	pose = p
+	if _parts == null:
+		return
+	_parts.rotation = Vector3.ZERO
+	match p:
+		"sit", "ride":
+			_pose_y = 0.1 if p == "sit" else 0.18
+			for h in [_hip_l, _hip_r]:
+				h.rotation.x = -PI * 0.5
+		"lie":
+			_pose_y = 0.78
+			_parts.rotation.x = -PI * 0.5
+			for h in [_hip_l, _hip_r]:
+				h.rotation.x = 0.0
+		_:
+			_pose_y = 0.0
+			for h in [_hip_l, _hip_r]:
+				h.rotation.x = 0.0
+	_parts.position.y = _pose_y
+
+
+func play(a: String) -> void:
+	anim = a
+	if a == "sleep":
+		emote("z z z", Color("7b5cff"), 999.0)
+	elif _emote and _emote.text == "z z z":
+		_emote.visible = false
+
+
+## Hold a small prop in the right hand: phone | book | cup | "" (empty).
+func hold(kind: String) -> void:
+	if _held:
+		_held.queue_free()
+		_held = null
+	if kind == "" or _hand_r == null:
+		return
+	_held = Node3D.new()
+	_hand_r.add_child(_held)
+	match kind:
+		"phone":
+			Mat.add(_held, Mat.box(Vector3(0.1, 0.19, 0.025)), Mat.vinyl(Color("1d1d26"), 0.15), Vector3(0, -0.04, 0.03))
+			Mat.add(_held, Mat.box(Vector3(0.085, 0.16, 0.005)), Mat.unlit(Color("8fd0f2")), Vector3(0, -0.04, 0.045))
+		"book":
+			Mat.add(_held, Mat.box(Vector3(0.28, 0.04, 0.2)), Mat.vinyl(Color("c8423b")), Vector3(0, -0.04, 0.08))
+		"cup":
+			Mat.add(_held, Mat.cyl(0.06, 0.05, 0.12, 12), Mat.vinyl(Color("f4f1ea")), Vector3(0, -0.02, 0.06))
+
+
+## Short symbol above the head ("!", "?", "...", "z z z", "<3"). dur <= 0 hides it.
+func emote(text: String, color: Color = Color("ff5a4e"), dur: float = 1.6) -> void:
+	if _emote == null:
+		_emote = Label3D.new()
+		_emote.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_emote.font = load("res://assets/fonts/Fredoka.ttf")
+		_emote.font_size = 96
+		_emote.pixel_size = 0.006
+		_emote.outline_size = 22
+		_emote.outline_modulate = Color.WHITE
+		_emote.no_depth_test = true
+		add_child(_emote)
+	if dur <= 0.0:
+		_emote.visible = false
+		return
+	_emote.text = text
+	_emote.modulate = color
+	_emote.visible = true
+	_emote.position = Vector3(0.35, 2.35 + _pose_y, 0)
+	_emote.scale = Vector3.ONE * 0.3
+	var tw := create_tween()
+	tw.tween_property(_emote, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if dur < 900.0:
+		tw.tween_interval(dur)
+		tw.tween_callback(func():
+			if _emote.text == text:
+				_emote.visible = false)
+
+
 func say(text: String, dur: float = 2.5) -> void:
 	if _bubble == null:
 		_bubble = Label3D.new()
 		_bubble.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		_bubble.position = Vector3(0, 2.25, 0)
-		_bubble.font_size = 56
+		_bubble.font_size = 52
 		_bubble.pixel_size = 0.006
 		_bubble.outline_size = 14
 		_bubble.modulate = Color("2a2238")
 		_bubble.outline_modulate = Color.WHITE
 		_bubble.no_depth_test = true
-		_bubble.fixed_size = false
+		_bubble.width = 520
+		_bubble.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		add_child(_bubble)
 	_bubble.text = text
 	_bubble.visible = true
-	_bubble.position.y = 2.25
+	_bubble.position.y = 2.25 + _pose_y
 	var tw := create_tween()
-	tw.tween_property(_bubble, "position:y", 2.6, dur)
+	tw.tween_property(_bubble, "position:y", 2.55 + _pose_y, dur)
 	tw.tween_callback(func(): _bubble.visible = false)
 
 
@@ -257,6 +378,17 @@ func _process(delta: float) -> void:
 	_t += delta
 	if _body == null:
 		return
+	var t := _t
+	# Defaults (blended toward each frame).
+	var arm_lx := 0.0
+	var arm_rx := 0.0
+	var arm_lz := -0.2
+	var arm_rz := 0.2
+	var head_x := 0.0
+	var head_z := sin(t * 1.3) * 0.05
+	var body_y := sin(t * 2.2) * 0.018
+	var body_z := 0.0
+	var leg_swing := 0.0
 	if walking and not _path.is_empty():
 		var target: Vector3 = _path[0]
 		var to := target - position
@@ -269,21 +401,96 @@ func _process(delta: float) -> void:
 				walking = false
 				arrived.emit()
 		else:
-			var step := minf(dist, speed * delta)
-			position += to / dist * step
+			var stp := minf(dist, speed * delta)
+			position += to / dist * stp
 			rotation.y = lerp_angle(rotation.y, atan2(to.x, to.z), minf(1.0, delta * 12.0))
-		_body.position.y = absf(sin(_t * 11.0)) * 0.09
-		var step := int(_t * 11.0 / PI)
+		var f := 11.0 * clampf(speed / 3.2, 0.7, 1.6)
+		body_y = absf(sin(t * f)) * 0.09
+		body_z = sin(t * f) * 0.05
+		leg_swing = sin(t * f) * 0.55
+		arm_lx = -leg_swing * 0.8
+		arm_rx = leg_swing * 0.8
+		head_x = 0.06
+		var step := int(t * f / PI)
 		if footsteps and step != _step_i:
 			_step_i = step
 			Audio.play("step", -10.0, 1.0, 0.12)
-		_body.rotation.z = sin(_t * 11.0) * 0.07
-		_head.rotation.x = 0.06
 	else:
-		_body.position.y = sin(_t * 2.2) * 0.018
-		_body.rotation.z = lerpf(_body.rotation.z, 0.0, minf(1.0, delta * 8.0))
-		_head.rotation.z = sin(_t * 1.3) * 0.05
-		_head.rotation.x = 0.0
+		match anim:
+			"talk":
+				head_x = sin(t * 9.0) * 0.07
+				arm_rx = -0.5 + sin(t * 5.0) * 0.35
+				arm_rz = 0.35
+			"listen":
+				head_z = 0.14 + sin(t * 0.9) * 0.03
+				head_x = sin(t * 1.6) * 0.06
+			"write", "nervous":
+				head_x = 0.28
+				arm_rx = -0.95 + sin(t * 14.0) * 0.08
+				arm_lx = -0.7
+				if anim == "nervous":
+					body_z = sin(t * 30.0) * 0.02
+			"type":
+				head_x = 0.18
+				arm_rx = -1.05 + sin(t * 22.0) * 0.07
+				arm_lx = -1.05 + sin(t * 22.0 + 1.7) * 0.07
+			"read":
+				head_x = 0.32
+				arm_rx = -0.95
+				arm_lx = -0.95
+				arm_rz = 0.05
+				arm_lz = -0.05
+			"laugh":
+				body_z = sin(t * 22.0) * 0.06
+				head_x = -0.18
+				body_y = absf(sin(t * 11.0)) * 0.04
+				arm_rx = -0.4
+				arm_lx = -0.4
+			"sleep":
+				body_y = sin(t * 1.4) * 0.02
+				head_z = 0.0
+			"cheer":
+				arm_rz = 2.7 + sin(t * 12.0) * 0.12
+				arm_lz = -2.7 - sin(t * 12.0) * 0.12
+				body_y = absf(sin(t * 7.0)) * 0.16
+			"sad":
+				head_x = 0.38
+				body_y = -0.03
+				body_z = sin(t * 0.8) * 0.03
+				arm_rz = 0.05
+				arm_lz = -0.05
+			"phone":
+				arm_rz = 2.75
+				arm_rx = -0.25
+				head_z = 0.12
+				head_x = sin(t * 3.0) * 0.04
+			"wave":
+				arm_rz = 2.6 + sin(t * 10.0) * 0.35
+			"point":
+				arm_rz = 1.45
+				arm_rx = -0.25
+				head_z = 0.1
+			"ride":
+				arm_rx = -1.15
+				arm_lx = -1.15
+				body_z = sin(t * 9.0) * 0.015
+			"run":
+				body_y = absf(sin(t * 14.0)) * 0.12
+				leg_swing = sin(t * 14.0) * 0.8
+				arm_lx = -leg_swing
+				arm_rx = leg_swing
+	var k := minf(1.0, delta * 12.0)
+	_body.position.y = lerpf(_body.position.y, body_y, k)
+	_body.rotation.z = lerpf(_body.rotation.z, body_z, k)
+	_head.rotation.x = lerpf(_head.rotation.x, head_x, k)
+	_head.rotation.z = lerpf(_head.rotation.z, head_z, k)
+	_sh_l.rotation.x = lerpf(_sh_l.rotation.x, arm_lx, k)
+	_sh_r.rotation.x = lerpf(_sh_r.rotation.x, arm_rx, k)
+	_sh_l.rotation.z = lerpf(_sh_l.rotation.z, arm_lz, k)
+	_sh_r.rotation.z = lerpf(_sh_r.rotation.z, arm_rz, k)
+	if pose == "stand":
+		_hip_l.rotation.x = lerpf(_hip_l.rotation.x, leg_swing, k)
+		_hip_r.rotation.x = lerpf(_hip_r.rotation.x, -leg_swing, k)
 
 
 ## Little happy jump (outfit change, good news).
@@ -291,8 +498,19 @@ func hop() -> void:
 	if _parts == null:
 		return
 	var tw := create_tween()
-	tw.tween_property(_parts, "position:y", 0.45, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_property(_parts, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_parts, "position:y", _pose_y + 0.45, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_parts, "position:y", _pose_y, 0.22).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	var sq := create_tween()
 	sq.tween_property(_parts, "scale", Vector3(1.12, 0.88, 1.12), 0.08)
 	sq.tween_property(_parts, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Quick "no!" head shake for bad news.
+func shake_head() -> void:
+	if _head == null:
+		return
+	var tw := create_tween()
+	for i in 3:
+		tw.tween_property(_head, "rotation:y", 0.35, 0.07)
+		tw.tween_property(_head, "rotation:y", -0.35, 0.07)
+	tw.tween_property(_head, "rotation:y", 0.0, 0.07)

@@ -1,0 +1,1724 @@
+{
+ "variants": {
+  "kuliah": [
+   {
+    "id": "ceramah",
+    "text": {
+     "id": "Dosen ceramah 2 jam. Kamu mencatat sampai tangan pegal.",
+     "en": "Two-hour lecture. You take notes until your hand cramps."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "write",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "lecturer",
+       "anim": "point",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "listen",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "lecturer",
+       "text": {
+        "id": "Ini keluar di UAS ya.",
+        "en": "This will be on the final."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "kuis",
+    "text": {
+     "id": "KUIS DADAKAN! Untung kamu sempat baca semalam.",
+     "en": "POP QUIZ! Good thing you read last night."
+    },
+    "fx": {
+     "knowledge": 0.4,
+     "mental": -3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "nervous",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "lecturer",
+       "anim": "point",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "nervous",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "lecturer",
+       "text": {
+        "id": "Tutup buku. Kuis sekarang.",
+        "en": "Close your books. Quiz now."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "telat",
+    "text": {
+     "id": "Dosen telat 45 menit. Kelas cuma 30 menit.",
+     "en": "The lecturer is 45 minutes late. Class lasts 30 minutes."
+    },
+    "fx": {
+     "knowledge": -0.3,
+     "energy": 5
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "sleep",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "talk",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "player",
+       "text": {
+        "id": "Dosennya mana sih...",
+        "en": "Where's the lecturer..."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "presentasi",
+    "text": {
+     "id": "Giliran kelompokmu presentasi. Dimas absen lagi.",
+     "en": "Your group presents. Dimas is absent again."
+    },
+    "fx": {
+     "tugas": 0.6,
+     "mental": -3,
+     "social": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "front",
+     "pose": "stand",
+     "anim": "talk",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "lecturer_seat",
+       "anim": "listen",
+       "pose": "sit"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "listen",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "player",
+       "text": {
+        "id": "Jadi kesimpulannya...",
+        "en": "So in conclusion..."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "diskusi",
+    "text": {
+     "id": "Diskusi kelas seru. Dosen puas sama jawabanmu.",
+     "en": "A lively class discussion. The lecturer likes your answer."
+    },
+    "fx": {
+     "rel": 1,
+     "knowledge": 0.2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "talk",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "lecturer",
+       "anim": "listen",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "listen",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "lecturer",
+       "text": {
+        "id": "Bagus! Siapa namamu?",
+        "en": "Good! What's your name?"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "slide_jadul",
+    "text": {
+     "id": "Slide dosen dari 2009. Font Comic Sans.",
+     "en": "The slides are from 2009. In Comic Sans."
+    },
+    "fx": {
+     "knowledge": -0.2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "sleep",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "lecturer",
+       "anim": "talk",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "sleep",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "lecturer",
+       "text": {
+        "id": "...dan seterusnya, dan seterusnya.",
+        "en": "...and so on, and so on."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   }
+  ],
+  "ujian": [
+   {
+    "id": "ujian",
+    "text": {
+     "id": "Ujian berlangsung. Pengawas mondar-mandir.",
+     "en": "Exam in progress. The invigilator paces around."
+    },
+    "fx": {},
+    "weight": 1.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "nervous",
+     "cast": [
+      {
+       "npc": "lecturer",
+       "spot": "aisle",
+       "anim": "walk",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "write",
+       "pose": "sit"
+      }
+     ]
+    }
+   }
+  ],
+  "bolos": [
+   {
+    "id": "rebahan",
+    "text": {
+     "id": "Bolos, rebahan sambil scroll video kucing.",
+     "en": "Skipped class, scrolling cat videos in bed."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "bed",
+     "pose": "lie",
+     "anim": "phone",
+     "hold": "phone"
+    }
+   },
+   {
+    "id": "ketahuan",
+    "text": {
+     "id": "Bolos... lalu dosen absen pakai foto kelas. Ups.",
+     "en": "Skipped... then the lecturer took a class photo for attendance. Oops."
+    },
+    "fx": {
+     "mental": -4
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "bed_edge",
+     "pose": "sit",
+     "anim": "sad",
+     "hold": "phone"
+    }
+   }
+  ],
+  "belajar": [
+   {
+    "id": "perpus",
+    "text": {
+     "id": "Belajar di perpus. Sunyi, adem, wifi lumayan.",
+     "en": "Studying at the library. Quiet, cool, decent wifi."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "read",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "read",
+       "pose": "sit"
+      }
+     ],
+     "hold": "book"
+    }
+   },
+   {
+    "id": "tutorial",
+    "text": {
+     "id": "Nonton tutorial di YouTube, kecepatan 2x. Paham!",
+     "en": "Watched a tutorial at 2x speed. Got it!"
+    },
+    "fx": {
+     "knowledge": 0.5
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   },
+   {
+    "id": "ketiduran",
+    "text": {
+     "id": "Ketiduran di atas buku. Ilmunya meresap lewat pipi?",
+     "en": "Fell asleep on the book. Knowledge by osmosis?"
+    },
+    "fx": {
+     "knowledge": -0.6,
+     "energy": 10
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "sleep",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "read",
+       "pose": "sit"
+      }
+     ]
+    }
+   },
+   {
+    "id": "bareng",
+    "text": {
+     "id": "Belajar bareng Nadia. Dia ngajarin, kamu manggut-manggut.",
+     "en": "Studied with Nadia. She explained, you nodded."
+    },
+    "fx": {
+     "knowledge": 0.3,
+     "social": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "listen",
+     "cast": [
+      {
+       "npc": "ambis",
+       "spot": "seat_b",
+       "anim": "talk",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "ambis",
+       "text": {
+        "id": "Rumusnya gini, gampang kok!",
+        "en": "The formula's like this, easy!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "kipas",
+    "text": {
+     "id": "Belajar di kos. Kipas angin berisik, tapi fokus.",
+     "en": "Studying in your room. The fan is loud, but you focus."
+    },
+    "fx": {},
+    "weight": 1.5,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "read",
+     "hold": "book"
+    }
+   }
+  ],
+  "tugas": [
+   {
+    "id": "laprak",
+    "text": {
+     "id": "Ngerjain laporan sampai jam 2 pagi.",
+     "en": "Writing the report until 2 a.m."
+    },
+    "fx": {
+     "energy": -3
+    },
+    "weight": 2.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   },
+   {
+    "id": "kelompok",
+    "text": {
+     "id": "Kerja kelompok di perpus. Cuma kamu yang kerja.",
+     "en": "Group work at the library. Only you are working."
+    },
+    "fx": {
+     "social": 1,
+     "mental": -2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "type",
+     "cast": [
+      {
+       "npc": "beban",
+       "spot": "seat_b",
+       "anim": "phone",
+       "pose": "sit",
+       "hold": "phone"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "beban",
+       "text": {
+        "id": "Bagianku yang mana ya?",
+        "en": "Which part is mine?"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "deadline",
+    "text": {
+     "id": "Deadline 23.59, submit 23.58. Adrenalin!",
+     "en": "Deadline 11:59 p.m., submitted 11:58. Adrenaline!"
+    },
+    "fx": {
+     "tugas": 0.4,
+     "mental": -3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "nervous"
+    }
+   },
+   {
+    "id": "lancar",
+    "text": {
+     "id": "Tugas lancar jaya. Mood bagus, kopi enak.",
+     "en": "Assignment went smoothly. Good mood, good coffee."
+    },
+    "fx": {
+     "mental": 3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   }
+  ],
+  "nongkrong": [
+   {
+    "id": "gorengan",
+    "text": {
+     "id": "Nongkrong di warkop, gorengan 5 biji, ngobrol ngalor-ngidul.",
+     "en": "Hanging out at the warkop: five fritters, endless chatter."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "warkop",
+     "spot": "bench",
+     "pose": "sit",
+     "anim": "laugh",
+     "cast": [
+      {
+       "npc": "bestie",
+       "spot": "bench_b",
+       "anim": "laugh",
+       "pose": "sit",
+       "hold": "cup"
+      },
+      {
+       "npc": "friend",
+       "spot": "bench_c",
+       "anim": "talk",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "bestie",
+       "text": {
+        "id": "Sumpah dosennya lucu banget!",
+        "en": "I swear that lecturer is hilarious!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "ditraktir",
+    "text": {
+     "id": "Ditraktir kating yang baru gajian. Rezeki anak soleh.",
+     "en": "A senior who just got paid treats everyone. Blessed."
+    },
+    "fx": {
+     "coins": 30,
+     "mental": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "warkop",
+     "spot": "bench",
+     "pose": "sit",
+     "anim": "laugh",
+     "cast": [
+      {
+       "npc": "senior",
+       "spot": "bench_b",
+       "anim": "talk",
+       "pose": "sit",
+       "hold": "cup"
+      },
+      {
+       "npc": "bestie",
+       "spot": "bench_c",
+       "anim": "laugh",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "senior",
+       "text": {
+        "id": "Santai, gue yang bayar!",
+        "en": "Relax, it's on me!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "curhat",
+    "text": {
+     "id": "Curhat sampai jam 1 malam. Lega banget.",
+     "en": "Venting until 1 a.m. Such a relief."
+    },
+    "fx": {
+     "mental": 4
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "warkop",
+     "spot": "bench",
+     "pose": "sit",
+     "anim": "talk",
+     "cast": [
+      {
+       "npc": "bestie",
+       "spot": "bench_b",
+       "anim": "listen",
+       "pose": "sit",
+       "hold": "cup"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "bestie",
+       "text": {
+        "id": "Kamu nggak sendirian kok.",
+        "en": "You're not alone, you know."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "remi",
+    "text": {
+     "id": "Main kartu remi. Kalah, mukanya dicoreng bedak.",
+     "en": "Played cards. Lost, face smeared with powder."
+    },
+    "fx": {
+     "social": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "warkop",
+     "spot": "bench",
+     "pose": "sit",
+     "anim": "laugh",
+     "cast": [
+      {
+       "npc": "friend",
+       "spot": "bench_b",
+       "anim": "laugh",
+       "pose": "sit"
+      },
+      {
+       "npc": "beban",
+       "spot": "bench_c",
+       "anim": "cheer",
+       "pose": "sit"
+      }
+     ]
+    }
+   }
+  ],
+  "organisasi": [
+   {
+    "id": "rapat",
+    "text": {
+     "id": "Rapat 4 jam. Keputusannya: rapat lagi minggu depan.",
+     "en": "Four-hour meeting. Decision: meet again next week."
+    },
+    "fx": {
+     "mental": -2
+    },
+    "weight": 2.0,
+    "scene": {
+     "stage": "sekre",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "listen",
+     "cast": [
+      {
+       "npc": "senior",
+       "spot": "head",
+       "anim": "talk",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "sleep",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "senior",
+       "text": {
+        "id": "Oke, kita bahas ulang dari awal.",
+        "en": "Okay, let's go over it again from the top."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "proker",
+    "text": {
+     "id": "Proker sukses! Acara ramai, sponsor senang.",
+     "en": "The event was a success! Packed, sponsors happy."
+    },
+    "fx": {
+     "social": 3,
+     "mental": 3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "sekre",
+     "spot": "head",
+     "pose": "stand",
+     "anim": "cheer",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "cheer",
+       "pose": "sit"
+      }
+     ]
+    }
+   },
+   {
+    "id": "proposal",
+    "text": {
+     "id": "Bikin proposal kegiatan. Revisi 6 kali dari kemahasiswaan.",
+     "en": "Wrote an event proposal. Six revisions from student affairs."
+    },
+    "fx": {
+     "tugas": 0.3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "sekre",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "type",
+     "cast": [
+      {
+       "npc": "friend",
+       "spot": "seat_b",
+       "anim": "type",
+       "pose": "sit"
+      }
+     ]
+    }
+   }
+  ],
+  "olahraga": [
+   {
+    "id": "jogging",
+    "text": {
+     "id": "Jogging keliling lapangan. Napas ngos-ngosan, pikiran jernih.",
+     "en": "Jogged around the field. Out of breath, clear mind."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "lapangan",
+     "spot": "track",
+     "pose": "stand",
+     "anim": "run",
+     "walk": true
+    }
+   },
+   {
+    "id": "futsal",
+    "text": {
+     "id": "Futsal antar jurusan. Menang 3-2!",
+     "en": "Inter-major futsal. Won 3-2!"
+    },
+    "fx": {
+     "social": 3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "lapangan",
+     "spot": "field",
+     "pose": "stand",
+     "anim": "cheer",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "field",
+       "anim": "cheer",
+       "pose": "stand"
+      }
+     ]
+    }
+   },
+   {
+    "id": "senam",
+    "text": {
+     "id": "Senam pagi bareng ibu-ibu kompleks. Seru juga.",
+     "en": "Morning aerobics with the neighbourhood moms. Actually fun."
+    },
+    "fx": {
+     "mental": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "lapangan",
+     "spot": "field",
+     "pose": "stand",
+     "anim": "wave",
+     "cast": [
+      {
+       "npc": "ibu_kos",
+       "spot": "field_b",
+       "anim": "wave",
+       "pose": "stand"
+      }
+     ]
+    }
+   }
+  ],
+  "tidur": [
+   {
+    "id": "nyenyak",
+    "text": {
+     "id": "Tidur nyenyak 9 jam. Bangun seperti manusia baru.",
+     "en": "Slept nine hours. Woke up a new person."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "bed",
+     "pose": "lie",
+     "anim": "sleep"
+    }
+   },
+   {
+    "id": "karaoke",
+    "text": {
+     "id": "Tetangga kos karaokean jam 1 pagi. Tidur kurang.",
+     "en": "The neighbour sang karaoke at 1 a.m. Not enough sleep."
+    },
+    "fx": {
+     "energy": -10,
+     "mental": -2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "bed",
+     "pose": "lie",
+     "anim": "sad",
+     "bubbles": [
+      {
+       "who": "player",
+       "text": {
+        "id": "Hhhh... lagu dangdut lagi...",
+        "en": "Ugh... dangdut again..."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "mimpi",
+    "text": {
+     "id": "Mimpi sidang skripsi. Kebangun keringetan.",
+     "en": "Dreamt of the thesis defense. Woke up sweating."
+    },
+    "fx": {
+     "mental": -2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "bed",
+     "pose": "lie",
+     "anim": "sleep"
+    }
+   }
+  ],
+  "konseling": [
+   {
+    "id": "cerita",
+    "text": {
+     "id": "Cerita ke Bu Laras. Didengarkan tanpa dihakimi.",
+     "en": "Talked to Bu Laras. Listened to without judgement."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "konseling",
+     "spot": "chair_a",
+     "pose": "sit",
+     "anim": "talk",
+     "cast": [
+      {
+       "npc": "konselor",
+       "spot": "chair_b",
+       "anim": "listen",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "konselor",
+       "text": {
+        "id": "Pelan-pelan saja. Saya dengarkan.",
+        "en": "Take your time. I'm listening."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "napas",
+    "text": {
+     "id": "Belajar teknik napas 4-7-8. Badan lebih rileks.",
+     "en": "Learned 4-7-8 breathing. Body feels calmer."
+    },
+    "fx": {
+     "energy": 4
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "konseling",
+     "spot": "chair_a",
+     "pose": "sit",
+     "anim": "listen",
+     "cast": [
+      {
+       "npc": "konselor",
+       "spot": "chair_b",
+       "anim": "talk",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "konselor",
+       "text": {
+        "id": "Tarik napas... tahan... buang.",
+        "en": "Breathe in... hold... out."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   }
+  ],
+  "ojol": [
+   {
+    "id": "orderan",
+    "text": {
+     "id": "Narik ojol keliling kota. Lumayan buat makan.",
+     "en": "Rode around the city. Enough for food."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "jalan",
+     "spot": "road",
+     "pose": "ride",
+     "anim": "ride",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "pillion",
+       "anim": "ride",
+       "pose": "ride"
+      }
+     ]
+    }
+   },
+   {
+    "id": "tip",
+    "text": {
+     "id": "Dapat penumpang baik hati, kasih tip.",
+     "en": "Got a kind passenger who tipped."
+    },
+    "fx": {
+     "coins": 60,
+     "mental": 2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "jalan",
+     "spot": "road",
+     "pose": "ride",
+     "anim": "ride",
+     "cast": [
+      {
+       "npc": "ibu_kos",
+       "spot": "pillion",
+       "anim": "wave",
+       "pose": "ride"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "ibu_kos",
+       "text": {
+        "id": "Ini buat jajan ya, Nak.",
+        "en": "Here's a little extra, dear."
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "bocor",
+    "text": {
+     "id": "Ban bocor di tengah jalan. Tambal ban 15 ribu.",
+     "en": "Flat tyre mid-ride. Patch costs 15K."
+    },
+    "fx": {
+     "coins": -40,
+     "mental": -3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "jalan",
+     "spot": "road",
+     "pose": "stand",
+     "anim": "sad"
+    }
+   }
+  ],
+  "garap_skripsi": [
+   {
+    "id": "bab2",
+    "text": {
+     "id": "Nulis Bab 2. Kopi ketiga hari ini.",
+     "en": "Writing Chapter 2. Third coffee today."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   },
+   {
+    "id": "jurnal",
+    "text": {
+     "id": "Cari jurnal Sinta. Dapat 3, yang open access cuma 1.",
+     "en": "Hunting for journal papers. Found three, only one open access."
+    },
+    "fx": {},
+    "weight": 1.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "read",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "read",
+       "pose": "sit"
+      }
+     ],
+     "hold": "book"
+    }
+   },
+   {
+    "id": "dafpus",
+    "text": {
+     "id": "Rapiin daftar pustaka 3 jam. APA edisi 7, katanya.",
+     "en": "Formatting references for 3 hours. APA 7th edition, apparently."
+    },
+    "fx": {
+     "mental": -2
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "nervous"
+    }
+   }
+  ],
+  "kerja": [
+   {
+    "id": "ramai",
+    "text": {
+     "id": "Shift ramai, pelanggan antre panjang.",
+     "en": "Busy shift, long queue."
+    },
+    "fx": {
+     "energy": -3
+    },
+    "weight": 2.0,
+    "scene": {
+     "stage": "kafe",
+     "spot": "counter",
+     "pose": "stand",
+     "anim": "type",
+     "cast": [
+      {
+       "npc": "boss",
+       "spot": "boss",
+       "anim": "point",
+       "pose": "stand"
+      },
+      {
+       "npc": "extras",
+       "spot": "queue",
+       "anim": "idle",
+       "pose": "stand"
+      }
+     ]
+    }
+   },
+   {
+    "id": "ditraktir_bos",
+    "text": {
+     "id": "Bos traktir makan siang. Bos idaman.",
+     "en": "The boss bought lunch. Dream boss."
+    },
+    "fx": {
+     "mental": 3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kafe",
+     "spot": "counter",
+     "pose": "stand",
+     "anim": "laugh",
+     "cast": [
+      {
+       "npc": "boss",
+       "spot": "boss",
+       "anim": "talk",
+       "pose": "stand"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "boss",
+       "text": {
+        "id": "Makan dulu, kerja nanti!",
+        "en": "Eat first, work later!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "ditegur",
+    "text": {
+     "id": "Ditegur bos karena salah kembalian.",
+     "en": "Scolded for giving the wrong change."
+    },
+    "fx": {
+     "mental": -3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kafe",
+     "spot": "counter",
+     "pose": "stand",
+     "anim": "sad",
+     "cast": [
+      {
+       "npc": "boss",
+       "spot": "boss",
+       "anim": "talk",
+       "pose": "stand"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "boss",
+       "text": {
+        "id": "Hitung lagi, ya!",
+        "en": "Count it again!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   },
+   {
+    "id": "sepi",
+    "text": {
+     "id": "Shift sepi. Bisa sambil baca materi.",
+     "en": "Quiet shift. Got some reading done."
+    },
+    "fx": {
+     "knowledge": 0.3
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kafe",
+     "spot": "counter",
+     "pose": "stand",
+     "anim": "read",
+     "hold": "book"
+    }
+   }
+  ],
+  "kerja_home": [
+   {
+    "id": "klien",
+    "text": {
+     "id": "Klien minta revisi \"yang simpel aja\" untuk ke-14 kali.",
+     "en": "The client asks for \"something simple\" for the 14th time."
+    },
+    "fx": {
+     "mental": -2
+    },
+    "weight": 2.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   },
+   {
+    "id": "lancar",
+    "text": {
+     "id": "Kerjaan beres lebih cepat. Rebahan sebentar.",
+     "en": "Work done early. Quick lie-down."
+    },
+    "fx": {
+     "energy": 4
+    },
+    "weight": 1.0,
+    "scene": {
+     "stage": "kamar",
+     "spot": "desk",
+     "pose": "sit",
+     "anim": "type"
+    }
+   }
+  ],
+  "kerja_les": [
+   {
+    "id": "les",
+    "text": {
+     "id": "Ngajarin anak SMA persamaan kuadrat. Dia paham!",
+     "en": "Taught a high schooler quadratic equations. They got it!"
+    },
+    "fx": {
+     "mental": 2
+    },
+    "weight": 2.0,
+    "scene": {
+     "stage": "perpus",
+     "spot": "seat",
+     "pose": "sit",
+     "anim": "talk",
+     "cast": [
+      {
+       "npc": "kid",
+       "spot": "seat_b",
+       "anim": "write",
+       "pose": "sit"
+      }
+     ],
+     "bubbles": [
+      {
+       "who": "kid",
+       "text": {
+        "id": "Ohh, gitu toh Kak!",
+        "en": "Ohh, that's how it works!"
+       },
+       "delay": 0.3
+      }
+     ]
+    }
+   }
+  ],
+  "kerja_asdos": [
+   {
+    "id": "asdos",
+    "text": {
+     "id": "Jadi asdos: ngawas praktikum & koreksi laporan.",
+     "en": "TA duty: supervising the lab and grading reports."
+    },
+    "fx": {},
+    "weight": 2.0,
+    "scene": {
+     "stage": "kelas",
+     "spot": "front",
+     "pose": "stand",
+     "anim": "point",
+     "cast": [
+      {
+       "npc": "extras",
+       "spot": "seats",
+       "anim": "write",
+       "pose": "sit"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "bimbingan": {
+  "ghost": {
+   "stage": "ruang_dosen",
+   "spot": "door",
+   "pose": "stand",
+   "anim": "phone",
+   "bubbles": [
+    {
+     "who": "player",
+     "text": {
+      "id": "Pak... Bu... ada?",
+      "en": "Sir... Ma'am... anyone?"
+     },
+     "delay": 0.3
+    }
+   ],
+   "hold": "phone"
+  },
+  "dinas": {
+   "stage": "ruang_dosen",
+   "spot": "door",
+   "pose": "stand",
+   "anim": "sad",
+   "bubbles": [
+    {
+     "who": "player",
+     "text": {
+      "id": "\"Sedang dinas luar kota.\" Lagi.",
+      "en": "\"Out of town.\" Again."
+     },
+     "delay": 0.3
+    }
+   ]
+  },
+  "revisi": {
+   "stage": "ruang_dosen",
+   "spot": "guest",
+   "pose": "sit",
+   "anim": "sad",
+   "cast": [
+    {
+     "npc": "dospem",
+     "spot": "dosen_chair",
+     "anim": "talk",
+     "pose": "sit"
+    }
+   ],
+   "bubbles": [
+    {
+     "who": "dospem",
+     "text": {
+      "id": "Ganti judul ya.",
+      "en": "Change the title."
+     },
+     "delay": 0.3
+    }
+   ]
+  },
+  "acc": {
+   "stage": "ruang_dosen",
+   "spot": "guest",
+   "pose": "sit",
+   "anim": "cheer",
+   "cast": [
+    {
+     "npc": "dospem",
+     "spot": "dosen_chair",
+     "anim": "talk",
+     "pose": "sit"
+    }
+   ],
+   "bubbles": [
+    {
+     "who": "dospem",
+     "text": {
+      "id": "Oke, lanjut.",
+      "en": "Okay, continue."
+     },
+     "delay": 0.3
+    }
+   ]
+  },
+  "kosong": {
+   "stage": "ruang_dosen",
+   "spot": "guest",
+   "pose": "sit",
+   "anim": "nervous",
+   "cast": [
+    {
+     "npc": "dospem",
+     "spot": "dosen_chair",
+     "anim": "talk",
+     "pose": "sit"
+    }
+   ],
+   "bubbles": [
+    {
+     "who": "dospem",
+     "text": {
+      "id": "Mana progresnya?",
+      "en": "Where's the progress?"
+     },
+     "delay": 0.3
+    }
+   ]
+  }
+ },
+ "weekly": [
+  {
+   "id": "normal",
+   "weight": 2.0,
+   "title": {
+    "id": "Minggu Biasa",
+    "en": "A Normal Week"
+   },
+   "text": {
+    "id": "Tidak ada kabar istimewa. Semangat!",
+    "en": "Nothing special this week. Keep going!"
+   },
+   "mods": {}
+  },
+  {
+   "id": "tanggal_merah",
+   "weight": 0.8,
+   "when": {
+    "not_exam": true
+   },
+   "title": {
+    "id": "Tanggal Merah!",
+    "en": "Public Holiday!"
+   },
+   "text": {
+    "id": "Libur nasional: tidak ada kuliah pagi, kehadiran tetap dihitung.",
+    "en": "National holiday: no morning class, attendance still counts."
+   },
+   "no_class": true,
+   "mods": {}
+  },
+  {
+   "id": "kuis_dadakan",
+   "weight": 1.0,
+   "when": {
+    "not_exam": true
+   },
+   "title": {
+    "id": "Musim Kuis Dadakan",
+    "en": "Pop-Quiz Season"
+   },
+   "text": {
+    "id": "Kuliah lebih menegangkan: ilmu +50%, mental -3.",
+    "en": "Classes are tense: knowledge +50%, mental -3."
+   },
+   "mods": {
+    "kuliah": {
+     "mult": {
+      "knowledge": 1.5
+     },
+     "add": {
+      "mental": -3
+     }
+    }
+   }
+  },
+  {
+   "id": "dosen_seminar",
+   "weight": 0.9,
+   "when": {
+    "not_exam": true
+   },
+   "title": {
+    "id": "Dosen Seminar ke Luar Negeri",
+    "en": "Lecturers Abroad for a Seminar"
+   },
+   "text": {
+    "id": "Kelas sering kosong: ilmu kuliah turun, tapi tugas resume nambah.",
+    "en": "Classes are often empty: less lecture knowledge, more summary homework."
+   },
+   "mods": {
+    "kuliah": {
+     "mult": {
+      "knowledge": 0.4
+     },
+     "add": {
+      "tugas": 0.3,
+      "energy": 4
+     }
+    }
+   }
+  },
+  {
+   "id": "deadline",
+   "weight": 1.0,
+   "title": {
+    "id": "Deadline Numpuk",
+    "en": "Deadlines Pile Up"
+   },
+   "text": {
+    "id": "Tugas dikejar: progres tugas +40%, tapi lebih bikin stres.",
+    "en": "Assignments rush: +40% task progress, but more stress."
+   },
+   "mods": {
+    "tugas": {
+     "mult": {
+      "tugas": 1.4
+     },
+     "add": {
+      "mental": -2
+     }
+    }
+   }
+  },
+  {
+   "id": "promo_kopi",
+   "weight": 0.9,
+   "title": {
+    "id": "Promo Kopi Warkop",
+    "en": "Warkop Coffee Promo"
+   },
+   "text": {
+    "id": "Nongkrong gratis kopi: tanpa biaya, mental +4.",
+    "en": "Free coffee at the warkop: no cost, mental +4."
+   },
+   "mods": {
+    "nongkrong": {
+     "mult": {
+      "coins": 0.0
+     },
+     "add": {
+      "mental": 4
+     }
+    }
+   }
+  },
+  {
+   "id": "hujan",
+   "weight": 0.9,
+   "title": {
+    "id": "Hujan Seminggu Penuh",
+    "en": "A Week of Rain"
+   },
+   "text": {
+    "id": "Ojol dapat tarif hujan (+40%), tapi olahraga & nongkrong kurang seru.",
+    "en": "Rides pay surge rates (+40%), but sports and hangouts are less fun."
+   },
+   "mods": {
+    "ojol": {
+     "mult": {
+      "coins": 1.4
+     }
+    },
+    "olahraga": {
+     "mult": {
+      "mental": 0.5
+     }
+    },
+    "nongkrong": {
+     "mult": {
+      "mental": 0.6
+     }
+    }
+   }
+  },
+  {
+   "id": "gajian",
+   "weight": 0.8,
+   "when": {
+    "job": true
+   },
+   "title": {
+    "id": "Bonus dari Bos",
+    "en": "Boss Bonus"
+   },
+   "text": {
+    "id": "Penjualan naik! Gaji shift minggu ini +25%.",
+    "en": "Sales are up! Shift pay +25% this week."
+   },
+   "mods": {
+    "kerja": {
+     "mult": {
+      "coins": 1.25
+     }
+    }
+   }
+  },
+  {
+   "id": "festival",
+   "weight": 0.8,
+   "title": {
+    "id": "Festival Kampus",
+    "en": "Campus Festival"
+   },
+   "text": {
+    "id": "Organisasi sibuk tapi seru: sosial +50%, energi -5.",
+    "en": "Orgs are busy but fun: social +50%, energy -5."
+   },
+   "mods": {
+    "organisasi": {
+     "mult": {
+      "social": 1.5
+     },
+     "add": {
+      "energy": -5
+     }
+    }
+   }
+  },
+  {
+   "id": "flu",
+   "weight": 0.7,
+   "title": {
+    "id": "Flu Menyebar di Kos",
+    "en": "Flu Spreads in the Kos"
+   },
+   "text": {
+    "id": "Pemulihan energi minggu ini berkurang. Tidur lebih penting.",
+    "en": "Less energy recovery this week. Sleep matters more."
+   },
+   "energy_regen": -10,
+   "mods": {
+    "tidur": {
+     "add": {
+      "energy": 8
+     }
+    }
+   }
+  },
+  {
+   "id": "listrik",
+   "weight": 0.7,
+   "title": {
+    "id": "Listrik Kos Padam Bergilir",
+    "en": "Rolling Blackouts at the Kos"
+   },
+   "text": {
+    "id": "Ngerjain tugas di kos susah (-30%). Perpus aman.",
+    "en": "Doing assignments at home is hard (-30%). The library is fine."
+   },
+   "mods": {
+    "tugas": {
+     "mult": {
+      "tugas": 0.7
+     }
+    },
+    "belajar": {
+     "add": {
+      "knowledge": 0.3
+     }
+    }
+   }
+  },
+  {
+   "id": "seminar_gratis",
+   "weight": 0.8,
+   "title": {
+    "id": "Seminar Gratis + Sertifikat",
+    "en": "Free Seminar + Certificate"
+   },
+   "text": {
+    "id": "Belajar minggu ini lebih efektif (+0,5 ilmu).",
+    "en": "Studying is more effective this week (+0.5 knowledge)."
+   },
+   "mods": {
+    "belajar": {
+     "add": {
+      "knowledge": 0.5
+     }
+    }
+   }
+  },
+  {
+   "id": "tanggal_tua",
+   "weight": 0.9,
+   "title": {
+    "id": "Tanggal Tua",
+    "en": "End-of-Month Broke"
+   },
+   "text": {
+    "id": "Dompet tipis, mie instan menu utama. Nongkrong lebih mahal terasa.",
+    "en": "Wallet's thin, instant noodles for every meal. Hanging out stings more."
+   },
+   "mods": {
+    "nongkrong": {
+     "mult": {
+      "coins": 1.5
+     }
+    },
+    "ojol": {
+     "add": {
+      "coins": 20
+     }
+    }
+   }
+  }
+ ]
+}

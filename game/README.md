@@ -66,3 +66,10 @@ godot --path game --headless --export-release "Android" ../build/MahasigmaSimula
 APK sampel v0.1.0 ditandatangani dengan **debug keystore**, hanya untuk dicoba (sideload).
 Untuk Play Store: buat upload keystore sendiri, aktifkan Gradle build (wajib untuk plugin AdMob/Billing),
 dan ekspor sebagai **AAB** (Play memecah per-ABI sehingga unduhan jauh lebih kecil dari APK 53 MB).
+
+## Konten aktivitas & scene
+
+`python3 tools/gen_activities.py` membangkitkan `data/activities.json` (kabar mingguan, varian aktivitas, arahan scene).
+Set interior dibangun di `scripts/world/stages.gd`, perabot di `props.gd`, penataan aktor/kamera di `director.gd`,
+UI cutscene event di `scripts/ui/cutscene.gd`. Render satu scene: `tools/shot.sh stage_kuliah:presentasi`,
+satu cutscene: `SHOT_FRAMES=150 tools/shot.sh cutscene_ibu_telpon`. Tes scroll sentuh: `--shot=scrolltest`.

@@ -101,12 +101,11 @@ func _prodi_card(id: String) -> Control:
 	col.add_child(Kit.dual(p.name, 28, fg, HORIZONTAL_ALIGNMENT_LEFT, true))
 	col.add_child(Kit.dual(p.tag, 20, fg))
 	h.add_child(Kit.chip("UKT %s" % Kit.fmt(p.ukt), Color(0, 0, 0, 0.18) if sel else Color("f3eee4"), fg, 20))
-	card.mouse_filter = Control.MOUSE_FILTER_STOP
-	card.gui_input.connect(func(e: InputEvent):
-		if e is InputEventMouseButton and e.pressed:
-			prodi = id
-			_rebuild_char()
-			_set_tab("prodi"))
+	Kit.tap(card, func():
+		prodi = id
+		_rebuild_char()
+		main.world.player.hop()
+		_set_tab("prodi"))
 	return card
 
 
@@ -124,7 +123,7 @@ func _swatches(colors: Array, key: String) -> Control:
 		st.set_border_width_all(6)
 		for state in ["normal", "hover", "pressed"]:
 			b.add_theme_stylebox_override(state, st)
-		b.pressed.connect(func():
+		Kit.on_tap(b, func():
 			look[key] = i
 			_rebuild_char()
 			_set_tab(tab))

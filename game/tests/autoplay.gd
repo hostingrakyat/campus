@@ -13,7 +13,7 @@ static func run(main: Node) -> void:
 	main.goto("ukt")
 	var steps := 0
 	var last_week := ""
-	while steps < 20000:
+	while steps < 80000:
 		steps += 1
 		await main.get_tree().process_frame
 		var ad := _find_ad_close(main.get_tree().root)

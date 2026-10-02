@@ -151,6 +151,18 @@ func confirm_krs(codes: Array, cls: Dictionary) -> void:
 	touch()
 
 
+## This week's news (rolled once per week, saved).
+func ensure_week() -> Dictionary:
+	var m := Sim.ensure_week_mod(s, rng)
+	save_run()
+	return m
+
+
+func suggest_plan() -> Array:
+	ensure_week()
+	return Sim.default_plan(s, rng)
+
+
 func run_week(plan: Array) -> Dictionary:
 	var r := Sim.run_week(s, plan, rng)
 	touch()

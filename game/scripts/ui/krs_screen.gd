@@ -14,6 +14,8 @@ var war_on := false
 var retried := false
 var timer_bar: ProgressBar
 var rows: Dictionary = {}
+var sks_chip: PanelContainer
+var go_btn: Button
 
 
 func _ready() -> void:
@@ -40,21 +42,21 @@ func _build_select() -> void:
 	v.add_child(head)
 	head.add_child(Kit.title(Loc.main(Loc.T("Isi KRS", "Course Registration")), 38))
 	head.add_child(Kit.spacer(0, true))
-	var total := _picked_sks()
-	head.add_child(Kit.chip("%d / %d SKS" % [total, limit], Kit.GREEN if total <= limit else Kit.RED, Color.WHITE, 22))
-	v.add_child(Kit.dual(Loc.T("Batas SKS ditentukan IPS semester lalu. Matkul yang belum lulus wajib diulang.", "Your credit limit depends on last semester's GPA. Failed courses must be retaken."), 20, Kit.INK_SOFT))
+	sks_chip = Kit.chip("", Kit.GREEN, Color.WHITE, 22)
+	head.add_child(sks_chip)
+	v.add_child(Kit.dual(Loc.T("Batas SKS ditentukan IPS semester lalu. Matkul yang belum lulus wajib diulang. Geser daftar untuk melihat semua.", "Your credit limit depends on last semester's GPA. Failed courses must be retaken. Swipe the list to see all."), 20, Kit.INK_SOFT))
 	var list := Kit.vbox(8)
 	var sc := Kit.scroll(list)
 	sc.custom_minimum_size.y = 560
 	v.add_child(sc)
 	for c in Sim.krs_options(s):
-		list.add_child(_course_toggle(c, limit))
+		list.add_child(_course_toggle(c))
+	go_btn = Kit.button(Loc.T("Ikut War KRS!", "Enter the Registration War!"), Kit.RED, _start_war, 28, 84)
+	v.add_child(go_btn)
+	_update_total()
 	if not has_meta("shown"):
 		set_meta("shown", true)
 		Fx.stagger(list, 0.03, 0.2)
-	var go := Kit.button(Loc.T("Ikut War KRS!", "Enter the Registration War!"), Kit.RED, _start_war, 28, 84)
-	go.disabled = total == 0 or total > limit
-	v.add_child(go)
 
 
 func _picked_sks() -> int:
@@ -65,12 +67,23 @@ func _picked_sks() -> int:
 	return t
 
 
-func _course_toggle(c: Dictionary, limit: int) -> Control:
-	var on := picked.has(c.code)
-	var p := Kit.panel(Color("e6efff") if on else Color.WHITE, 18, 12)
+func _update_total() -> void:
+	var total := _picked_sks()
+	var limit := Sim.sks_limit(Game.s)
+	var lbl: Label = sks_chip.get_child(0)
+	lbl.text = "%d / %d SKS" % [total, limit]
+	var st: StyleBoxFlat = sks_chip.get_theme_stylebox("panel").duplicate()
+	st.bg_color = Kit.GREEN if total <= limit else Kit.RED
+	sks_chip.add_theme_stylebox_override("panel", st)
+	go_btn.disabled = total == 0 or total > limit
+
+
+func _course_toggle(c: Dictionary) -> Control:
+	var p := Kit.panel(Color.WHITE, 18, 12)
 	var h := Kit.hbox(10)
 	p.add_child(h)
-	h.add_child(Icon.make("dot", 26, Kit.BLUE if on else Color("d5cfe0")))
+	var dot := Icon.make("dot", 26, Kit.BLUE)
+	h.add_child(dot)
 	var n := Kit.dual(c.name, 22, Kit.INK, HORIZONTAL_ALIGNMENT_LEFT, true)
 	n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(n)
@@ -79,14 +92,21 @@ func _course_toggle(c: Dictionary, limit: int) -> Control:
 	if c.type == "skripsi":
 		h.add_child(Kit.chip(Loc.main(Loc.T("Skripsi", "Thesis")), Kit.ORANGE, Color.WHITE, 16))
 	h.add_child(Kit.chip("%d SKS" % c.sks, Color("f3eee4"), Kit.INK, 18))
-	p.mouse_filter = Control.MOUSE_FILTER_STOP
-	p.gui_input.connect(func(e: InputEvent):
-		if e is InputEventMouseButton and not e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
-			if picked.has(c.code):
-				picked.erase(c.code)
-			else:
-				picked.append(c.code)
-			_build_select())
+	var paint := func():
+		var on := picked.has(c.code)
+		p.add_theme_stylebox_override("panel", Kit.card_style(Color("e6efff") if on else Color.WHITE, 18))
+		(p.get_theme_stylebox("panel") as StyleBoxFlat).set_content_margin_all(12)
+		dot.color = Kit.BLUE if on else Color("d5cfe0")
+		dot.queue_redraw()
+	paint.call()
+	Kit.tap(p, func():
+		if picked.has(c.code):
+			picked.erase(c.code)
+		else:
+			picked.append(c.code)
+		paint.call()
+		Fx.pulse(p, 1.03)
+		_update_total())
 	return p
 
 
@@ -120,7 +140,7 @@ func _start_war() -> void:
 		var b := Kit.button(Loc.T("AMBIL", "TAKE"), Kit.GREEN, Callable(), 22, 64)
 		b.custom_minimum_size.x = 150
 		var code: String = c.code
-		b.pressed.connect(func(): _take(code, b, r))
+		Kit.on_tap(b, func(): _take(code, b, r))
 		h.add_child(b)
 		rows[code] = r
 		list.add_child(r)
@@ -134,7 +154,7 @@ func _start_war() -> void:
 
 
 func _take(code: String, b: Button, r: PanelContainer) -> void:
-	if not war_on or b.disabled:
+	if not war_on or b.disabled or not is_instance_valid(b):
 		return
 	if randf() < BUSY_CHANCE:
 		Audio.play("glitch", -2.0)

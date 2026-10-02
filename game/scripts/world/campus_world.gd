@@ -28,6 +28,7 @@ var labels := {
 }
 
 var camera: Camera3D
+var director: Director
 var sun: DirectionalLight3D
 var env: Environment
 var player: VinylChar
@@ -76,6 +77,8 @@ func _ready() -> void:
 	add_child(player)
 	player.teleport(spots.kos)
 	_spawn_npcs()
+	director = Director.new(self)
+	add_child(director)
 	set_time("pagi", true)
 
 
@@ -142,6 +145,16 @@ func _update_camera() -> void:
 	camera.v_offset = (cam_frac - 0.5) * cam_size
 
 
+var _interior := false
+var _last_slot := "pagi"
+
+
+## Interiors are lit mostly by their own lamps: soften the sun and sky light while inside.
+func set_interior(on: bool) -> void:
+	_interior = on
+	set_time(_last_slot, true)
+
+
 func lamps_off() -> void:
 	for l in lamps:
 		l.visible = false
@@ -149,6 +162,7 @@ func lamps_off() -> void:
 
 ## pagi | siang | malam
 func set_time(slot: String, instant: bool = false) -> void:
+	_last_slot = slot
 	var sky := Color("9fd6f2")
 	var sun_c := Color("fff1d6")
 	var sun_e := 0.95
@@ -172,6 +186,9 @@ func set_time(slot: String, instant: bool = false) -> void:
 			lamp_on = true
 	for l in lamps:
 		l.visible = lamp_on
+	if _interior:
+		sun_e *= 0.55
+		amb *= 0.7
 	if instant:
 		env.background_color = sky
 		sun.light_color = sun_c
@@ -383,8 +400,8 @@ func _build_warkop() -> void:
 		var col := Color("ff9f1c") if i % 2 == 0 else Color("2f6bff")
 		Mat.add(self, Mat.box(Vector3(0.6, 0.06, 2.8)), Mat.vinyl(col, 0.6), c + Vector3(-1.5 + i * 0.6, 2.45 - absf(i - 2.5) * 0.04, -0.1))
 	# Benches, kettle, gorengan tray.
-	_bench(c + Vector3(-0.5, 0, 0.6), 0.0)
-	_bench(c + Vector3(1.0, 0, 0.6), 0.0)
+	_bench(c + Vector3(-0.5, 0, 1.9), 0.0)
+	_bench(c + Vector3(1.0, 0, 1.9), 0.0)
 	Mat.add(self, Mat.cyl(0.15, 0.17, 0.25, 10), Mat.vinyl(Color("c0c0c0"), 0.2), c + Vector3(-1.0, 1.2, -0.8))
 	Mat.add(self, Mat.box(Vector3(0.6, 0.06, 0.4)), Mat.vinyl(Color("e0e0e0")), c + Vector3(0.6, 1.12, -0.8))
 	for i in 5:
