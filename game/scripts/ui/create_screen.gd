@@ -27,9 +27,9 @@ func _ready() -> void:
 	top.add_child(Kit.button(Loc.T("< Kembali", "< Back"), Color("8a8398"), func(): main.goto("title"), 20))
 	top.add_child(Kit.spacer(0, true))
 
-	var v := sheet()
+	var pg := page(0.32)
 	var name_row := Kit.hbox(12)
-	v.add_child(name_row)
+	pg.head.add_child(name_row)
 	name_row.add_child(Kit.label(Loc.main(Loc.T("Nama", "Name")), 26, Kit.INK, Kit.font_bold))
 	name_edit = LineEdit.new()
 	name_edit.text = ["Bima", "Ayu", "Raka", "Nisa", "Dewa", "Putri", "Fajar", "Laras"][randi() % 8]
@@ -39,17 +39,15 @@ func _ready() -> void:
 
 	var tabs := Kit.hbox(8)
 	tabs_box = tabs
-	v.add_child(tabs)
+	pg.head.add_child(tabs)
 	for t in [["prodi", Loc.T("Prodi", "Major")], ["skin", Loc.T("Kulit", "Skin")], ["hair", Loc.T("Rambut", "Hair")], ["top", Loc.T("Baju", "Outfit")]]:
 		var key: String = t[0]
 		var b := Kit.compact(Kit.button(t[1], Kit.PURPLE if key == tab else Color("c9c2d6"), func(): _set_tab(key), 20))
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.set_meta("tab", key)
 		tabs.add_child(b)
-	opts_box = Kit.vbox(12)
-	opts_box.custom_minimum_size.y = 330
-	v.add_child(opts_box)
-	v.add_child(Kit.button(Loc.T("Mulai Kuliah!", "Start College!"), Kit.GREEN, _start, 30, 80))
+	opts_box = pg.body
+	pg.footer.add_child(Kit.button(Loc.T("Mulai Kuliah!", "Start College!"), Kit.GREEN, _start, 30, 80))
 	_set_tab("prodi")
 
 

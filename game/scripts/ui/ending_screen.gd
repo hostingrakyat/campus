@@ -54,45 +54,43 @@ func _ready() -> void:
 		Audio.play_music("sedih", 1.5)
 
 	var tone: Color = TONES.get(e.tone, Kit.BLUE)
-	var v := sheet()
+	var pg := page(0.3)
 	var badge := Kit.hbox(8)
-	v.add_child(badge)
+	pg.head.add_child(badge)
 	badge.add_child(Kit.chip("ENDING", tone, Color.WHITE, 20))
 	if first:
 		badge.add_child(Kit.chip(Loc.main(Loc.T("BARU TERBUKA!", "NEW UNLOCK!")), Kit.YELLOW, Kit.INK, 20))
 	var t := Kit.title(Loc.main(e.title), 50, tone.darkened(0.1))
 	t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(t)
+	pg.head.add_child(t)
 	var prodi_name: Dictionary = Data.PRODI[s.prodi].name
 	var args := {
 		"name": s.name, "sem": s.sem, "ipk": "%.2f" % Sim.ipk(s), "prodi": prodi_name,
 		"predikat": Sim.predikat(s), "reason": DO_REASONS.get(s.ending_reason, {"id": "", "en": ""}),
 	}
-	v.add_child(Kit.dual(Loc.fill(e.subtitle, args), 24, Kit.INK_SOFT, HORIZONTAL_ALIGNMENT_LEFT, true))
+	pg.head.add_child(Kit.dual(Loc.fill(e.subtitle, args), 24, Kit.INK_SOFT, HORIZONTAL_ALIGNMENT_LEFT, true))
 	var story := Kit.panel(Color.WHITE, 22, 18)
 	var sv := Kit.vbox(10)
 	story.add_child(sv)
 	sv.add_child(Kit.dual(Loc.fill(e.text, args), 23))
-	var sc := Kit.scroll(story)
-	sc.custom_minimum_size.y = 330
-	v.add_child(sc)
+	pg.body.add_child(story)
 	if id == "padam" or id == "rawat":
 		var help := Kit.panel(Color("e8f8ee"), 20, 16)
 		help.add_child(Kit.dual(Loc.T(
 			"Kalau kamu atau temanmu sedang merasa seperti ini, kamu tidak sendirian. Hubungi Healing119: telepon 119 ext 8 atau healing119.id. Di game ini, konseling kampus selalu gratis. Di dunia nyata pun ada yang mau mendengar.",
 			"If you or a friend feel this way, you're not alone. In Indonesia, contact Healing119: call 119 ext 8 or visit healing119.id; elsewhere, reach out to your local crisis line. Campus counseling is always free in this game, and in real life someone is willing to listen too."), 21, Color("17643a")))
-		v.add_child(help)
+		pg.body.add_child(help)
 	var stats := HFlowContainer.new()
 	stats.add_theme_constant_override("h_separation", 8)
 	stats.add_theme_constant_override("v_separation", 8)
-	v.add_child(stats)
+	pg.body.add_child(stats)
 	stats.add_child(Kit.chip("IPK %.2f" % Sim.ipk(s), Kit.BLUE, Color.WHITE, 20))
 	stats.add_child(Kit.chip("Semester %d" % s.sem, Kit.INK_SOFT, Color.WHITE, 20))
 	stats.add_child(Kit.chip("SKS %d" % Sim.sks_lulus(s), Kit.INK_SOFT, Color.WHITE, 20))
 	stats.add_child(Kit.chip(Loc.main(Loc.T("Gaji total %s", "Total wages %s")) % Kit.fmt(s.stats.wages), Kit.GREEN, Color.WHITE, 20))
 	stats.add_child(Kit.chip(Loc.main(Loc.T("Khilaf belanja %s", "Impulse buys %s")) % Kit.fmt(s.stats.spent_khilaf), Kit.PINK, Color.WHITE, 20))
 	var btns := Kit.hbox(10)
-	v.add_child(btns)
+	pg.footer.add_child(btns)
 	var again := Kit.button(Loc.T("Main lagi", "Play again"), Kit.GREEN, func():
 		if id == "pindah":
 			main.goto("create", {"prodi": s.flags.get("pindah_to", "IF"), "carry": maxi(0, int(s.coins))})
@@ -102,7 +100,7 @@ func _ready() -> void:
 	btns.add_child(again)
 	btns.add_child(Kit.button(Loc.T("Galeri", "Gallery"), Kit.PURPLE, func(): main.goto("gallery"), 22, 80))
 	btns.add_child(Kit.button(Loc.T("Judul", "Title"), Color("8a8398"), func(): main.goto("title"), 22, 80))
-	_intro(v, t, first)
+	_intro(pg.head.get_children() + pg.body.get_children(), t, first)
 
 
 func _exit_tree() -> void:
@@ -139,12 +137,12 @@ func _confetti() -> void:
 	add_child(p)
 
 
-func _intro(v: VBoxContainer, title_l: Label, first: bool) -> void:
-	for c in v.get_children():
+func _intro(items: Array, title_l: Label, first: bool) -> void:
+	for c in items:
 		c.modulate.a = 0.0
 	await get_tree().create_timer(0.45).timeout
 	var i := 0
-	for c in v.get_children():
+	for c in items:
 		if not is_inside_tree():
 			return
 		if c == title_l:

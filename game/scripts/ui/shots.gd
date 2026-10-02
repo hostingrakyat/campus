@@ -114,7 +114,7 @@ static func run(main: Node, shot: String, out: String) -> void:
 							"shop":
 								main.open_modal(ShopPopup.new(main, "style"))
 							"wardrobe":
-								main.open_modal(WardrobePopup.new(main), true, true)
+								main.open_modal(WardrobePopup.new(main))
 							"jobs":
 								main.open_modal(JobsPopup.new(main))
 							"academic":

@@ -21,13 +21,10 @@ func _ready() -> void:
 	main.world.focus(Vector3(0, 0, 2), 22.0, true)
 	var top := top_bar()
 	top.add_child(Kit.button(Loc.T("< Kembali", "< Back"), Color("8a8398"), func(): main.goto("title"), 20))
-	var v := sheet()
+	var pg := page(0.1)
 	var unlocked := Meta.endings.size()
-	v.add_child(Kit.title(Loc.main(Loc.T("Galeri Ending  %d/10", "Endings  %d/10")) % unlocked, 38))
-	var list := Kit.vbox(10)
-	var sc := Kit.scroll(list)
-	sc.custom_minimum_size.y = 820
-	v.add_child(sc)
+	pg.head.add_child(Kit.title(Loc.main(Loc.T("Galeri Ending  %d/10", "Endings  %d/10")) % unlocked, 38))
+	var list := pg.body
 	for id in Data.ENDINGS:
 		var e: Dictionary = Data.endings[id]
 		var got := Meta.endings.has(id)

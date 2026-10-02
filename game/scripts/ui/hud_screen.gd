@@ -14,12 +14,11 @@ var nav: HBoxContainer
 var _w: Dictionary = {}
 var _amounts: Dictionary = {}
 var _hold := false
-var _sheet_panel: PanelContainer
+var _page: Page
 var _curtain: ColorRect
 var _caption: PanelContainer
 var _cap_box: VBoxContainer
 var _skip := false
-var _sheet_home := -1.0
 
 
 func _ready() -> void:
@@ -43,16 +42,14 @@ func _ready() -> void:
 	_curtain.color = Color(0.06, 0.05, 0.1, 0.0)
 	_curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_curtain)
-	var v := sheet()
-	_sheet_panel = v.get_parent()
-	planner = Kit.vbox(10)
-	v.add_child(planner)
+	_page = page(0.4)
+	planner = _page.body
 	go_btn = Kit.button(Loc.T("Jalani Minggu Ini  >", "Live This Week  >"), Kit.GREEN, _run_week, 30, 84)
-	v.add_child(go_btn)
+	_page.footer.add_child(go_btn)
 	nav = Kit.hbox(8)
-	v.add_child(nav)
+	_page.footer.add_child(nav)
 	for n in [
-		[Loc.T("Lemari", "Wardrobe"), Kit.PINK, func(): main.open_modal(WardrobePopup.new(main), true, true)],
+		[Loc.T("Lemari", "Wardrobe"), Kit.PINK, func(): main.open_modal(WardrobePopup.new(main))],
 		[Loc.T("Toko", "Shop"), Kit.ORANGE, func(): main.open_modal(ShopPopup.new(main, "style"))],
 		[Loc.T("Kerja", "Jobs"), Kit.BLUE, func(): main.open_modal(JobsPopup.new(main))],
 		[Loc.T("Akademik", "Academics"), Kit.PURPLE, func(): main.open_modal(AcademicPopup.new(main))],
@@ -350,7 +347,7 @@ func _run_week() -> void:
 	Audio.play("week", -4.0)
 	var res := Game.run_week(plan)
 	var ctx := _ctx()
-	await _sheet_slide(false)
+	await _page.slide(false)
 	_banner(Loc.main(Loc.T("MINGGU %d", "WEEK %d")) % s.week, Kit.INK, true)
 	await get_tree().create_timer(0.35).timeout
 	for idx in res.log.size():
@@ -411,7 +408,7 @@ func _run_week() -> void:
 	_set_busy(false)
 	refresh()
 	_build_planner(true)
-	_sheet_slide(true)
+	_page.slide(true)
 
 
 ## Context for casting scenes: this week's lecturer, the advisor, the job, a friend.
@@ -435,21 +432,6 @@ func _hold_scene(t: float) -> void:
 		el += get_process_delta_time()
 	if _skip:
 		await get_tree().create_timer(0.08).timeout
-
-
-func _sheet_slide(show_sheet: bool) -> void:
-	var h := _sheet_panel.size.y + 60.0
-	if not show_sheet:
-		_sheet_home = _sheet_panel.position.y
-	var base_y := _sheet_home
-	var tw := create_tween()
-	if show_sheet:
-		_sheet_panel.visible = true
-		tw.tween_property(_sheet_panel, "position:y", base_y, 0.35).from(base_y + h).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	else:
-		tw.tween_property(_sheet_panel, "position:y", base_y + h, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tw.tween_callback(func(): _sheet_panel.visible = false)
-	await tw.finished
 
 
 func _build_caption() -> void:

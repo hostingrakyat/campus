@@ -8,7 +8,7 @@ var list: VBoxContainer
 
 
 func _init(m: Node) -> void:
-	super(m, Loc.T("Lemari", "Wardrobe"), 660)
+	super(m, Loc.T("Lemari", "Wardrobe"), 660, true, "lower")
 	tabs_box = Kit.hbox(6)
 	body.add_child(tabs_box)
 	list = scroll_list(300)
@@ -20,7 +20,7 @@ func _init(m: Node) -> void:
 
 func _ready() -> void:
 	var p: VinylChar = main.world.player
-	main.world.focus(p.position + Vector3(0, 1.0, 0), 6.0, false, 0.22)
+	main.world.focus(p.position + Vector3(0, 1.0, 0), 5.0, false, 0.24)
 
 
 func _exit_tree() -> void:

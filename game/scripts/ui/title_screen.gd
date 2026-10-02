@@ -48,7 +48,7 @@ func _ready() -> void:
 	tw.tween_property(logo, "rotation", 0.025, 1.6).set_trans(Tween.TRANS_SINE)
 	tw.tween_property(logo, "rotation", -0.025, 1.6).set_trans(Tween.TRANS_SINE)
 
-	var v := sheet()
+	var v := page(0.6).footer
 	if Game.has_run() and Game.load_run():
 		var s: Dictionary = Game.s
 		v.add_child(Kit.button(Loc.T("Lanjutkan · %s, Semester %d" % [s.name, s.sem], "Continue · %s, Semester %d" % [s.name, s.sem]), Kit.GREEN, func(): main.resume(), 28))

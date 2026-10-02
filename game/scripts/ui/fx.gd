@@ -33,15 +33,19 @@ static func stagger(container: Node, step: float = 0.035, start: float = 0.0, ma
 
 
 ## Slide a free-positioned control (not inside a container) in from an offset.
+## Slides an anchored control in from an offset. It animates the layout offsets (the inputs the
+## anchors use), never the computed position, so the control always ends exactly where its
+## anchors put it, even if its size is still being calculated. Not for container children.
 static func slide_in(c: Control, offset: Vector2, delay: float = 0.0, dur: float = 0.42) -> void:
-	await c.get_tree().process_frame
-	if not is_instance_valid(c):
-		return
-	var target := c.position
-	c.position = target + offset
+	var o := Vector4(c.offset_left, c.offset_top, c.offset_right, c.offset_bottom)
+	c.offset_left = o.x + offset.x
+	c.offset_right = o.z + offset.x
+	c.offset_top = o.y + offset.y
+	c.offset_bottom = o.w + offset.y
 	c.modulate.a = 0.0
 	var tw := c.create_tween().set_parallel(true)
-	tw.tween_property(c, "position", target, dur).set_delay(delay).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	for prop in [["offset_left", o.x], ["offset_top", o.y], ["offset_right", o.z], ["offset_bottom", o.w]]:
+		tw.tween_property(c, prop[0], prop[1], dur).set_delay(delay).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	tw.tween_property(c, "modulate:a", 1.0, dur * 0.5).set_delay(delay)
 
 

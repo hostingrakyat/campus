@@ -11,6 +11,13 @@ func _init(m: Node) -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
+## Full-height page (head / scrolling body / pinned footer). top_frac leaves room for the 3D scene.
+func page(top_frac: float = 0.0) -> Page:
+	var p := Page.new(top_frac)
+	add_child(p)
+	return p
+
+
 ## Bottom sheet anchored to the screen bottom, sized to content up to max_h.
 func sheet(max_h: int = 760) -> VBoxContainer:
 	var p := Kit.panel(Kit.PAPER, 36, 26)

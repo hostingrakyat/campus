@@ -14,22 +14,19 @@ func _ready() -> void:
 	var ips: float = rep.ips
 	w.player.say("IPS %.2f%s" % [ips, "!!" if ips >= 3.5 else ("..." if ips < 2.5 else "")], 4.0)
 
-	var v := sheet()
+	var pg := page(0.22)
 	var head := Kit.hbox(10)
-	v.add_child(head)
+	pg.head.add_child(head)
 	head.add_child(Kit.title(Loc.main(Loc.T("KHS Semester %d", "Semester %d Report")) % rep.sem, 38))
 	head.add_child(Kit.spacer(0, true))
 	var big := Kit.hbox(12)
-	v.add_child(big)
+	pg.head.add_child(big)
 	var ips_box := _big_stat("IPS", "0.00", _ip_color(ips))
 	var ipk_box := _big_stat("IPK", "0.00", _ip_color(rep.ipk))
 	big.add_child(ips_box)
 	big.add_child(ipk_box)
 	big.add_child(_big_stat("SKS", "%d/144" % rep.sks_total, Kit.INK_SOFT))
-	var list := Kit.vbox(6)
-	var sc := Kit.scroll(list)
-	sc.custom_minimum_size.y = 470
-	v.add_child(sc)
+	var list := pg.body
 	for c in rep.courses:
 		var r := Kit.hbox(8)
 		var n := Kit.dual(c.name, 21, Kit.INK)
@@ -44,7 +41,7 @@ func _ready() -> void:
 			list.add_child(Kit.label(Loc.main(Loc.T("  Skripsi berlanjut semester depan (T = tunda)", "  Thesis continues next semester (T = pending)")), 18, Kit.ORANGE))
 	_reveal(list, ips_box, ipk_box, ips, rep.ipk)
 	var btns := Kit.hbox(10)
-	v.add_child(btns)
+	pg.footer.add_child(btns)
 	if s.sem <= 4:
 		var pindah := Kit.button(Loc.T("Pindah prodi?", "Switch major?"), Kit.ORANGE, _switch_major, 22)
 		btns.add_child(pindah)
@@ -97,7 +94,7 @@ static func _grade_color(letter: String) -> Color:
 
 
 func _switch_major() -> void:
-	var box := ModalCard.new(main, Loc.T("Pindah prodi", "Switch major"), 620)
+	var box := ModalCard.new(main, Loc.T("Pindah prodi", "Switch major"), 620, true, "compact")
 	box.body.add_child(Kit.dual(Loc.T("Ini mengakhiri cerita di prodi sekarang (ending Pindah Prodi). Kamu mulai lagi dari semester 1 dengan koin tetap terbawa.", "This ends your story in this major (Switched Majors ending). You restart from semester 1, keeping your coins."), 22))
 	for id in Data.PRODI:
 		if id == Game.s.prodi:

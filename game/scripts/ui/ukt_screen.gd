@@ -2,7 +2,7 @@ class_name UktScreen
 extends Screen
 ## Start of semester: pay tuition (UKT) — parents, savings, appeal, scholarship, loan app, leave, or give up.
 
-var v: VBoxContainer
+var pg: Page
 
 
 func _ready() -> void:
@@ -12,7 +12,7 @@ func _ready() -> void:
 	w.player.rotation.y = PI
 	w.focus(w.player.position + Vector3(0, 1.0, 0), 8.0, true, 0.2)
 	w.set_time("pagi", true)
-	v = sheet()
+	pg = page(0.26)
 	_build()
 	for n in Game.pending_notes:
 		main.toast(n, Kit.INK, 3.0)
@@ -30,17 +30,16 @@ func on_back() -> bool:
 
 
 func _build() -> void:
-	for c in v.get_children():
-		c.queue_free()
+	pg.clear()
 	var s: Dictionary = Game.s
 	var due := Sim.ukt_due(s)
 	var head := Kit.hbox(10)
-	v.add_child(head)
+	pg.head.add_child(head)
 	head.add_child(Kit.title(Loc.main(Loc.T("Semester %d dimulai!", "Semester %d begins!")) % s.sem, 38))
 	head.add_child(Kit.spacer(0, true))
 	head.add_child(Kit.currency_chip("coin", s.coins))
 	var card := Kit.panel(Color.WHITE, 24, 18)
-	v.add_child(card)
+	pg.head.add_child(card)
 	var cv := Kit.vbox(6)
 	card.add_child(cv)
 	cv.add_child(Kit.label(Loc.main(Loc.T("Tagihan UKT semester ini", "This semester's tuition (UKT)")), 22, Kit.INK_SOFT))
@@ -58,15 +57,13 @@ func _build() -> void:
 		var paid := Kit.label(Loc.main(Loc.T("LUNAS", "PAID")), 30, Kit.GREEN, Kit.font_bold)
 		cv.add_child(paid)
 		Fx.pop_in(paid, 0.1, 0.4, 0.4)
-		v.add_child(Kit.button(Loc.T("Lanjut isi KRS  >", "Continue to course registration  >"), Kit.GREEN, func():
+		pg.footer.add_child(Kit.button(Loc.T("Lanjut isi KRS  >", "Continue to course registration  >"), Kit.GREEN, func():
 			Game.s.phase = "krs"
 			Game.touch()
 			main.goto("krs"), 28, 84))
 		return
 
-	var opts := Kit.vbox(10)
-	v.add_child(Kit.scroll(opts))
-	opts.get_parent().custom_minimum_size.y = 520
+	var opts := pg.body
 	if s.parents_pay_ukt:
 		opts.add_child(_opt(Loc.T("Dibayar Ortu", "Parents pay"), Kit.GREEN, "parents"))
 	else:
@@ -83,7 +80,7 @@ func _build() -> void:
 			opts.add_child(_opt(Loc.T("Pinjol DanaKilat (utang 150%)", "DanaKilat loan app (150% debt)"), Kit.RED, "pinjol"))
 		if s.cuti_used < Data.MAX_CUTI:
 			opts.add_child(_opt(Loc.T("Cuti 1 semester, kerja full-time (sisa %d)" % (Data.MAX_CUTI - s.cuti_used), "Take a leave semester, work full-time (%d left)" % (Data.MAX_CUTI - s.cuti_used)), Kit.ORANGE, "cuti"))
-		opts.add_child(Kit.button(Loc.T("Nggak sanggup bayar...", "I can't pay..."), Color("8a8398"), _give_up, 20))
+		pg.footer.add_child(Kit.button(Loc.T("Nggak sanggup bayar...", "I can't pay..."), Color("8a8398"), _give_up, 20))
 	if not has_meta("shown"):
 		set_meta("shown", true)
 		Fx.stagger(opts, 0.04, 0.15)
@@ -116,7 +113,7 @@ func _om() -> void:
 
 
 func _give_up() -> void:
-	var box := ModalCard.new(main, Loc.T("Yakin?", "Are you sure?"), 580)
+	var box := ModalCard.new(main, Loc.T("Yakin?", "Are you sure?"), 580, true, "compact")
 	box.body.add_child(Kit.dual(Loc.T("Tanpa membayar UKT, status kamu jadi tidak aktif (Drop Out).", "Without paying tuition, your status becomes inactive (Dropped Out)."), 24))
 	box.body.add_child(Kit.button(Loc.T("Ya, berhenti kuliah", "Yes, leave college"), Kit.RED, func():
 		Game.s.ending = "do"

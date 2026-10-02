@@ -6,7 +6,7 @@ extends Screen
 const WAR_TIME := 12.0
 const BUSY_CHANCE := 0.42
 
-var v: VBoxContainer
+var pg: Page
 var picked: Array = []
 var cls: Dictionary = {}
 var time_left := 0.0
@@ -25,7 +25,7 @@ func _ready() -> void:
 	w.focus(w.player.position + Vector3(0, 1.0, 0), 8.0, true, 0.12)
 	w.set_time("malam", true)
 	picked = Sim.default_krs(Game.s)
-	v = sheet()
+	pg = page(0.12)
 	_build_select()
 
 
@@ -34,25 +34,20 @@ func on_back() -> bool:
 
 
 func _build_select() -> void:
-	for c in v.get_children():
-		c.queue_free()
+	pg.clear()
 	var s: Dictionary = Game.s
-	var limit := Sim.sks_limit(s)
 	var head := Kit.hbox(10)
-	v.add_child(head)
+	pg.head.add_child(head)
 	head.add_child(Kit.title(Loc.main(Loc.T("Isi KRS", "Course Registration")), 38))
 	head.add_child(Kit.spacer(0, true))
 	sks_chip = Kit.chip("", Kit.GREEN, Color.WHITE, 22)
 	head.add_child(sks_chip)
-	v.add_child(Kit.dual(Loc.T("Batas SKS ditentukan IPS semester lalu. Matkul yang belum lulus wajib diulang. Geser daftar untuk melihat semua.", "Your credit limit depends on last semester's GPA. Failed courses must be retaken. Swipe the list to see all."), 20, Kit.INK_SOFT))
-	var list := Kit.vbox(8)
-	var sc := Kit.scroll(list)
-	sc.custom_minimum_size.y = 560
-	v.add_child(sc)
+	pg.head.add_child(Kit.dual(Loc.T("Batas SKS ditentukan IPS semester lalu. Matkul yang belum lulus wajib diulang. Geser daftar untuk melihat semua.", "Your credit limit depends on last semester's GPA. Failed courses must be retaken. Swipe the list to see all."), 20, Kit.INK_SOFT))
+	var list := pg.body
 	for c in Sim.krs_options(s):
 		list.add_child(_course_toggle(c))
 	go_btn = Kit.button(Loc.T("Ikut War KRS!", "Enter the Registration War!"), Kit.RED, _start_war, 28, 84)
-	v.add_child(go_btn)
+	pg.footer.add_child(go_btn)
 	_update_total()
 	if not has_meta("shown"):
 		set_meta("shown", true)
@@ -113,21 +108,17 @@ func _course_toggle(c: Dictionary) -> Control:
 # --- War KRS minigame ----------------------------------------------------------
 
 func _start_war() -> void:
-	for c in v.get_children():
-		c.queue_free()
+	pg.clear()
 	rows.clear()
 	var portal := Kit.panel(Color("1d3fa8"), 20, 14)
-	v.add_child(portal)
+	pg.head.add_child(portal)
 	var ph := Kit.vbox(4)
 	portal.add_child(ph)
 	ph.add_child(Kit.label("SIAKAD · KRS ONLINE", 26, Color.WHITE, Kit.font_bold))
 	ph.add_child(Kit.label(Loc.main(Loc.T("Ketuk AMBIL secepatnya sebelum kelas favorit penuh!", "Tap TAKE fast before the good classes fill up!")), 20, Color(1, 1, 1, 0.85), null, HORIZONTAL_ALIGNMENT_LEFT, true))
 	timer_bar = Kit.bar(WAR_TIME, WAR_TIME, Kit.YELLOW, 18)
-	v.add_child(timer_bar)
-	var list := Kit.vbox(8)
-	var sc := Kit.scroll(list)
-	sc.custom_minimum_size.y = 600
-	v.add_child(sc)
+	pg.head.add_child(timer_bar)
+	var list := pg.body
 	for c in Sim.krs_options(Game.s):
 		if not picked.has(c.code) or cls.get(c.code, "") == "A":
 			continue
@@ -209,17 +200,13 @@ func _finish_war() -> void:
 	for code in picked:
 		if not cls.has(code):
 			cls[code] = "B"
-	for c in v.get_children():
-		c.queue_free()
+	pg.clear()
 	var n_b := 0
 	for code in picked:
 		if cls[code] == "B":
 			n_b += 1
-	v.add_child(Kit.title(Loc.main(Loc.T("Hasil War KRS", "Registration War Results")), 36))
-	var list := Kit.vbox(8)
-	var sc := Kit.scroll(list)
-	sc.custom_minimum_size.y = 460
-	v.add_child(sc)
+	pg.head.add_child(Kit.title(Loc.main(Loc.T("Hasil War KRS", "Registration War Results")), 36))
+	var list := pg.body
 	for c in Sim.krs_options(Game.s):
 		if not picked.has(c.code):
 			continue
@@ -232,9 +219,9 @@ func _finish_war() -> void:
 		r.add_child(Kit.chip(Loc.main(Loc.T("Kelas A", "Class A")) if good else Loc.main(Loc.T("Kelas B · dosen killer", "Class B · strict lecturer")), Kit.GREEN if good else Kit.RED, Color.WHITE, 18))
 		list.add_child(r)
 	if n_b > 0:
-		v.add_child(Kit.dual(Loc.T("Kelas sisa diajar dosen killer: nilai lebih susah.", "Leftover classes are taught by strict lecturers: harder grades."), 20, Kit.RED))
+		pg.footer.add_child(Kit.dual(Loc.T("Kelas sisa diajar dosen killer: nilai lebih susah.", "Leftover classes are taught by strict lecturers: harder grades."), 20, Kit.RED))
 		if not retried and Ads.rewarded_left() > 0:
-			v.add_child(Kit.button(Loc.T("Nonton iklan: refresh SIAKAD & coba lagi", "Watch an ad: refresh the portal & retry"), Kit.CYAN, func():
+			pg.footer.add_child(Kit.button(Loc.T("Nonton iklan: refresh SIAKAD & coba lagi", "Watch an ad: refresh the portal & retry"), Kit.CYAN, func():
 				Ads.show_rewarded("krs_retry", func(ok: bool):
 					if ok:
 						retried = true
@@ -242,6 +229,6 @@ func _finish_war() -> void:
 							if cls[code] == "B":
 								cls.erase(code)
 						_start_war()), 22))
-	v.add_child(Kit.button(Loc.T("Mulai kuliah!", "Start the semester!"), Kit.GREEN, func():
+	pg.footer.add_child(Kit.button(Loc.T("Mulai kuliah!", "Start the semester!"), Kit.GREEN, func():
 		Game.confirm_krs(picked, cls)
 		main.goto("week"), 28, 84))

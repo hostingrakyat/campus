@@ -102,7 +102,7 @@ func _diamond_tab() -> void:
 
 func _confirm_iap(pid: String) -> void:
 	var p: Dictionary = Data.IAP_PRODUCTS[pid]
-	var box := ModalCard.new(main, Loc.T("Konfirmasi", "Confirm"), 560)
+	var box := ModalCard.new(main, Loc.T("Konfirmasi", "Confirm"), 560, true, "compact")
 	box.body.add_child(Kit.dual(Loc.T("Beli %s seharga %s? (simulasi)" % [p.name.id, p.price], "Buy %s for %s? (simulated)" % [p.name.en, p.price]), 24))
 	box.body.add_child(Kit.button(Loc.T("Beli", "Buy"), Kit.GREEN, func():
 		Iap.buy(pid)

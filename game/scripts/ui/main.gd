@@ -88,8 +88,8 @@ func goto(name: String, args: Dictionary = {}) -> void:
 func _animate_screen_in(scr: Control) -> void:
 	Fx.fade_in(scr, 0.2)
 	for c in scr.get_children():
-		if c is PanelContainer and c.get_meta("sheet", false):
-			Fx.slide_in(c, Vector2(0, 260), 0.02, 0.45)
+		if c is Page:
+			c.animate_in(0.02)
 		elif c is HBoxContainer:
 			Fx.slide_in(c, Vector2(0, -60), 0.08, 0.4)
 
@@ -121,44 +121,47 @@ func resume() -> void:
 			goto("title")
 
 
-func open_modal(content: Control, dismissable: bool = true, bottom: bool = false) -> Control:
+func open_modal(content: Control, dismissable: bool = true) -> Control:
 	var wrap := Kit.full_rect(Control.new())
+	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var dim := Kit.full_rect(ColorRect.new())
 	dim.color = Color(0.1, 0.07, 0.16, 0.55)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	wrap.add_child(dim)
-	if dismissable:
+	var layout: String = content.get_meta("layout", "compact")
+	if dismissable and layout == "compact":
 		dim.gui_input.connect(func(e: InputEvent):
 			if e is InputEventMouseButton and e.pressed:
 				close_modal(wrap))
-	if bottom:
-		# Docked to the bottom so the 3D character stays visible above (wardrobe).
-		dim.color.a = 0.0
-		var col := Kit.full_rect(VBoxContainer.new())
-		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		col.alignment = BoxContainer.ALIGNMENT_END
-		wrap.add_child(col)
-		content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		col.add_child(content)
+	if layout == "full" or layout == "lower":
+		# Full-screen window: placed by anchors only, so it always fits the screen.
+		content.anchor_left = 0.0
+		content.anchor_right = 1.0
+		content.anchor_top = 0.42 if layout == "lower" else 0.0
+		content.anchor_bottom = 1.0
+		content.offset_left = 0
+		content.offset_right = 0
+		content.offset_top = 28 if layout == "full" else 0
+		content.offset_bottom = 0
+		wrap.add_child(content)
+		if layout == "lower":
+			dim.color.a = 0.0
+		Fx.slide_in(content, Vector2(0, 360), 0.0, 0.38)
 	else:
 		var center := Kit.full_rect(CenterContainer.new())
 		center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		wrap.add_child(center)
 		center.add_child(content)
+		Fx.pop_in(content, 0.0, 0.88, 0.32)
 	wrap.set_meta("dismissable", dismissable)
 	wrap.set_meta("content", content)
 	wrap.set_meta("dim", dim)
-	wrap.set_meta("bottom", bottom)
+	wrap.set_meta("layout", layout)
 	modal_holder.add_child(wrap)
 	_modals.append(wrap)
 	var target_dim: float = dim.color.a
 	dim.color.a = 0.0
-	var tw := create_tween().set_parallel(true)
-	tw.tween_property(dim, "color:a", target_dim, 0.2)
-	if bottom:
-		Fx.slide_in(content, Vector2(0, 420), 0.0, 0.4)
-	else:
-		Fx.pop_in(content, 0.0, 0.88, 0.32)
+	create_tween().tween_property(dim, "color:a", target_dim, 0.2)
 	Audio.play("open", -6.0)
 	return wrap
 
@@ -192,8 +195,9 @@ func close_modal(wrap: Control) -> void:
 	var tw := wrap.create_tween().set_parallel(true)
 	tw.tween_property(dim, "color:a", 0.0, 0.16)
 	tw.tween_property(content, "modulate:a", 0.0, 0.14)
-	if wrap.get_meta("bottom", false):
-		tw.tween_property(content, "position:y", content.position.y + 300, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	if wrap.get_meta("layout", "compact") != "compact":
+		tw.tween_property(content, "offset_top", content.offset_top + 300, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.tween_property(content, "offset_bottom", content.offset_bottom + 300, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	else:
 		Fx.center_pivot(content)
 		tw.tween_property(content, "scale", Vector2(0.92, 0.92), 0.14)
