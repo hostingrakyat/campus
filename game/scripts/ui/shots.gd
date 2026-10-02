@@ -23,6 +23,15 @@ static func run(main: Node, shot: String, out: String) -> void:
 	if shot == "cutscene" or shot.begins_with("cutscene_"):
 		await _cutscene_shot(main, shot.trim_prefix("cutscene_") if shot != "cutscene" else "read_doang", out)
 		return
+	if shot == "ad" or shot == "ad_inter":
+		main.goto("title")
+		await main.get_tree().process_frame
+		if shot == "ad":
+			Ads.show_rewarded("shot", func(_ok: bool): pass)
+		else:
+			Ads._show_mock(false, "shot", func(_ok: bool): pass)
+		await _finish(main, out)
+		return
 	if shot == "scrolltest":
 		await _scroll_test(main)
 		return
