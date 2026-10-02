@@ -32,6 +32,8 @@ var _path: Array = []
 var _bubble: Label3D
 var _emote: Label3D
 var _pose_y := 0.0
+var _steer := Vector3.ZERO
+var _steer_amt := 0.0
 
 
 func _ready() -> void:
@@ -258,6 +260,16 @@ func walk_path(points: Array) -> void:
 	walking = not _path.is_empty()
 
 
+## Free movement driven from outside (joystick): position is moved by the caller, this only
+## turns the character and plays the walk/run cycle. amount 0 stops.
+func steer(dir: Vector3, amount: float) -> void:
+	dir.y = 0
+	_steer = dir.normalized() if dir.length() > 0.001 else Vector3.ZERO
+	_steer_amt = amount if _steer != Vector3.ZERO else 0.0
+	if _steer_amt > 0.0 and pose != "stand":
+		set_pose("stand")
+
+
 func teleport(p: Vector3) -> void:
 	position = p
 	_path = []
@@ -389,12 +401,17 @@ func _process(delta: float) -> void:
 	var body_y := sin(t * 2.2) * 0.018
 	var body_z := 0.0
 	var leg_swing := 0.0
-	if walking and not _path.is_empty():
-		var target: Vector3 = _path[0]
+	var steering := _steer_amt > 0.05 and not walking
+	if steering:
+		rotation.y = lerp_angle(rotation.y, atan2(_steer.x, _steer.z), minf(1.0, delta * 14.0))
+	if (walking and not _path.is_empty()) or steering:
+		var target: Vector3 = _path[0] if not steering else position
 		var to := target - position
 		to.y = 0
 		var dist := to.length()
-		if dist < 0.06:
+		if steering:
+			pass
+		elif dist < 0.06:
 			position = Vector3(target.x, position.y, target.z)
 			_path.pop_front()
 			if _path.is_empty():
@@ -404,7 +421,7 @@ func _process(delta: float) -> void:
 			var stp := minf(dist, speed * delta)
 			position += to / dist * stp
 			rotation.y = lerp_angle(rotation.y, atan2(to.x, to.z), minf(1.0, delta * 12.0))
-		var f := 11.0 * clampf(speed / 3.2, 0.7, 1.6)
+		var f := 11.0 * clampf((speed if not steering else 3.2 + 2.4 * _steer_amt) / 3.2, 0.7, 1.6)
 		body_y = absf(sin(t * f)) * 0.09
 		body_z = sin(t * f) * 0.05
 		leg_swing = sin(t * f) * 0.55

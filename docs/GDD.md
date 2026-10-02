@@ -1,4 +1,4 @@
-# Mahasigma Simulator — Game Design (v0.1)
+# Mahasigma Simulator — Game Design (v0.4)
 
 **Fantasi pemain:** jadi "mahasigma" — bertahan dari dosen yang menghilang, birokrasi kampus, UKT, dan kerja
 part-time, lalu lulus dengan ending yang ditentukan cara kamu menyeimbangkan nilai, uang, dan kewarasan.
@@ -41,6 +41,37 @@ Awal semester → UKT (bayar / banding / beasiswa / pinjol / cuti) → Isi KRS �
   reaksi (sorak + lompat / lesu + geleng kepala), lalu hasil + perubahan stat. Telepon ortu/pinjol: pemain di kos memegang HP.
 - Karakter punya sendi bahu/pinggul: jalan dengan ayunan, duduk, berbaring, naik motor, mengetik, mencatat, membaca, menelepon,
   tertawa, bersorak, sedih, menunjuk, melambai, plus emote ("!", "?", "...", "z z z").
+
+## Interaksi kegiatan (mini-game)
+
+Setiap slot kegiatan (kecuali yang memang pasif) punya momen interaktif ±6 detik di atas adegan 3D-nya. Jenisnya diacak
+per minggu supaya tidak monoton:
+
+| Jenis | Cara main | Dipakai di |
+|---|---|---|
+| Tangkap | ketuk gelembung yang benar (poin penting, gorengan, domba), hindari gangguan (ngantuk, notif, alarm) | kuliah, belajar, tidur, bolos, nongkrong, kasir minimarket, jaga apotek |
+| Pas-pasan | hentikan jarum di zona hijau, 3 ronde, makin cepat | olahraga, konseling (napas), ojol (rem), barista (latte art) |
+| Ngebut | ketuk secepatnya, dokumen terketik huruf demi huruf | tugas, garap skripsi, admin olshop, freelance dev, asdos |
+| Kuis | 1–3 soal pilihan ganda (umum kampus + per prodi: IF/MN/KD) | kuliah (dosen nunjuk), belajar, ujian (3 soal) |
+| Ngobrol | pilih balasan terbaik; NPC bereaksi | nongkrong, rapat organisasi, bimbingan, guru les |
+
+- Hasil: SEMPURNA / MANTAP / LUMAYAN / MELESET → bonus kecil sesuai kegiatan (mis. kuliah +0,35 Ilmu, ujian +1,2 Nilai,
+  ojol +40 koin, kerja +12% gaji). Main jelek **tidak** mengurangi apa pun.
+- Waktu habis = selesai otomatis, ada tombol Lewati, dan bisa dimatikan di Pengaturan (Mini-game saat kegiatan).
+- Konten & aturan di `scripts/core/minigames.gd`, UI di `scripts/ui/minigame.gd`.
+
+## Jelajah bebas
+
+Tombol **Jelajah** di layar minggu membuka mode jalan-jalan di diorama kampus (tidak memakan waktu minggu):
+
+- Kontrol: joystick virtual mengambang (geser di separuh kiri layar) + tombol **A**; multitouch (bisa jalan sambil
+  menekan A). Juga keyboard (WASD/panah, E/Spasi, Esc) dan gamepad (stik kiri/d-pad, A, B).
+- Tabrakan sederhana dengan gedung, pohon, tiang, motor, dan tepi diorama; penanda "v" + cincin supaya pemain tetap
+  terlihat walau di balik atap.
+- Yang bisa dilakukan: ambil 4 koin yang tersebar tiap minggu (+15), cari 1 diamond rahasia per semester di pojok kampus,
+  ngobrol dengan mahasiswa (3 obrolan pertama +1 Sosial), elus kucing oren (+3 Mental, 1×/minggu), jajan gorengan di warkop,
+  mampir perpus, baca mading (kabar minggu ini / tips), tendang bola ke gawang (GOL! +2 Mental), masuk kamar kos (Lemari),
+  kafe/toko (Toko), loket TU (Akademik), pos lowongan kerja (Kerja).
 
 ## Stat
 

@@ -19,6 +19,10 @@ var _curtain: ColorRect
 var _caption: PanelContainer
 var _cap_box: VBoxContainer
 var _skip := false
+var _stats_panel: PanelContainer
+var _explore_btn: Button
+var _explore: ExploreMode
+var _game: MiniGame
 
 
 func _ready() -> void:
@@ -35,6 +39,7 @@ func _ready() -> void:
 	stats_panel.offset_right = -20
 	stats_panel.offset_top = 104
 	add_child(stats_panel)
+	_stats_panel = stats_panel
 	stats_box = Kit.vbox(8)
 	stats_panel.add_child(stats_box)
 
@@ -58,6 +63,16 @@ func _ready() -> void:
 		var b := Kit.compact(Kit.button(n[0], n[1], n[2], 19, 64, false))
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		nav.add_child(b)
+	_explore_btn = Kit.button(Loc.T("Jelajah", "Explore"), Kit.CYAN, _start_explore, 24, 72, false)
+	_explore_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_explore_btn.anchor_top = 0.4
+	_explore_btn.anchor_bottom = 0.4
+	_explore_btn.offset_left = -230
+	_explore_btn.offset_right = -22
+	_explore_btn.offset_top = -92
+	_explore_btn.offset_bottom = -20
+	add_child(_explore_btn)
+	_explore_bob()
 	_build_caption()
 	Game.changed.connect(refresh)
 	Meta.changed.connect(refresh)
@@ -74,6 +89,11 @@ func _exit_tree() -> void:
 
 
 func on_back() -> bool:
+	if _explore:
+		_explore.close()
+		return true
+	if running:
+		return true
 	main.open_modal(SettingsPopup.new(main, true))
 	return true
 
@@ -333,6 +353,37 @@ func _set_busy(b: bool) -> void:
 	go_btn.disabled = b
 	for n in nav.get_children():
 		n.disabled = b
+	_explore_btn.visible = not b
+
+
+## Gentle bob so the explore button reads as "tap me".
+func _explore_bob() -> void:
+	var tw := _explore_btn.create_tween().set_loops()
+	tw.tween_property(_explore_btn, "offset_top", -100.0, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.parallel().tween_property(_explore_btn, "offset_bottom", -28.0, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(_explore_btn, "offset_top", -92.0, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.parallel().tween_property(_explore_btn, "offset_bottom", -20.0, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _start_explore() -> void:
+	if running or _explore:
+		return
+	_set_busy(true)
+	await _page.slide(false)
+	_stats_panel.visible = false
+	_explore = ExploreMode.new(main)
+	add_child(_explore)
+	_explore.closed.connect(_end_explore)
+
+
+func _end_explore() -> void:
+	_explore = null
+	_stats_panel.visible = true
+	Fx.fade_in(_stats_panel, 0.2)
+	main.world.follow(12.0, 0.36, false)
+	_set_busy(false)
+	refresh()
+	_page.slide(true)
 
 
 func _run_week() -> void:
@@ -358,17 +409,27 @@ func _run_week() -> void:
 		ctx["scene_key"] = entry.get("scene_key", "")
 		var scene := w.director.scene_for(entry)
 		w.director.stage(scene, ctx, 0.47)
-		_show_caption(entry)
+		var game_cfg := {}
+		if not _skip and Meta.settings.get("minigames", true) and Game.s.phase != "ending":
+			game_cfg = MiniGames.config_for(Game.s, entry, Game.rng)
+		if game_cfg.is_empty():
+			_show_caption(entry)
+		else:
+			_caption.visible = false
 		await _cover(false)
 		Audio.play("pop", -6.0)
-		if not _skip:
+		if not _skip and not (game_cfg.get("kind", "") in ["quiz", "chat"]):
 			w.director.play_bubbles(scene, ctx)
+		if not game_cfg.is_empty():
+			await _play_minigame(entry, game_cfg, ctx)
+			_show_caption(entry)
 		w.float_text(Kit.fx_text(entry.fx))
 		for k in disp:
 			if entry.fx.has(k):
 				disp[k] = disp[k] + int(round(entry.fx[k])) if k == "coins" else clampi(disp[k] + int(round(entry.fx[k])), 0, 100)
 		_display(disp)
-		await _hold_scene(1.3 if Meta.settings.get("fast_scenes", false) else 2.8)
+		var hold := 1.3 if Meta.settings.get("fast_scenes", false) else 2.8
+		await _hold_scene(hold * (0.6 if not game_cfg.is_empty() else 1.0))
 	_caption.visible = false
 	_hold = false
 	for n in res.notes:
@@ -409,6 +470,24 @@ func _run_week() -> void:
 	refresh()
 	_build_planner(true)
 	_page.slide(true)
+
+
+## Runs the activity's mini-game and folds its bonus into the slot's results.
+func _play_minigame(entry: Dictionary, cfg: Dictionary, ctx: Dictionary) -> void:
+	_game = MiniGame.new(main, cfg, ctx)
+	add_child(_game)
+	var sc: float = await _game.finished
+	_game.queue_free()
+	_game = null
+	var bonus := Game.apply_minigame(entry.action, sc)
+	entry["score"] = sc
+	if bonus.is_empty():
+		return
+	entry["bonus"] = bonus
+	var fx: Dictionary = entry.fx.duplicate()
+	for k in bonus:
+		fx[k] = float(fx.get(k, 0.0)) + float(bonus[k])
+	entry.fx = fx
 
 
 ## Context for casting scenes: this week's lecturer, the advisor, the job, a friend.
@@ -487,6 +566,15 @@ func _show_caption(entry: Dictionary) -> void:
 		chips.add_child(Kit.chip(f.text, Color("e3f7ea") if f.good else Color("ffe6e3"), Color("17643a") if f.good else Color("b3261e"), 18))
 	_cap_box.add_child(chips)
 	Fx.stagger(chips, 0.05, 0.3)
+	if entry.has("score"):
+		var g := MiniGames.grade(float(entry.score))
+		var brow := HFlowContainer.new()
+		brow.add_theme_constant_override("h_separation", 6)
+		brow.add_child(Kit.chip(Loc.main(Loc.T("Interaksi: ", "Interaction: ")) + Loc.main(g[1]), g[2], Color.WHITE, 18))
+		for f in Kit.fx_text(entry.get("bonus", {})):
+			brow.add_child(Kit.chip(Loc.main(Loc.T("bonus ", "bonus ")) + f.text, Color("efe9ff"), Kit.PURPLE.darkened(0.2), 18))
+		_cap_box.add_child(brow)
+		Fx.stagger(brow, 0.05, 0.4)
 	if not _caption.visible:
 		_caption.visible = true
 		Fx.slide_in(_caption, Vector2(0, 220), 0.0, 0.35)

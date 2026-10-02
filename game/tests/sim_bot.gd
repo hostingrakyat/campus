@@ -77,6 +77,49 @@ func _unit_tests() -> void:
 	for ev in Data.events:
 		_check(ev.has("id") and ev.choices.size() >= 1, "event shape " + str(ev.get("id")))
 		_check(Data.NPCS.has(ev.speaker), "speaker exists for " + ev.id)
+	# Mini-games: every activity/job maps to a valid config; bonuses are small and never negative.
+	var ms := Sim.new_state("T", "MN", Data.DEFAULT_LOOK, rng)
+	ms.skripsi = true
+	for a in Data.ACTIONS:
+		for job in ["", "barista", "minimarket", "les", "admin_olshop", "freelance_dev", "jaga_apotek", "asdos"]:
+			if a != "kerja" and job != "":
+				continue
+			ms.job = job
+			for k in 6:
+				var cfg := MiniGames.config_for(ms, {"action": a, "scene_key": "acc"}, rng)
+				if cfg.is_empty():
+					continue
+				_check(cfg.kind in ["catch", "timing", "mash", "quiz", "chat"], "minigame kind for " + a)
+				if cfg.kind == "quiz":
+					for q in cfg.questions:
+						_check(q.a.size() == 3 and int(q.right) >= 0 and int(q.right) < 3, "quiz shape for " + a)
+				if cfg.kind == "chat":
+					_check(cfg.opts.size() == 3, "chat options for " + a)
+			var hi := MiniGames.bonus_fx(ms, a, 1.0)
+			for k in hi:
+				_check(float(hi[k]) >= 0.0, "bonus non-negative %s/%s" % [a, k])
+			_check(MiniGames.bonus_fx(ms, a, 0.1).is_empty(), "no bonus for a miss " + a)
+	_check(MiniGames.config_for(ms, {"action": "bimbingan", "scene_key": "ghost"}, rng).is_empty(), "no game when advisor is absent")
+	# Exploration rewards: once per week, diamond once per semester.
+	Game.s = Sim.new_state("T", "IF", Data.DEFAULT_LOOK, rng)
+	Game.s.coins = 100
+	var c1 := Game.explore_reward("coin", "c1")
+	var c2 := Game.explore_reward("coin", "c1")
+	_check(c1.get("coins", 0) == Data.EXPLORE_COIN and c2.is_empty() and Game.s.coins == 100 + Data.EXPLORE_COIN, "coin once")
+	var d0 := Meta.diamonds
+	Game.explore_reward("diamond")
+	Game.explore_reward("diamond")
+	_check(Meta.diamonds == d0 + 1, "diamond once per semester")
+	Meta.diamonds = d0
+	Game.explore_reward("cat")
+	_check(Game.explore_reward("cat").is_empty(), "cat once per week")
+	for i in 5:
+		Game.explore_reward("chat")
+	_check(Game.explore_state().chat == 5, "chat counted")
+	Game.s.week += 1
+	_check(not Game.explore_reward("cat").is_empty(), "cat again next week")
+	_check(Game.explore_reward("coin", "c1").get("coins", 0) == Data.EXPLORE_COIN, "coins respawn next week")
+	Game.s = {}
 
 
 func _play(strat: String, prodi: String, rng: RandomNumberGenerator) -> Dictionary:

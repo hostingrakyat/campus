@@ -60,6 +60,8 @@ static func run(main: Node) -> void:
 				if not _press_text(scr, ["Ikut War", "Enter the"]):
 					_press_text(scr, ["Mulai kuliah", "Start the semester"])
 		elif scr is HudScreen:
+			if scr._game:
+				scr._game.bot_play()
 			if not scr.running:
 				var s: Dictionary = Game.s
 				var tag := "%d-%d" % [s.sem, s.week]

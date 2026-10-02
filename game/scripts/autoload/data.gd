@@ -149,6 +149,10 @@ const ACTIONS := {
 }
 
 # --- Part-time jobs (one contract at a time, fixed slot) ---------------------
+## Free exploration: coins lying around campus each week.
+const EXPLORE_COIN := 15
+const EXPLORE_COINS_PER_WEEK := 4
+
 const JOBS := {
 	"barista": {
 		"slot": "pagi", "pay": 340, "energy": -16, "mental": -3, "loc": "kafe",

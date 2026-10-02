@@ -7,6 +7,13 @@ func _init(m: Node, in_game: bool = false) -> void:
 	body.add_child(Kit.label(Loc.main(Loc.T("Suara", "Sound")), 24, Kit.INK, Kit.font_bold))
 	body.add_child(_slider(Loc.T("Musik", "Music"), "music"))
 	body.add_child(_slider(Loc.T("Efek suara", "Sound effects"), "sfx"))
+	body.add_child(Kit.label(Loc.main(Loc.T("Permainan", "Gameplay")), 24, Kit.INK, Kit.font_bold))
+	var mg_on: bool = Meta.settings.get("minigames", true)
+	body.add_child(Kit.button(Loc.T("Mini-game saat kegiatan: %s" % ("NYALA" if mg_on else "MATI"), "Activity mini-games: %s" % ("ON" if mg_on else "OFF")), Kit.PURPLE if mg_on else Color("ddd5e8"), func():
+		Meta.settings["minigames"] = not Meta.settings.get("minigames", true)
+		Meta.save_meta()
+		main.close_top_modal()
+		main.open_modal(SettingsPopup.new(main, in_game)), 22))
 	body.add_child(Kit.label(Loc.main(Loc.T("Bahasa & Subtitle", "Language & Subtitles")), 24, Kit.INK, Kit.font_bold))
 	for i in Loc.MODE_NAMES.size():
 		var idx := i
@@ -21,7 +28,7 @@ func _init(m: Node, in_game: bool = false) -> void:
 		body.add_child(Kit.button(Loc.T("Simpan & kembali ke judul", "Save & return to title"), Kit.ORANGE, func():
 			Game.save_run()
 			main.goto("title"), 22))
-	body.add_child(Kit.label("Mahasigma Simulator v0.3.2 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
+	body.add_child(Kit.label("Mahasigma Simulator v0.4.0 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
 
 
 func _slider(name: Dictionary, kind: String) -> Control:

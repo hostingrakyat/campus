@@ -169,6 +169,69 @@ func run_week(plan: Array) -> Dictionary:
 	return r
 
 
+## Bonus for an activity's mini-game. Returns the fx that were applied.
+func apply_minigame(action: String, score: float) -> Dictionary:
+	var fx := MiniGames.apply(s, action, score)
+	touch()
+	return fx
+
+
+# --- Free exploration (campus walk between weeks) -------------------------------
+
+## This week's exploration progress; resets every week (the hidden diamond once per semester).
+func explore_state() -> Dictionary:
+	var key := int(s.sem) * 100 + int(s.week)
+	var st: Dictionary = s.get("explore", {})
+	if int(st.get("wk", -1)) != key:
+		st = {"wk": key, "coins": [], "chat": 0, "done": [], "dia_sem": int(st.get("dia_sem", 0))}
+		s["explore"] = st
+	return st
+
+
+## Rewards found while exploring. kind: coin | diamond | chat | cat | jajan | buku | goal.
+## Returns the fx applied ({} when already claimed this week).
+func explore_reward(kind: String, id: String = "") -> Dictionary:
+	var st := explore_state()
+	var fx := {}
+	match kind:
+		"coin":
+			if id in st.coins:
+				return {}
+			st.coins.append(id)
+			fx = {"coins": Data.EXPLORE_COIN}
+		"diamond":
+			if int(st.dia_sem) == int(s.sem):
+				return {}
+			st.dia_sem = int(s.sem)
+			Meta.add_diamonds(1)
+			touch()
+			return {"diamonds": 1}
+		"chat":
+			st.chat = int(st.chat) + 1
+			if st.chat > 3:
+				return {}
+			fx = {"social": 1}
+		_:
+			if kind in st.done:
+				return {}
+			match kind:
+				"cat":
+					fx = {"mental": 3}
+				"jajan":
+					if s.coins < 10:
+						return {}
+					fx = {"coins": -10, "energy": 4, "mental": 2}
+				"buku":
+					fx = {"knowledge": 0.2} if Sim.has_classes(s) else {"mental": 1}
+				"goal":
+					fx = {"mental": 2}
+			st.done.append(kind)
+	for k in fx:
+		Sim._apply_fx(s, k, fx[k])
+	touch()
+	return fx
+
+
 func pick_event() -> Dictionary:
 	return Sim.pick_event(s, rng)
 

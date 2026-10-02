@@ -29,6 +29,7 @@ var labels := {
 
 var camera: Camera3D
 var director: Director
+var explorer: Explorer
 var sun: DirectionalLight3D
 var env: Environment
 var player: VinylChar
@@ -79,6 +80,8 @@ func _ready() -> void:
 	_spawn_npcs()
 	director = Director.new(self)
 	add_child(director)
+	explorer = Explorer.new(self)
+	add_child(explorer)
 	set_time("pagi", true)
 
 

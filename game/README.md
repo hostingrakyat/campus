@@ -5,9 +5,11 @@
 ```
 data/            curriculum.json (3 prodi × 144 SKS), events.json (cerita), endings.json (10 ending)
 scripts/core/    sim.gd — semua aturan game (murni, tanpa node, bisa dites headless)
+                 minigames.gd — konten & bonus mini-game kegiatan
 scripts/autoload Data (konten & angka balancing), Game (run aktif + save), Meta (diamond, koleksi, galeri),
                  Loc (dual subtitle), Ads (AdMob facade), Iap (Billing facade)
-scripts/world/   campus_world.gd (diorama kampus prosedural), vinyl_character.gd (karakter), mat.gd
+scripts/world/   campus_world.gd (diorama kampus prosedural), vinyl_character.gd (karakter), mat.gd,
+                 director.gd + stages.gd (adegan & cutscene), explorer.gd (mode Jelajah: gerak, tabrakan, item)
 scripts/ui/      main.gd (navigasi/modal) + semua layar & popup, kit.gd (theme & widget)
 tests/           sim_bot (balancing headless), autoplay (main lewat UI asli)
 tools/           gen_events.py (sumber cerita), shot.sh (screenshot), check_scripts.sh
@@ -39,11 +41,14 @@ godot --path game --headless res://tests/sim_bot.tscn
 # Autoplay: memainkan UI asli dari UKT sampai ending (nangkap runtime error)
 AUTOPLAY_SEED=3 godot --path game --headless -- --shot=autoplay
 
+# Mode Jelajah: sentuhan sintetis (joystick, multitouch A), tembok, koin, kucing, gol, kembali
+godot --path game --headless -- --shot=exploretest
+
 # Video demo ±40 dtk dengan audio (Movie Maker Godot)
 xvfb-run godot --path game --write-movie /tmp/demo.avi --fixed-fps 30 -- --shot=demo
 
 # Screenshot satu layar (butuh xvfb): title create ukt ukt_phk krs war week weekrun settings event picker
-# shop wardrobe jobs academic khs ending_<id> gallery note icon
+# shop wardrobe jobs academic khs ending_<id> gallery note icon explore mg_<aksi>[:<job>] (mis. mg_ujian, mg_kerja:barista)
 game/tools/shot.sh week /tmp/shots
 ```
 

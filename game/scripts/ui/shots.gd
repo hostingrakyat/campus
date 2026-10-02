@@ -32,6 +32,12 @@ static func run(main: Node, shot: String, out: String) -> void:
 			Ads._show_mock(false, "shot", func(_ok: bool): pass)
 		await _finish(main, out)
 		return
+	if shot.begins_with("mg_"):
+		await _minigame_shot(main, shot.trim_prefix("mg_"), out)
+		return
+	if shot == "explore" or shot == "exploretest":
+		await _explore_shot(main, out, shot == "exploretest")
+		return
 	if shot == "scrolltest":
 		await _scroll_test(main)
 		return
@@ -214,10 +220,25 @@ static func _demo(main: Node) -> void:
 		tree.quit()
 		return
 	Game.s.coins = 1650
-	for i in 2:
-		main.screen._run_week()
-		await _auto_until_idle(main, 70.0)
-		await wait.call(1.2)
+	main.screen._run_week()
+	await _auto_until_idle(main, 90.0)
+	await wait.call(1.2)
+	# Free roam: pet the cat, then dribble the ball into a goal.
+	main.screen._start_explore()
+	while main.screen._explore == null:
+		await tree.process_frame
+	await wait.call(1.5)
+	var ex: Explorer = main.world.explorer
+	for wp in [Vector3(-5.0, 0, 10.2), Vector3(-5.0, 0, 5.4), Vector3(-5.6, 0, 4.9)]:
+		await _walk(ex, wp, 4.0)
+	main.screen._explore._act()
+	await wait.call(1.8)
+	for wp in [Vector3(4.6, 0, 4.4), Vector3(4.6, 0, 1.6)]:
+		await _walk(ex, wp, 5.0)
+	await _walk(ex, Vector3(-1.0, 0, 1.6), 3.0)
+	await wait.call(2.0)
+	main.screen._explore.close()
+	await wait.call(1.5)
 	var rng := RandomNumberGenerator.new()
 	for w in 12:
 		Sim.run_week(Game.s, ["kuliah", "belajar", "tugas", "tidur"], rng)
@@ -328,8 +349,8 @@ static func _mouse(tree: SceneTree, pos: Vector2, pressed: bool) -> void:
 	var e := InputEventMouseButton.new()
 	e.button_index = MOUSE_BUTTON_LEFT
 	e.pressed = pressed
-	e.position = pos
-	e.global_position = pos
+	e.position = _to_window(tree, pos)
+	e.global_position = e.position
 	Input.parse_input_event(e)
 	await tree.process_frame
 	await tree.process_frame
@@ -337,8 +358,8 @@ static func _mouse(tree: SceneTree, pos: Vector2, pressed: bool) -> void:
 
 static func _move(tree: SceneTree, pos: Vector2) -> void:
 	var e := InputEventMouseMotion.new()
-	e.position = pos
-	e.global_position = pos
+	e.position = _to_window(tree, pos)
+	e.global_position = e.position
 	e.button_mask = MOUSE_BUTTON_MASK_LEFT
 	Input.parse_input_event(e)
 	await tree.process_frame
@@ -350,6 +371,11 @@ static func _auto_until_idle(main: Node, max_t: float) -> void:
 	var t := 0.0
 	var next_tap := 2.2
 	while t < max_t:
+		if main.screen is HudScreen and main.screen._game:
+			main.screen._game.bot_play()
+			await tree.process_frame
+			t += main.get_process_delta_time()
+			continue
 		await tree.create_timer(0.2).timeout
 		t += 0.2
 		if main.has_modal():
@@ -365,3 +391,206 @@ static func _auto_until_idle(main: Node, max_t: float) -> void:
 			return
 		elif not (main.screen is HudScreen):
 			return
+
+
+static func _week_setup(main: Node) -> void:
+	Game.new_run("Ayu", "IF", {"skin": 1, "hair": "hair_hijab", "hair_color": 4, "top": "top_almamater", "head": "head_none", "face": "face_round", "back": "back_ransel", "aura": "aura_none"})
+	var rng := RandomNumberGenerator.new()
+	Sim.pay_ukt(Game.s, "parents", rng)
+	Sim.set_krs(Game.s, Sim.default_krs(Game.s), {}, rng)
+	Game.s.dospem = "dosen_revisi"
+	Game.s.coins = 1650
+	Game.s.week = 3
+	Game.s.phase = "week"
+	main.goto("week")
+	await main.get_tree().process_frame
+
+
+## A mini-game mid-play over its staged activity: mg_<action>[:<job>] (kind is picked like in-game).
+static func _minigame_shot(main: Node, spec: String, out: String) -> void:
+	await _week_setup(main)
+	var parts := spec.split(":")
+	var action: String = parts[0]
+	if parts.size() > 1:
+		Game.s.job = parts[1]
+		Game.s.skripsi = true
+	var hud: HudScreen = main.screen
+	var w: CampusWorld = main.world
+	hud._page.slide(false)
+	var entry := {"action": action, "variant": {}, "scene_key": "acc", "fx": {}}
+	var vs: Array = Data.activities.variants.get(action if action != "kerja" else Data.activities.variants.keys()[0], [])
+	if not vs.is_empty():
+		entry.variant = vs[0]
+	var ctx := hud._ctx()
+	w.set_time("pagi", true)
+	w.director.stage(w.director.scene_for(entry), ctx, 0.47)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(OS.get_environment("SHOT_SEED")) if OS.get_environment("SHOT_SEED") != "" else 3
+	var cfg := MiniGames.config_for(Game.s, entry, rng)
+	print("MG kind=", cfg.get("kind", "none"))
+	var g := MiniGame.new(main, cfg, ctx)
+	hud.add_child(g)
+	var wait_t := float(OS.get_environment("SHOT_WAIT")) if OS.get_environment("SHOT_WAIT") != "" else 2.2
+	var el := 0.0
+	while el < wait_t:
+		await main.get_tree().process_frame
+		el += main.get_process_delta_time()
+		if el > 1.0 and cfg.kind in ["catch", "mash"] and randf() < 0.3:
+			g.bot_play()
+	var img: Image = main.get_viewport().get_texture().get_image()
+	img.save_png(out if out != "" else "user://shot.png")
+	print("SHOT saved ", out)
+	main.get_tree().quit()
+
+
+## Free-roam mode. With test=true, drives it with synthetic touches and checks the rules.
+static func _explore_shot(main: Node, out: String, test: bool) -> void:
+	await _week_setup(main)
+	var tree := main.get_tree()
+	var hud: HudScreen = main.screen
+	for i in 30:
+		await tree.process_frame
+	hud._start_explore()
+	while hud._explore == null:
+		await tree.process_frame
+	await tree.create_timer(0.5).timeout
+	var em: ExploreMode = hud._explore
+	var ex: Explorer = main.world.explorer
+	var p: VinylChar = main.world.player
+	if not test:
+		var spot := OS.get_environment("SHOT_SPOT")
+		p.position = Vector3(5.0, 0, 3.4) if spot == "" else str_to_var("Vector3(%s)" % spot)
+		main.world.follow(9.0, 0.5, true)
+		em.joy._grab(0, em.joy.home + em.joy.global_position)
+		em.joy._drag(em.joy.home + em.joy.global_position + Vector2(-50, -70))
+		await tree.create_timer(0.25).timeout
+		em.joy._release()
+		await tree.create_timer(1.2).timeout
+		em.joy._grab(0, em.joy.home + em.joy.global_position)
+		em.joy._drag(em.joy.home + em.joy.global_position + Vector2(-50, -70))
+		await tree.process_frame
+		await tree.process_frame
+		var img: Image = main.get_viewport().get_texture().get_image()
+		img.save_png(out if out != "" else "user://shot.png")
+		print("SHOT saved ", out)
+		tree.quit()
+		return
+	var ok := true
+	# 1) Touch-drag on the joystick zone moves the player screen-up (away from the camera).
+	var start := p.position
+	var vw := main.get_viewport().get_visible_rect().size
+	var t0 := Vector2(160, vw.y - 260)
+	await _touch(tree, 0, t0, true)
+	for i in 8:
+		await _drag(tree, 0, t0 + Vector2(0, -i * 14.0))
+	for i in 40:
+		await tree.process_frame
+	await tree.create_timer(0.6).timeout
+	await _touch(tree, 0, t0 + Vector2(0, -112), false)
+	var moved := p.position - start
+	var up_ok := moved.length() > 1.0 and moved.x < 0.0 and moved.z < 0.0
+	print("EXPLORETEST joystick moved=%s ok=%s" % [moved, up_ok])
+	ok = ok and up_ok
+	# 2) Walls: walking into the faculty building stops at its wall.
+	p.position = Vector3(-5.5, 0, -2.0)
+	for i in 90:
+		ex.move = Vector2(-0.4, -1.0)
+		await tree.process_frame
+	await tree.create_timer(1.0).timeout
+	ex.move = Vector2.ZERO
+	var wall_ok := p.position.z > -3.9
+	print("EXPLORETEST wall z=%.2f ok=%s" % [p.position.z, wall_ok])
+	ok = ok and wall_ok
+	# 3) Coins are picked up once.
+	var coins0: int = Game.s.coins
+	var coin_items: Array = ex.items.filter(func(it): return it.kind == "coin")
+	for it in coin_items:
+		p.position = it.pos
+		for i in 3:
+			await tree.process_frame
+	var gained: int = Game.s.coins - coins0
+	var coin_ok := gained == Data.EXPLORE_COIN * coin_items.size() and coin_items.size() > 0 and ex.coins_left() == 0
+	print("EXPLORETEST coins %d items=%d gained=%d ok=%s" % [coins0, coin_items.size(), gained, coin_ok])
+	ok = ok and coin_ok
+	# 4) Pet the cat once per week; second time gives nothing.
+	var m0: int = Game.s.mental
+	p.position = ex._cat.position + Vector3(0.9, 0, 0)
+	for i in 3:
+		await tree.process_frame
+	var near_cat: bool = ex.near.get("kind", "") == "cat"
+	em._act()
+	var m1: int = Game.s.mental
+	em._act()
+	var cat_ok: bool = near_cat and m1 == mini(100, m0 + 3) and Game.s.mental == m1
+	print("EXPLORETEST cat near=%s mental %d->%d->%d ok=%s" % [near_cat, m0, m1, Game.s.mental, cat_ok])
+	ok = ok and cat_ok
+	# 5) A second finger on A works while the first one steers.
+	p.position = ex._cat.position + Vector3(0.9, 0, 0)
+	for i in 3:
+		await tree.process_frame
+	await _touch(tree, 0, t0, true)
+	var acted := [false]
+	ex.acted.connect(func(_it, _o): acted[0] = true, CONNECT_ONE_SHOT)
+	await _touch(tree, 1, em.act_btn.get_global_rect().get_center(), true)
+	await _touch(tree, 1, em.act_btn.get_global_rect().get_center(), false)
+	await _touch(tree, 0, t0, false)
+	print("EXPLORETEST multitouch A ok=%s" % acted[0])
+	ok = ok and acted[0]
+	# 6) Kick the ball into a goal.
+	ex._ball.position = Vector3(1.2, 0.22, 1.6)
+	p.position = Vector3(2.2, 0, 1.6)
+	ex.move = Vector2.ZERO
+	await tree.process_frame
+	ex._ball_v = Vector3(-6, 0, 0)
+	var goal := [false]
+	ex.acted.connect(func(it, _o): goal[0] = it.get("kind", "") == "goal", CONNECT_ONE_SHOT)
+	await tree.create_timer(1.0).timeout
+	print("EXPLORETEST goal ok=%s" % goal[0])
+	ok = ok and goal[0]
+	# 7) Done returns to the planner.
+	em.close()
+	await tree.create_timer(1.0).timeout
+	var back_ok: bool = hud._explore == null and not hud.running
+	print("EXPLORETEST back ok=%s" % back_ok)
+	ok = ok and back_ok
+	print("EXPLORETEST %s" % ("PASS" if ok else "FAIL"))
+	tree.quit()
+
+
+static func _touch(tree: SceneTree, idx: int, pos: Vector2, pressed: bool) -> void:
+	var e := InputEventScreenTouch.new()
+	e.index = idx
+	e.position = _to_window(tree, pos)
+	e.pressed = pressed
+	Input.parse_input_event(e)
+	await tree.process_frame
+	await tree.process_frame
+
+
+static func _drag(tree: SceneTree, idx: int, pos: Vector2) -> void:
+	var e := InputEventScreenDrag.new()
+	e.index = idx
+	e.position = _to_window(tree, pos)
+	Input.parse_input_event(e)
+	await tree.process_frame
+
+
+## Synthetic events are in window pixels; UI coordinates go through the stretch transform.
+static func _to_window(tree: SceneTree, pos: Vector2) -> Vector2:
+	return tree.root.get_final_transform() * pos
+
+
+## Steers the explorer like a thumb on the stick would, until close to target.
+static func _walk(ex: Explorer, target: Vector3, max_t: float) -> void:
+	var tree := ex.get_tree()
+	var t := 0.0
+	while t < max_t:
+		var d := target - ex.player.position
+		d.y = 0
+		if d.length() < 0.3:
+			break
+		var dir := d.normalized()
+		ex.move = Vector2(dir.dot(ex._right), -dir.dot(ex._fwd)) * minf(1.0, d.length())
+		await tree.process_frame
+		t += ex.get_process_delta_time()
+	ex.move = Vector2.ZERO
