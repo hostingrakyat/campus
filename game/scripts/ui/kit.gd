@@ -20,6 +20,114 @@ static var font_body: FontVariation
 static var font_bold: FontVariation
 static var font_display: FontVariation
 static var _theme: Theme
+static var _icon_svgs: Dictionary = {}
+static var _icon_cache: Dictionary = {}
+
+## Button captions (Indonesian text, prefix match) that get an icon automatically. First match wins.
+const AUTO_ICONS := [
+	["X", "x"], ["Jalani Minggu", "play"], ["Jelajah", "compass"], ["Acak", "shuffle"], ["Cepat", "fast-forward"],
+	["Lewati", "skip-forward"], ["Lemari", "shirt"], ["Toko", "store"], ["Kerja", "briefcase"], ["Akademik", "graduation-cap"],
+	["Menu", "menu"], ["Pengaturan", "settings"], ["< Kembali", "arrow-left"], ["Lanjutkan", "play"], ["Lanjut", "arrow-right"],
+	["Nonton iklan", "tv"], ["Tonton", "tv"], ["Ambil hadiah", "gift"], ["Paham", "check"], ["Selesai", "check"],
+	["Dimiliki", "check"], ["Beli gaya", "shopping-bag"], ["Beli", "shopping-cart"], ["Tukar diamond", "gem"], ["Tukar", "arrow-left-right"],
+	["Galeri", "trophy"], ["Judul", "house"], ["Main lagi", "rotate-ccw"], ["Mulai Kuliah Baru", "sparkles"],
+	["Ya, mulai baru", "sparkles"], ["Mulai Kuliah!", "graduation-cap"], ["Mulai kuliah", "book-open"], ["Simpan", "save"],
+	["Catatan konten", "life-buoy"], ["Mini-game", "gamepad-2"], ["Resign", "log-out"], ["Lamar", "file-pen"],
+	["Ikut War", "swords"], ["AMBIL", "plus"], ["Coba cara lain", "refresh-cw"], ["Nggak sanggup", "frown"],
+	["Ya, berhenti", "door-open"], ["Pindah prodi", "arrow-left-right"], ["Batal", "ban"], ["Nggak usah", "x"],
+	["Dibayar Ortu", "users"], ["Bayar pakai tabungan", "wallet"], ["Ajukan banding", "landmark"],
+	["Daftar beasiswa", "graduation-cap"], ["Pinjol", "hand-coins"], ["Cuti", "clock"],
+	["Indonesia", "languages"], ["English", "languages"], ["Bahasa Indonesia", "languages"],
+]
+
+
+## White line icon from data/icons.json, rasterized once per pixel size (tinted where it is used).
+static func ico(icon_name: String, px: int = 64) -> Texture2D:
+	var key := "%s@%d" % [icon_name, px]
+	if _icon_cache.has(key):
+		return _icon_cache[key]
+	if _icon_svgs.is_empty():
+		var f := FileAccess.open("res://data/icons.json", FileAccess.READ)
+		if f == null:
+			push_warning("icons.json missing")
+			return null
+		var d: Variant = JSON.parse_string(f.get_as_text())
+		_icon_svgs = d.get("icons", {}) if d is Dictionary else {}
+	if not _icon_svgs.has(icon_name):
+		push_warning("Unknown icon " + icon_name)
+		return null
+	var img := Image.new()
+	if img.load_svg_from_string(_icon_svgs[icon_name], px / 24.0) != OK:
+		push_warning("Bad icon svg " + icon_name)
+		return null
+	var tex := ImageTexture.create_from_image(img)
+	_icon_cache[key] = tex
+	return tex
+
+
+## Icon name for a button caption (see AUTO_ICONS), or "".
+static func icon_for(pair: Variant) -> String:
+	var t: String = pair.get("id", "") if pair is Dictionary else str(pair)
+	for e in AUTO_ICONS:
+		var key: String = e[0]
+		# Whole-word prefix only, so content like "Tokopedia" never picks up the "Toko" icon.
+		if t.begins_with(key) and (t.length() == key.length() or not _is_letter(t[key.length()])):
+			return e[1]
+	return ""
+
+
+static func _is_letter(ch: String) -> bool:
+	return ch.to_lower() != ch.to_upper()
+
+
+## Removes an automatic icon (answer choices, item names and other content buttons).
+static func plain(b: Button) -> Button:
+	b.icon = null
+	return b
+
+
+## Puts an icon on a button, tinted like its caption. top=true stacks it above the text (nav bars).
+static func set_icon(b: Button, icon_name: String, size: int = 26, top: bool = false) -> void:
+	var px := int(size * (1.5 if top else 1.15))
+	b.icon = ico(icon_name, px * 2)
+	b.expand_icon = true
+	b.add_theme_constant_override("icon_max_width", px)
+	b.add_theme_constant_override("h_separation", 10)
+	var col: Color = b.get_theme_color("font_color")
+	for k in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color", "icon_hover_pressed_color"]:
+		b.add_theme_color_override(k, col)
+	b.add_theme_color_override("icon_disabled_color", Color(col, 0.55))
+	if top:
+		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	else:
+		b.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	if b.text.strip_edges() == "X":
+		b.text = ""
+		b.set_meta("close", true)
+
+
+static func icon_rect(icon_name: String, px: int, color: Color) -> TextureRect:
+	var r := TextureRect.new()
+	r.texture = ico(icon_name, px * 2)
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	r.custom_minimum_size = Vector2(px, px)
+	r.modulate = color
+	r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return r
+
+
+## Icon + label in a row (stat names, chips, section headings). The label is named "Text".
+static func icon_label(icon_name: String, text: String, size: int = 26, color: Color = INK, font: Font = null) -> HBoxContainer:
+	var h := hbox(6)
+	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(icon_rect(icon_name, int(size * 1.1), color))
+	var l := label(text, size, color, font)
+	l.name = "Text"
+	h.add_child(l)
+	return h
 
 
 static func theme() -> Theme:
@@ -149,9 +257,13 @@ static func button(pair: Variant, color: Color = BLUE, cb: Callable = Callable()
 	style_button(b, color)
 	b.focus_mode = Control.FOCUS_NONE
 	var txt := INK if color.get_luminance() > 0.7 else Color.WHITE
+	var icon_name := icon_for(pair)
 	var refresh := func():
 		var main_t := Loc.main(pair)
 		var sub_t := Loc.sub(pair) if dual_ok else ""
+		if icon_name != "":
+			main_t = _strip_arrows(main_t)
+			sub_t = _strip_arrows(sub_t)
 		b.text = main_t if sub_t == "" else main_t + "\n" + sub_t
 		b.custom_minimum_size.y = maxi(min_h, 64 if sub_t == "" else 92)
 		# Autowrapped buttons report 0 min width; give short captions their natural width
@@ -159,11 +271,14 @@ static func button(pair: Variant, color: Color = BLUE, cb: Callable = Callable()
 		var widest := 0.0
 		for line in [main_t, sub_t]:
 			widest = maxf(widest, font_bold.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x)
-		b.custom_minimum_size.x = minf(widest + 48.0, 260.0)
+		var icon_w := size * 1.15 + 10.0 if icon_name != "" else 0.0
+		b.custom_minimum_size.x = minf(widest + 48.0 + icon_w, 300.0)
 	refresh.call()
 	b.add_theme_font_size_override("font_size", size)
 	b.add_theme_color_override("font_color", txt)
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if icon_name != "":
+		set_icon(b, icon_name, size)
 	Loc.mode_changed.connect(refresh)
 	b.tree_exiting.connect(func():
 		if Loc.mode_changed.is_connected(refresh):
@@ -171,6 +286,15 @@ static func button(pair: Variant, color: Color = BLUE, cb: Callable = Callable()
 	if cb.is_valid():
 		on_tap(b, cb)
 	return b
+
+
+static func _strip_arrows(t: String) -> String:
+	t = t.strip_edges()
+	if t.begins_with("< "):
+		t = t.substr(2)
+	while t.ends_with(">"):
+		t = t.trim_suffix(">").strip_edges()
+	return t
 
 
 ## Connects a button press that is ignored when the finger was scrolling a list.
@@ -250,7 +374,7 @@ static func spacer(h: int = 0, expand: bool = false) -> Control:
 	return c
 
 
-static func chip(text: String, bg: Color, fg: Color = Color.WHITE, size: int = 22) -> PanelContainer:
+static func chip(text: String, bg: Color, fg: Color = Color.WHITE, size: int = 22, icon_name: String = "") -> PanelContainer:
 	var p := PanelContainer.new()
 	var st := StyleBoxFlat.new()
 	st.bg_color = bg
@@ -261,7 +385,14 @@ static func chip(text: String, bg: Color, fg: Color = Color.WHITE, size: int = 2
 	st.content_margin_bottom = 6
 	p.add_theme_stylebox_override("panel", st)
 	theme()
-	p.add_child(label(text, size, fg, font_bold, HORIZONTAL_ALIGNMENT_CENTER))
+	if icon_name != "":
+		st.content_margin_left = 10
+		var h := icon_label(icon_name, text, size, fg, font_bold)
+		h.add_theme_constant_override("separation", 4)
+		h.alignment = BoxContainer.ALIGNMENT_CENTER
+		p.add_child(h)
+	else:
+		p.add_child(label(text, size, fg, font_bold, HORIZONTAL_ALIGNMENT_CENTER))
 	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return p
 

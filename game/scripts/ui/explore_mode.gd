@@ -36,9 +36,13 @@ func _ready() -> void:
 	bar.add_child(row)
 	var col := Kit.vbox(0)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_child(Kit.label(Loc.main(Loc.T("Jelajah Kampus", "Explore Campus")), 28, Kit.INK, Kit.font_display))
+	col.add_child(Kit.icon_label("compass", Loc.main(Loc.T("Jelajah Kampus", "Explore Campus")), 28, Kit.INK, Kit.font_display))
+	var qrow := Kit.hbox(6)
+	qrow.add_child(Kit.icon_rect("map-pin", 20, Kit.ORANGE))
 	_quest = Kit.label("", 19, Kit.INK_SOFT, Kit.font_bold, HORIZONTAL_ALIGNMENT_LEFT, true)
-	col.add_child(_quest)
+	_quest.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	qrow.add_child(_quest)
+	col.add_child(qrow)
 	row.add_child(col)
 	var done := Kit.compact(Kit.button(Loc.T("Selesai", "Done"), Kit.GREEN, close, 22, 60, false), 16)
 	done.size_flags_vertical = Control.SIZE_SHRINK_CENTER

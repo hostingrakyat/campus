@@ -28,7 +28,7 @@ func _init(m: Node, in_game: bool = false) -> void:
 		body.add_child(Kit.button(Loc.T("Simpan & kembali ke judul", "Save & return to title"), Kit.ORANGE, func():
 			Game.save_run()
 			main.goto("title"), 22))
-	body.add_child(Kit.label("Mahasigma Simulator v0.4.0 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
+	body.add_child(Kit.label("Mahasigma Simulator v0.4.1 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
 
 
 func _slider(name: Dictionary, kind: String) -> Control:

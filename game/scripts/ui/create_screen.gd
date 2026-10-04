@@ -137,6 +137,7 @@ func _item_btn(id: String) -> Button:
 		_rebuild_char()
 		_set_tab(tab), 20)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	Kit.plain(b)
 	return b
 
 

@@ -43,6 +43,7 @@ func _refresh() -> void:
 		var b := Kit.compact(Kit.button(t[1], Kit.ORANGE if key == tab else Color("ddd5e8"), func():
 			tab = key
 			_refresh(), 20, 56, false))
+		Kit.set_icon(b, {"diamond": "gem", "style": "shirt", "snack": "cup-soda", "exchange": "arrow-left-right"}[key], 20)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tabs_box.add_child(b)
 	for c in list.get_children():

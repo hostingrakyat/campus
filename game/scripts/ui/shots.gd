@@ -384,7 +384,7 @@ static func _auto_until_idle(main: Node, max_t: float) -> void:
 				next_tap = 2.2
 				var top: Control = main._modals[-1]
 				for b in top.find_children("*", "Button", true, false):
-					if b.visible and not b.disabled and b.text != "X":
+					if b.visible and not b.disabled and not b.get_meta("close", false):
 						b.pressed.emit()
 						break
 		elif main.screen is HudScreen and not main.screen.running:

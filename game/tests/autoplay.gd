@@ -84,7 +84,7 @@ static func run(main: Node) -> void:
 
 static func _first_button(n: Node, skip: Array) -> Button:
 	for c in n.get_children():
-		if c is Button and c.visible and not c.disabled and not skip.has(c.text):
+		if c is Button and c.visible and not c.disabled and not skip.has(c.text) and not c.get_meta("close", false):
 			return c
 		var r := _first_button(c, skip)
 		if r:

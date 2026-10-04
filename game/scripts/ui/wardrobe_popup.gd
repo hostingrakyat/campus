@@ -34,7 +34,8 @@ func _refresh() -> void:
 		var key: String = sl
 		var b := Kit.compact(Kit.button(ShopPopup._slot_name(sl), Kit.PINK if sl == slot else Color("ddd5e8"), func():
 			slot = key
-			_refresh(), 18, 52, false), 4)
+			_refresh(), 18, 76, false), 4)
+		Kit.set_icon(b, {"top": "shirt", "hair": "scissors", "head": "crown", "face": "glasses", "back": "backpack", "aura": "sparkles"}[sl], 18, true)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tabs_box.add_child(b)
 	for c in list.get_children():
@@ -49,4 +50,5 @@ func _refresh() -> void:
 			Audio.play("pop", -2.0)
 			main.world.player.hop()
 			_refresh(), 24)
+		Kit.plain(b)
 		list.add_child(b)

@@ -27,6 +27,9 @@ func _init(m: Node, title_pair: Dictionary = {}, width: int = 660, closable: boo
 	if not title_pair.is_empty() or closable:
 		var h := Kit.hbox(10)
 		body.add_child(h)
+		var ic := Kit.icon_for(title_pair) if not title_pair.is_empty() else ""
+		if ic != "":
+			h.add_child(Kit.icon_rect(ic, 40, Kit.PURPLE))
 		var t := Kit.title(Loc.main(title_pair), 36)
 		t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

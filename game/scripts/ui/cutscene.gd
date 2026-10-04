@@ -115,7 +115,7 @@ func _run() -> void:
 	_tap_btn.disabled = true
 	for i in ev.choices.size():
 		var ch: Dictionary = ev.choices[i]
-		var b := Kit.button(ch.label, [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i % 3], func(): _chosen.emit(i), 22)
+		var b := Kit.plain(Kit.button(ch.label, [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i % 3], func(): _chosen.emit(i), 22))
 		_extra.add_child(b)
 		Fx.pop_in(b, i * 0.08)
 	var idx: int = await _chosen

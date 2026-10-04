@@ -68,9 +68,37 @@ GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=*** \
 godot --path game --headless --export-release "Android" ../build/MahasigmaSimulator.apk
 ```
 
-APK sampel v0.1.0 ditandatangani dengan **debug keystore**, hanya untuk dicoba (sideload).
-Untuk Play Store: buat upload keystore sendiri, aktifkan Gradle build (wajib untuk plugin AdMob/Billing),
-dan ekspor sebagai **AAB** (Play memecah per-ABI sehingga unduhan jauh lebih kecil dari APK 53 MB).
+APK untuk dicoba (sideload) boleh pakai debug keystore.
+
+## Build AAB (Play Store)
+
+Preset **"Android Play (AAB)"**: Gradle build, arm64-v8a + armeabi-v7a, target API 36, ditandatangani dengan
+upload key. Keystore ada di `keystore/` di root repo (di-gitignore, **jangan di-commit, backup offline**):
+`keystore/mahasigma-release.keystore` (PKCS12, alias `mahasigma`) dan `keystore/keystore.properties` (password).
+
+Sekali per clone, pasang Gradle build template (Editor: Project > Install Android Build Template, atau manual):
+
+```powershell
+Expand-Archive "$env:APPDATA\Godot\export_templates\4.7.2.stable\android_source.zip" game\android\build -Force
+Set-Content game\android\.build_version "4.7.2.stable" -NoNewline
+New-Item game\android\build\.gdignore -ItemType File -Force
+```
+
+Lalu ekspor (PowerShell, dari root repo; naikkan `version/code` di kedua preset setiap upload):
+
+```powershell
+$p = @{}; Get-Content keystore\keystore.properties | ? { $_ -match '^\w+=' } | % { $k,$v = $_ -split '=',2; $p[$k] = $v }
+$env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH = (Resolve-Path keystore\mahasigma-release.keystore).Path
+$env:GODOT_ANDROID_KEYSTORE_RELEASE_USER = $p.keyAlias
+$env:GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD = $p.storePassword
+godot --headless --path game --export-release "Android Play (AAB)" ..\build\MahasigmaSimulator.aab
+```
+
+Di Play Console aktifkan **Play App Signing**; keystore ini jadi *upload key* (kalau hilang bisa minta reset ke Google,
+tapi tetap simpan cadangannya).
+
+Ikon UI: `python tools/gen_icons.py` mengunduh SVG Lucide (ISC) ke `data/icons.json`; tombol mendapat ikon otomatis
+dari teksnya (`Kit.AUTO_ICONS`), `Kit.chip(..., icon)`, `Kit.icon_label`, `Kit.set_icon`, `Kit.plain` untuk tanpa ikon.
 
 ## Konten aktivitas & scene
 

@@ -3,6 +3,8 @@ extends Screen
 ## Main gameplay: stats on top, the 3D campus in the middle, weekly planner at the bottom.
 
 const SLOT_COLORS := {"pagi": Color("ffb547"), "siang": Color("27c6f2"), "malam": Color("7b5cff"), "weekend": Color("2fbf71")}
+const SLOT_ICONS := {"pagi": "sunrise", "siang": "sun", "malam": "moon", "weekend": "sofa"}
+const STAT_ICONS := {"energy": "zap", "mental": "brain", "social": "users"}
 
 var plan: Array = []
 var running := false
@@ -60,7 +62,8 @@ func _ready() -> void:
 		[Loc.T("Akademik", "Academics"), Kit.PURPLE, func(): main.open_modal(AcademicPopup.new(main))],
 		[Loc.T("Menu", "Menu"), Color("8a8398"), func(): main.open_modal(SettingsPopup.new(main, true))],
 	]:
-		var b := Kit.compact(Kit.button(n[0], n[1], n[2], 19, 64, false))
+		var b := Kit.compact(Kit.button(n[0], n[1], n[2], 18, 84, false))
+		Kit.set_icon(b, Kit.icon_for(n[0]), 18, true)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		nav.add_child(b)
 	_explore_btn = Kit.button(Loc.T("Jelajah", "Explore"), Kit.CYAN, _start_explore, 24, 72, false)
@@ -131,24 +134,24 @@ func refresh() -> void:
 		c.queue_free()
 	var row2: HFlowContainer = _w.chips
 	var ipk_txt := "-" if s.history.is_empty() else "%.2f" % Sim.ipk(s)
-	row2.add_child(Kit.chip("IPK %s" % ipk_txt, Kit.BLUE, Color.WHITE, 20))
+	row2.add_child(Kit.chip("IPK %s" % ipk_txt, Kit.BLUE, Color.WHITE, 20, "graduation-cap"))
 	if Sim.has_classes(s):
 		var need := ceili(Data.ATTENDANCE_MIN * Data.WEEKS_PER_SEMESTER)
 		var possible: int = s.attend + (Data.WEEKS_PER_SEMESTER - s.week + 1)
 		var att_col := Kit.GREEN if possible >= need + 2 else (Kit.ORANGE if possible >= need else Kit.RED)
-		row2.add_child(Kit.chip(Loc.main(Loc.T("Hadir %d/%d", "Attended %d/%d")) % [s.attend, s.week - 1], att_col, Color.WHITE, 20))
+		row2.add_child(Kit.chip(Loc.main(Loc.T("Hadir %d/%d", "Attended %d/%d")) % [s.attend, s.week - 1], att_col, Color.WHITE, 20, "calendar-check"))
 		var prog := Sim.study_progress(s)
 		var expect := float(s.week - 1) / Data.WEEKS_PER_SEMESTER
-		for k in [["knowledge", Loc.T("Ilmu", "Study")], ["tugas", Loc.T("Tugas", "Tasks")]]:
+		for k in [["knowledge", Loc.T("Ilmu", "Study"), "book-open"], ["tugas", Loc.T("Tugas", "Tasks"), "clipboard-list"]]:
 			var v: float = prog[k[0]]
 			var col := Kit.GREEN if v >= expect * 0.9 else (Kit.ORANGE if v >= expect * 0.6 else Kit.RED)
-			row2.add_child(Kit.chip("%s %d%%" % [Loc.main(k[1]), int(minf(v, 1.0) * 100)], col, Color.WHITE, 20))
+			row2.add_child(Kit.chip("%s %d%%" % [Loc.main(k[1]), int(minf(v, 1.0) * 100)], col, Color.WHITE, 20, k[2]))
 	else:
-		row2.add_child(Kit.chip("SKS %d/144" % Sim.sks_lulus(s), Color("5d5670"), Color.WHITE, 20))
+		row2.add_child(Kit.chip("SKS %d/144" % Sim.sks_lulus(s), Color("5d5670"), Color.WHITE, 20, "layers"))
 	if s.skripsi and not s.skripsi_done:
-		row2.add_child(Kit.chip(Loc.main(Loc.T("Skripsi %d%%", "Thesis %d%%")) % int(s.acc), Kit.ORANGE, Color.WHITE, 20))
+		row2.add_child(Kit.chip(Loc.main(Loc.T("Skripsi %d%%", "Thesis %d%%")) % int(s.acc), Kit.ORANGE, Color.WHITE, 20, "scroll-text"))
 	if s.job != "":
-		row2.add_child(Kit.chip(Loc.main(Loc.T("Kerja", "Job")), Kit.INK_SOFT, Color.WHITE, 20))
+		row2.add_child(Kit.chip(Loc.main(Loc.T("Kerja", "Job")), Kit.INK_SOFT, Color.WHITE, 20, "briefcase"))
 	var warn := _warning()
 	var key := JSON.stringify(warn)
 	if key != _w.warn_key:
@@ -157,7 +160,12 @@ func refresh() -> void:
 			c.queue_free()
 		_w.warn.visible = not warn.is_empty()
 		if not warn.is_empty():
-			_w.warn.add_child(Kit.dual(warn, 20, Color("b3261e"), HORIZONTAL_ALIGNMENT_LEFT, true))
+			var wrow := Kit.hbox(10)
+			wrow.add_child(Kit.icon_rect("triangle-alert", 30, Color("b3261e")))
+			var wd := Kit.dual(warn, 20, Color("b3261e"), HORIZONTAL_ALIGNMENT_LEFT, true)
+			wd.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			wrow.add_child(wd)
+			_w.warn.add_child(wrow)
 			Fx.pop_in(_w.warn, 0.05, 0.9)
 			Fx.shake(_w.warn, 6.0)
 			Audio.play("error", -10.0)
@@ -194,6 +202,7 @@ func _build_static() -> void:
 		var v := Kit.vbox(2)
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var h := Kit.hbox(4)
+		h.add_child(Kit.icon_rect(STAT_ICONS[k[0]], 22, k[2].darkened(0.15)))
 		var name_l := Kit.label(Loc.main(k[1]), 20, Kit.INK_SOFT, Kit.font_bold)
 		h.add_child(name_l)
 		h.add_child(Kit.spacer(0, true))
@@ -257,7 +266,7 @@ func _build_planner(animate: bool = false) -> void:
 	head.add_child(Kit.title(Loc.main(Loc.T("Rencana Minggu %d", "Week %d Plan")) % s.week, 32))
 	head.add_child(Kit.spacer(0, true))
 	if Sim.is_exam_week(s) and Sim.has_classes(s):
-		head.add_child(Kit.chip(Loc.main(Loc.T("MINGGU UJIAN", "EXAM WEEK")), Kit.RED, Color.WHITE, 20))
+		head.add_child(Kit.chip(Loc.main(Loc.T("MINGGU UJIAN", "EXAM WEEK")), Kit.RED, Color.WHITE, 20, "triangle-alert"))
 	var shuffle := Kit.compact(Kit.button(Loc.T("Acak", "Shuffle"), Kit.PURPLE, func():
 		plan = Game.suggest_plan()
 		Audio.play("card", -6.0)
@@ -268,7 +277,10 @@ func _build_planner(animate: bool = false) -> void:
 		var card := Kit.panel(Color("fff1db") if not news.get("no_class", false) else Color("ffe3e0"), 18, 12)
 		var nv := Kit.vbox(2)
 		card.add_child(nv)
-		nv.add_child(Kit.label(Loc.main(Loc.T("KABAR MINGGU INI: ", "THIS WEEK: ")) + Loc.main(news.title), 20, Kit.ORANGE.darkened(0.25), Kit.font_bold))
+		var nh := Kit.icon_label("newspaper", Loc.main(Loc.T("KABAR MINGGU INI: ", "THIS WEEK: ")) + Loc.main(news.title), 20, Kit.ORANGE.darkened(0.25), Kit.font_bold)
+		(nh.get_node("Text") as Label).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		(nh.get_node("Text") as Label).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		nv.add_child(nh)
 		nv.add_child(Kit.dual(news.text, 18, Kit.INK_SOFT))
 		planner.add_child(card)
 	for i in Data.SLOTS.size():
@@ -311,7 +323,12 @@ func _slot_row(i: int) -> Control:
 	cs.set_content_margin_all(6)
 	slot_chip.add_theme_stylebox_override("panel", cs)
 	slot_chip.custom_minimum_size = Vector2(118, 0)
-	slot_chip.add_child(slot_lbl)
+	var slot_h := Kit.hbox(4)
+	slot_h.alignment = BoxContainer.ALIGNMENT_CENTER
+	slot_h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slot_h.add_child(Kit.icon_rect(SLOT_ICONS[slot], 20, Color.WHITE))
+	slot_h.add_child(slot_lbl)
+	slot_chip.add_child(slot_h)
 	slot_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -546,7 +563,7 @@ func _show_caption(entry: Dictionary) -> void:
 	var slot: String = entry.slot
 	var act_name: Dictionary = Data.JOBS[s.job].name if entry.action == "kerja" and s.job != "" else Data.ACTIONS[entry.action].name
 	var head := Kit.hbox(10)
-	head.add_child(Kit.chip(Loc.main(Data.SLOT_NAMES[slot]), SLOT_COLORS[slot], Color.WHITE, 20))
+	head.add_child(Kit.chip(Loc.main(Data.SLOT_NAMES[slot]), SLOT_COLORS[slot], Color.WHITE, 20, SLOT_ICONS[slot]))
 	var n := Kit.label(Loc.main(act_name), 28, Kit.INK, Kit.font_display)
 	n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(n)
@@ -570,7 +587,7 @@ func _show_caption(entry: Dictionary) -> void:
 		var g := MiniGames.grade(float(entry.score))
 		var brow := HFlowContainer.new()
 		brow.add_theme_constant_override("h_separation", 6)
-		brow.add_child(Kit.chip(Loc.main(Loc.T("Interaksi: ", "Interaction: ")) + Loc.main(g[1]), g[2], Color.WHITE, 18))
+		brow.add_child(Kit.chip(Loc.main(Loc.T("Interaksi: ", "Interaction: ")) + Loc.main(g[1]), g[2], Color.WHITE, 18, "gamepad-2"))
 		for f in Kit.fx_text(entry.get("bonus", {})):
 			brow.add_child(Kit.chip(Loc.main(Loc.T("bonus ", "bonus ")) + f.text, Color("efe9ff"), Kit.PURPLE.darkened(0.2), 18))
 		_cap_box.add_child(brow)

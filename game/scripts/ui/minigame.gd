@@ -73,10 +73,11 @@ func _ready() -> void:
 	_panel.add_child(v)
 	var head := Kit.hbox(10)
 	v.add_child(head)
-	head.add_child(Kit.chip(Loc.main(Loc.T("INTERAKSI", "INTERACT")), Kit.PURPLE, Color.WHITE, 18))
+	head.add_child(Kit.chip(Loc.main(Loc.T("INTERAKSI", "INTERACT")), Kit.PURPLE, Color.WHITE, 18, "gamepad-2"))
 	var t := Kit.label(Loc.main(cfg.title), 28, Kit.INK, Kit.font_display)
 	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(t)
+	head.add_child(Kit.icon_rect("clock", 22, Kit.INK_SOFT))
 	_time_lbl = Kit.label("", 22, Kit.INK_SOFT, Kit.font_bold)
 	head.add_child(_time_lbl)
 	var skip := Kit.compact(Kit.button(Loc.T("Lewati", "Skip"), Color("8a8398"), func(): _finish(0.0, true), 18, 48, false), 12)
@@ -309,6 +310,7 @@ func _build_timing() -> void:
 	_feedback = Kit.label(Loc.main(Loc.T("Ronde 1/%d", "Round 1/%d")) % int(cfg.rounds), 22, Kit.INK_SOFT, Kit.font_bold, HORIZONTAL_ALIGNMENT_CENTER)
 	_area.add_child(_feedback)
 	var b := Kit.button(cfg.btn, Kit.GREEN, Callable(), 30, 96, false)
+	Kit.set_icon(b, "clock", 30)
 	b.set_meta("silent", true)
 	b.button_down.connect(_timing_tap)
 	_area.add_child(b)
@@ -381,6 +383,7 @@ func _build_mash() -> void:
 	_fill = Kit.bar(0, 100, Kit.BLUE, 18)
 	_area.add_child(_fill)
 	var b := Kit.button(cfg.btn, Kit.BLUE, Callable(), 32, 104, false)
+	Kit.set_icon(b, "zap", 32)
 	b.set_meta("silent", true)
 	b.button_down.connect(_mash_tap)
 	_area.add_child(b)
@@ -428,7 +431,7 @@ func _show_question() -> void:
 	_speak(cfg.get("who", ""), Loc.main(q.q))
 	for i in q.a.size():
 		var idx: int = i
-		var b := Kit.button(q.a[i], [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i], func(): _answer(idx), 22, 0, true)
+		var b := Kit.plain(Kit.button(q.a[i], [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i], func(): _answer(idx), 22, 0, true))
 		b.set_meta("silent", true)
 		_answer_btns.append(b)
 		_area.add_child(b)
@@ -483,7 +486,7 @@ func _build_chat() -> void:
 	_speak(cfg.get("who", ""), Loc.main(cfg.q))
 	for i in cfg.opts.size():
 		var idx: int = i
-		var b := Kit.button(cfg.opts[i][0], [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i], func(): _pick(idx), 21, 0, true)
+		var b := Kit.plain(Kit.button(cfg.opts[i][0], [Kit.BLUE, Kit.PURPLE, Kit.ORANGE][i], func(): _pick(idx), 21, 0, true))
 		b.set_meta("silent", true)
 		_answer_btns.append(b)
 		_area.add_child(b)
