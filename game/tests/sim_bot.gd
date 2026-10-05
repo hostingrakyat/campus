@@ -118,6 +118,40 @@ func _unit_tests() -> void:
 	_check(Game.explore_state().chat == 5, "chat counted")
 	Game.s.week += 1
 	_check(not Game.explore_reward("cat").is_empty(), "cat again next week")
+	# IAP: desktop/debug falls back to simulation; tokens and one-time products are honored once.
+	var saved_purchases: Dictionary = Meta.purchases.duplicate()
+	var saved_dia: int = Meta.diamonds
+	var saved_no_ads: bool = Meta.no_ads
+	_check(Iap.mode() == "simulated", "iap simulates without billing")
+	Meta.purchases = {}
+	Meta.no_ads = false
+	var got: Array = []
+	var on_buy := func(pid: String): got.append(pid)
+	Iap.purchased.connect(on_buy)
+	Iap.buy("no_ads")
+	Iap.buy("no_ads")
+	_check(got == ["no_ads"] and Meta.no_ads and not Iap.can_buy("no_ads"), "one-time product granted once")
+	var dia0: int = Meta.diamonds
+	Iap._grant("diamonds_60", "tok123")
+	Iap._grant("diamonds_60", "tok123")
+	_check(Meta.diamonds == dia0 + 60, "purchase token granted once")
+	_check(Iap.price_text("diamonds_60") == Data.IAP_PRODUCTS.diamonds_60.price, "reference price without Play")
+	_check(Ads.mode() == "house", "house ads without the AdMob plugin")
+	var saved_tt: bool = Meta.settings.get("tiktok_claimed", false)
+	Meta.settings.erase("tiktok_claimed")
+	var tt0: int = Meta.diamonds
+	var first := Meta.claim_tiktok()
+	var second := Meta.claim_tiktok()
+	_check(first and not second and Meta.diamonds == tt0 + Data.TIKTOK_DIAMONDS, "tiktok reward once")
+	if saved_tt:
+		Meta.settings["tiktok_claimed"] = true
+	else:
+		Meta.settings.erase("tiktok_claimed")
+	Iap.purchased.disconnect(on_buy)
+	Meta.purchases = saved_purchases
+	Meta.diamonds = saved_dia
+	Meta.no_ads = saved_no_ads
+	Meta.save_meta()
 	_check(Game.explore_reward("coin", "c1").get("coins", 0) == Data.EXPLORE_COIN, "coins respawn next week")
 	Game.s = {}
 

@@ -20,7 +20,7 @@ ICONS = [
     "zap", "brain", "calendar-check", "clipboard-list", "scroll-text", "layers", "triangle-alert", "newspaper",
     "sunrise", "sun", "moon", "sofa", "coins", "heart", "star", "clock", "map-pin", "message-circle",
     # shop & wardrobe tabs
-    "cup-soda", "scissors", "crown", "glasses", "backpack",
+    "cup-soda", "scissors", "crown", "glasses", "backpack", "user-plus", "external-link",
 ]
 
 

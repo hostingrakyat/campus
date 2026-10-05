@@ -252,6 +252,10 @@ const IAP_PRODUCTS := {
 }
 const REWARDED_DIAMONDS := 5
 const REWARDED_DAILY_CAP := 8
+## One-time thank-you for following the studio on TikTok (trust-based: granted on tap).
+const TIKTOK_URL := "https://www.tiktok.com/@hostingrakyat"
+const TIKTOK_HANDLE := "@hostingrakyat"
+const TIKTOK_DIAMONDS := 20
 
 # --- NPCs (all fictional) ------------------------------------------------------
 const NPCS := {

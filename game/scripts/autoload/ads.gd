@@ -1,18 +1,44 @@
 extends Node
-## AdMob facade. This sample build shows a mock ad overlay so the full reward flow is playable.
-## To ship: install the Poing Studios AdMob plugin and replace _show_mock() calls with the real
-## RewardedAd / InterstitialAd loaders (see docs/MONETIZATION.md). Keep the public API unchanged.
+## Ads. Real AdMob (Poing Studios plugin) when the native plugin is present; otherwise, or when no ad
+## could be loaded, rewarded placements fall back to an in-house ad so the reward flow always works.
+## Interstitials have no fallback in release builds (no ad is better than a fake one).
+## Ad unit IDs come from ProjectSettings (mahasigma/ads/*); the defaults are Google's test units.
 
 const INTERSTITIAL_COOLDOWN := 150.0
-const REWARDED_UNIT := "ca-app-pub-3940256099942544/5224354917"  # Google test unit
-const INTERSTITIAL_UNIT := "ca-app-pub-3940256099942544/1033173712"  # Google test unit
+const BACKEND := "res://scripts/monetization/admob_backend.gd"
+const TEST_REWARDED_UNIT := "ca-app-pub-3940256099942544/5224354917"
+const TEST_INTERSTITIAL_UNIT := "ca-app-pub-3940256099942544/1033173712"
 
+var backend: Node
 var _last_interstitial := -1000.0
 var _busy := false
 
 
+func _ready() -> void:
+	if OS.get_name() == "Android" and Engine.has_singleton("PoingGodotAdMob"):
+		backend = load(BACKEND).new()
+		add_child(backend)
+		backend.start(
+			str(ProjectSettings.get_setting("mahasigma/ads/rewarded_unit", TEST_REWARDED_UNIT)),
+			str(ProjectSettings.get_setting("mahasigma/ads/interstitial_unit", TEST_INTERSTITIAL_UNIT)))
+
+
+## "admob" once the SDK is up, otherwise "house".
+func mode() -> String:
+	return "admob" if backend and backend.initialized else "house"
+
+
 func rewarded_left() -> int:
 	return Meta.rewarded_left()
+
+
+func privacy_options_required() -> bool:
+	return backend != null and backend.initialized and backend.privacy_options_required()
+
+
+func show_privacy_options() -> void:
+	if backend:
+		backend.show_privacy_options()
 
 
 ## Shows a rewarded ad; on_done(rewarded: bool).
@@ -20,10 +46,20 @@ func show_rewarded(placement: String, on_done: Callable) -> void:
 	if _busy or Meta.rewarded_left() <= 0:
 		on_done.call(false)
 		return
-	_show_mock(true, placement, func(ok: bool):
+	var finish := func(ok: bool):
 		if ok:
 			Meta.count_rewarded()
-		on_done.call(ok))
+		on_done.call(ok)
+	if backend and backend.has_rewarded():
+		_busy = true
+		backend.show_rewarded(func(result: String):
+			_busy = false
+			if result == "failed":
+				_show_house(true, placement, finish)
+			else:
+				finish.call(result == "earned"))
+		return
+	_show_house(true, placement, finish)
 
 
 ## Interstitials only at natural breaks, never in the first minutes, never for no-ads buyers.
@@ -33,13 +69,19 @@ func maybe_interstitial(placement: String) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
 	if now < 180.0 or now - _last_interstitial < INTERSTITIAL_COOLDOWN:
 		return
-	_last_interstitial = now
-	_show_mock(false, placement, func(_ok: bool): pass)
+	if backend and backend.has_interstitial():
+		_last_interstitial = now
+		_busy = true
+		backend.show_interstitial(func(_shown: bool): _busy = false)
+	elif OS.is_debug_build():
+		# Desktop/debug: keep the break visible so pacing can be tested without the SDK.
+		_last_interstitial = now
+		_show_house(false, placement, func(_ok: bool): pass)
 
 
-## Full-screen mock ad that looks and behaves like a real one: countdown, progress bar,
-## close button once it may be skipped, and a reward confirmation for rewarded ads.
-func _show_mock(rewarded: bool, placement: String, cb: Callable) -> void:
+## In-house full-screen ad (fallback): countdown, progress bar, close button once it may be skipped,
+## and a reward confirmation for rewarded ads.
+func _show_house(rewarded: bool, placement: String, cb: Callable) -> void:
 	_busy = true
 	Audio.duck(true)
 	var layer := CanvasLayer.new()
@@ -90,7 +132,7 @@ func _show_mock(rewarded: bool, placement: String, cb: Callable) -> void:
 	v.add_child(cup)
 	var prog := Kit.bar(0, 100, Kit.YELLOW, 14)
 	v.add_child(prog)
-	v.add_child(Kit.label(Loc.main(Loc.T("Mode sampel: simulasi iklan AdMob (fiktif)", "Sample build: simulated AdMob ad (fictional)")), 18, Color(1, 1, 1, 0.7), null, HORIZONTAL_ALIGNMENT_CENTER, true))
+	v.add_child(Kit.label(Loc.main(Loc.T("Iklan internal Mahasigma (iklan sponsor sedang tidak tersedia)", "Mahasigma house ad (sponsored ads unavailable right now)")), 18, Color(1, 1, 1, 0.7), null, HORIZONTAL_ALIGNMENT_CENTER, true))
 	Fx.pop_in(card, 0.05, 0.85, 0.35)
 
 	var state := {"done": false}

@@ -21,6 +21,10 @@ func _init(m: Node, in_game: bool = false) -> void:
 			Loc.set_mode(idx)
 			main.close_top_modal()
 			main.open_modal(SettingsPopup.new(main, in_game)), 22))
+	if Ads.privacy_options_required():
+		var pb := Kit.button(Loc.T("Privasi iklan", "Ad privacy choices"), Kit.BLUE, func(): Ads.show_privacy_options(), 22)
+		Kit.set_icon(pb, "lock", 22)
+		body.add_child(pb)
 	body.add_child(Kit.button(Loc.T("Catatan konten & bantuan", "Content note & support"), Kit.GREEN, func():
 		main.close_top_modal()
 		main.open_modal(ContentNote.new(main)), 22))
@@ -28,7 +32,7 @@ func _init(m: Node, in_game: bool = false) -> void:
 		body.add_child(Kit.button(Loc.T("Simpan & kembali ke judul", "Save & return to title"), Kit.ORANGE, func():
 			Game.save_run()
 			main.goto("title"), 22))
-	body.add_child(Kit.label("Mahasigma Simulator v0.4.1 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
+	body.add_child(Kit.label("Mahasigma Simulator v0.5.0 · Godot 4.7 · Fonts: Fredoka & Nunito (SIL OFL) · SFX: Kenney (CC0) · Musik orisinal", 16, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
 
 
 func _slider(name: Dictionary, kind: String) -> Control:

@@ -65,6 +65,19 @@ func grant_item(item_id: String) -> void:
 	save_meta()
 
 
+func tiktok_claimed() -> bool:
+	return settings.get("tiktok_claimed", false)
+
+
+## Grants the TikTok follow reward once (the shop opens the profile). Returns true when granted now.
+func claim_tiktok() -> bool:
+	if tiktok_claimed():
+		return false
+	settings["tiktok_claimed"] = true
+	add_diamonds(Data.TIKTOK_DIAMONDS)
+	return true
+
+
 func add_diamonds(n: int) -> void:
 	diamonds = maxi(0, diamonds + n)
 	save_meta()

@@ -36,6 +36,8 @@ func _ready() -> void:
 	toast_box.offset_top = 170
 	toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(toast_box)
+	Iap.purchased.connect(_on_iap_purchased)
+	Iap.purchase_failed.connect(_on_iap_failed)
 
 	var shot := _arg("shot")
 	if shot != "":
@@ -218,6 +220,20 @@ func close_all_modals() -> void:
 
 func has_modal() -> bool:
 	return not _modals.is_empty()
+
+
+## Purchase results can arrive any time (pending payments complete later), so they toast globally.
+func _on_iap_purchased(product_id: String) -> void:
+	Audio.play("unlock", -3.0)
+	var p: Dictionary = Data.IAP_PRODUCTS.get(product_id, {})
+	var what: String = Loc.main(p.get("name", {"id": product_id, "en": product_id}))
+	toast(Loc.T("Terima kasih! %s masuk." % what, "Thank you! %s added." % what), Kit.GREEN, 3.0)
+
+
+func _on_iap_failed(_product_id: String, status: String, message: Dictionary) -> void:
+	if status != "canceled":
+		Audio.play("error", -4.0)
+	toast(message, Kit.ORANGE if status == "pending" else (Kit.INK if status == "canceled" else Kit.RED), 3.4)
 
 
 func toast(pair: Variant, color: Color = Kit.INK, secs: float = 2.4) -> void:

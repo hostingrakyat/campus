@@ -5,6 +5,15 @@ extends RefCounted
 
 static func run(main: Node, shot: String, out: String) -> void:
 	Meta.settings["content_note_seen"] = true
+	# Store screenshots larger than the monitor: borderless windows aren't clamped to the screen.
+	var want := OS.get_environment("SHOT_SIZE")
+	if want != "":
+		var wh := want.split("x")
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+		DisplayServer.window_set_position(Vector2i.ZERO)
+		DisplayServer.window_set_size(Vector2i(int(wh[0]), int(wh[1])))
+		for i in 3:
+			await main.get_tree().process_frame
 	var lang := OS.get_environment("SHOT_LANG")
 	if lang != "":
 		Loc.set_mode(int(lang))
@@ -29,7 +38,7 @@ static func run(main: Node, shot: String, out: String) -> void:
 		if shot == "ad":
 			Ads.show_rewarded("shot", func(_ok: bool): pass)
 		else:
-			Ads._show_mock(false, "shot", func(_ok: bool): pass)
+			Ads._show_house(false, "shot", func(_ok: bool): pass)
 		await _finish(main, out)
 		return
 	if shot.begins_with("mg_"):
@@ -55,7 +64,7 @@ static func run(main: Node, shot: String, out: String) -> void:
 			main.open_modal(ContentNote.new(main), false)
 		"create":
 			main.goto("create")
-		"ukt", "ukt_phk", "krs", "war", "week", "weekrun", "settings", "event", "picker", "shop", "wardrobe", "jobs", "academic", "khs", "ending_balance", "ending_padam", "ending_rawat", "ending_do", "gallery":
+		"ukt", "ukt_phk", "krs", "war", "week", "weekrun", "settings", "event", "picker", "shop", "shop_d", "wardrobe", "jobs", "academic", "khs", "ending_balance", "ending_padam", "ending_rawat", "ending_do", "gallery":
 			Game.new_run("Ayu", "IF", look)
 			Game.s.coins = 1850
 			Meta.diamonds = 125
@@ -119,6 +128,8 @@ static func run(main: Node, shot: String, out: String) -> void:
 								main.screen._pick(1)
 							"shop":
 								main.open_modal(ShopPopup.new(main, "style"))
+							"shop_d":
+								main.open_modal(ShopPopup.new(main, "diamond"))
 							"wardrobe":
 								main.open_modal(WardrobePopup.new(main))
 							"jobs":

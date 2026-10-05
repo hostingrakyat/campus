@@ -52,23 +52,11 @@ xvfb-run godot --path game --write-movie /tmp/demo.avi --fixed-fps 30 -- --shot=
 game/tools/shot.sh week /tmp/shots
 ```
 
-## Build APK
+## Build Android (APK & AAB)
 
-Butuh: export templates Godot 4.7.2, Android SDK (platform-tools, build-tools 35, platform 35), JDK 17+.
-Atur `export/android/android_sdk_path`, `java_sdk_path`, dan debug keystore di Editor Settings.
-
-```bash
-# Debug
-godot --path game --headless --export-debug "Android" ../build/MahasigmaSimulator-debug.apk
-
-# Release (keystore lewat env, jangan commit keystore)
-GODOT_ANDROID_KEYSTORE_RELEASE_PATH=/path/release.keystore \
-GODOT_ANDROID_KEYSTORE_RELEASE_USER=alias \
-GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=*** \
-godot --path game --headless --export-release "Android" ../build/MahasigmaSimulator.apk
-```
-
-APK untuk dicoba (sideload) boleh pakai debug keystore.
+Butuh: export templates Godot 4.7.2, Android SDK (build-tools 35+, platform 36), JDK 17+, internet saat build pertama
+(Gradle mengunduh SDK AdMob & Billing). Atur `android_sdk_path` dan `java_sdk_path` di Editor Settings.
+Kedua preset memakai **Gradle build** (wajib untuk plugin AdMob & Billing, lihat `docs/MONETIZATION.md`).
 
 ## Build AAB (Play Store)
 
@@ -84,14 +72,12 @@ Set-Content game\android\.build_version "4.7.2.stable" -NoNewline
 New-Item game\android\build\.gdignore -ItemType File -Force
 ```
 
-Lalu ekspor (PowerShell, dari root repo; naikkan `version/code` di kedua preset setiap upload):
+Lalu build AAB (Play Store) + APK (sideload), keduanya ditandatangani upload key
+(naikkan `version/code` di kedua preset setiap upload):
 
 ```powershell
-$p = @{}; Get-Content keystore\keystore.properties | ? { $_ -match '^\w+=' } | % { $k,$v = $_ -split '=',2; $p[$k] = $v }
-$env:GODOT_ANDROID_KEYSTORE_RELEASE_PATH = (Resolve-Path keystore\mahasigma-release.keystore).Path
-$env:GODOT_ANDROID_KEYSTORE_RELEASE_USER = $p.keyAlias
-$env:GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD = $p.storePassword
-godot --headless --path game --export-release "Android Play (AAB)" ..\build\MahasigmaSimulator.aab
+powershell -ExecutionPolicy Bypass -File tools\build_android.ps1 -Godot "C:\path\Godot_v4.7.2-stable_win64.exe"
+# hasil: build\MahasigmaSimulator-v<versi>.aab dan .apk
 ```
 
 Di Play Console aktifkan **Play App Signing**; keystore ini jadi *upload key* (kalau hilang bisa minta reset ke Google,

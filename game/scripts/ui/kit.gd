@@ -97,6 +97,10 @@ static func set_icon(b: Button, icon_name: String, size: int = 26, top: bool = f
 	for k in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color", "icon_hover_pressed_color"]:
 		b.add_theme_color_override(k, col)
 	b.add_theme_color_override("icon_disabled_color", Color(col, 0.55))
+	# Make room for an icon added after the caption was measured (Kit.button sizes auto icons itself).
+	if not top and b.custom_minimum_size.x > 0.0 and not b.has_meta("icon_w") and icon_for(b.text) == "":
+		b.custom_minimum_size.x += px + 10
+	b.set_meta("icon_w", true)
 	if top:
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP

@@ -18,11 +18,12 @@ func _init(m: Node, start_tab: String = "style") -> void:
 	list = scroll_list(760)
 	Meta.changed.connect(_refresh)
 	Game.changed.connect(_refresh)
+	Iap.prices_changed.connect(_refresh)
 	_refresh()
 
 
 func _exit_tree() -> void:
-	for sig in [Meta.changed, Game.changed]:
+	for sig in [Meta.changed, Game.changed, Iap.prices_changed]:
 		if sig.is_connected(_refresh):
 			sig.disconnect(_refresh)
 
@@ -77,6 +78,7 @@ func _diamond_tab() -> void:
 				main.toast(Loc.T("+%d diamond!" % Data.REWARDED_DIAMONDS, "+%d diamonds!" % Data.REWARDED_DIAMONDS), Kit.CYAN)), 22)
 	watch.disabled = Ads.rewarded_left() <= 0
 	h.add_child(watch)
+	_tiktok_row()
 	for pid in Data.IAP_PRODUCTS:
 		var p: Dictionary = Data.IAP_PRODUCTS[pid]
 		var r := row_card()
@@ -95,21 +97,42 @@ func _diamond_tab() -> void:
 		col.add_child(Kit.label(info, 20, Kit.INK_SOFT))
 		r.add_child(col)
 		var owned := not Iap.can_buy(pid)
-		var b := Kit.button(Loc.T("Dimiliki", "Owned") if owned else p.price, Color("b9b2c6") if owned else Kit.BLUE, func(): _confirm_iap(pid), 20)
+		var b := Kit.button(Loc.T("Dimiliki", "Owned") if owned else Iap.price_text(pid), Color("b9b2c6") if owned else Kit.BLUE, func(): _confirm_iap(pid), 20)
 		b.disabled = owned
 		r.add_child(b)
-	list.add_child(Kit.label(Loc.main(Loc.T("Build sampel: pembelian disimulasikan, tidak ada uang yang ditarik.", "Sample build: purchases are simulated, no money is charged.")), 18, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
+	list.add_child(Kit.label(Loc.main(Iap.status_note()), 18, Kit.INK_SOFT, null, HORIZONTAL_ALIGNMENT_CENTER, true))
+
+
+func _tiktok_row() -> void:
+	var claimed := Meta.tiktok_claimed()
+	var h := row_card(Color("ffe8f0"))
+	list.add_child(h.get_parent())
+	h.add_child(Kit.icon_rect("user-plus", 52, Kit.PINK.darkened(0.1)))
+	var text := Loc.T("Follow TikTok %s" % Data.TIKTOK_HANDLE, "Follow %s on TikTok" % Data.TIKTOK_HANDLE)
+	if not claimed:
+		text = Loc.T("Follow TikTok %s: +%d diamond (sekali)" % [Data.TIKTOK_HANDLE, Data.TIKTOK_DIAMONDS], "Follow %s on TikTok: +%d diamonds (once)" % [Data.TIKTOK_HANDLE, Data.TIKTOK_DIAMONDS])
+	var d := Kit.dual(text, 22, Kit.INK, HORIZONTAL_ALIGNMENT_LEFT, true)
+	d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(d)
+	var b := Kit.button(Loc.T("Buka", "Open") if claimed else Loc.T("Follow", "Follow"), Color("c9c2d6") if claimed else Kit.PINK, func():
+		OS.shell_open(Data.TIKTOK_URL)
+		if Meta.claim_tiktok():
+			Audio.play("diamond")
+			main.toast(Loc.T("Makasih udah follow! +%d diamond" % Data.TIKTOK_DIAMONDS, "Thanks for following! +%d diamonds" % Data.TIKTOK_DIAMONDS), Kit.PINK)
+		_refresh(), 22)
+	Kit.set_icon(b, "external-link", 22)
+	h.add_child(b)
 
 
 func _confirm_iap(pid: String) -> void:
 	var p: Dictionary = Data.IAP_PRODUCTS[pid]
 	var box := ModalCard.new(main, Loc.T("Konfirmasi", "Confirm"), 560, true, "compact")
-	box.body.add_child(Kit.dual(Loc.T("Beli %s seharga %s? (simulasi)" % [p.name.id, p.price], "Buy %s for %s? (simulated)" % [p.name.en, p.price]), 24))
+	var price := Iap.price_text(pid)
+	box.body.add_child(Kit.dual(Loc.T("Beli %s seharga %s?" % [p.name.id, price], "Buy %s for %s?" % [p.name.en, price]), 24))
+	box.body.add_child(Kit.dual(Iap.status_note(), 18, Kit.INK_SOFT))
 	box.body.add_child(Kit.button(Loc.T("Beli", "Buy"), Kit.GREEN, func():
-		Iap.buy(pid)
-		Audio.play("unlock", -3.0)
 		main.close_top_modal()
-		main.toast(Loc.T("Terima kasih! Pembelian berhasil.", "Thank you! Purchase complete."), Kit.GREEN)))
+		Iap.buy(pid)))
 	main.open_modal(box)
 
 
